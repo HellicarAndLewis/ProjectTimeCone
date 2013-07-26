@@ -29,6 +29,7 @@ $ git checkout master
 
 - [Download the nightly of libav (from 2013.07.24).](http://win32.libav.org/win32/libav-win32-20130724.7z)
 - After extracting the package copy **all the dll files** and the **avconv.exe** to `c:\projects\ProjectTimeCone\apps\ProjectTimeCone\Runtime-VideoEncoder\bin\avconv\win\`
+- To compile, open a VS2010 terminal, go to `Runtime-VideoEncoder/build/cmake/` and execute `build_release.bat` or `build_debug.bat`
 
 
 ### Setup Runtime-YouTube
@@ -40,12 +41,13 @@ $ git checkout master
 - Go to `c:\projects\ProjectTimeCone\apps\ProjectTimeCone\Runtime-YouTube\bin\data` and copy `youtube_example.cfg` to `youtube.cfg`
 - After you've created a YouTube application, open the `youtube.cfg` file and copy the `client ID` and `client SECRET` into this file. Next step is to authorize this application by an specifc google account. 
 - Open `apps\ProjectTimeCone\addons\roxlu\addons\YouTube\html\index.html` in Chrome, paste the `client ID` into the field and press `GO`. Accept the permission popup, and copy the `auth-code` you get into `youtube.cfg`.
+- To compile, open a VS2010 terminal, go to `Runtime-YouTube/build/cmake/` and execute `build_release.bat` or `build_debug.bat`
 
 
 ### Setup Test-YouTubeClientIPC
 
 - Make sure the destination path for the frames exists: `Test-YouTubeClientIPC\bin\data\frames\` if not, create it.
-- Compile the app + run it
+- Compile the app + run it (open project file in VS2010 or XCode)
 
 ### Updating changes made in a submodule
 
