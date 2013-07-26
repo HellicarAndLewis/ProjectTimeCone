@@ -16,13 +16,27 @@ int main() {
 
   VideoEncoder enc;
 
-  if(!enc.setup("/Users/roxlu/Documents/programming/nissan/apps/NissanBulletTime/Runtime-VideoEncoder/bin/avconv")) {
+#if defined(WIN32)
+  std::string avconv_path = rx_get_exe_path() +"\\avconv\\win\\avconv.exe";
+  std::string socket_path = "\\\\.\\pipe\\encoder";
+#elif defined(__APPLE__)
+  std::string avconv_path = rx_get_exe_path() +"/avconv/mac/avconv";
+  std::string socket_path = "/tmp/encoder.sock";
+#else
+#  error Not tested on this OS
+#endif
+
+  if(!rx_file_exists(avconv_path)) {
+    RX_ERROR("Cannot find avconv at: %s", avconv_path.c_str());
+    ::exit(EXIT_FAILURE);
+  }
+
+  if(!enc.setup(avconv_path)) {
     RX_ERROR("Cannot find the convert util");
     ::exit(EXIT_FAILURE);
   }
 
-  std::string sockfile = "/tmp/encoder.sock";
-  VideoEncoderServerIPC enc_server(enc, sockfile, false);
+  VideoEncoderServerIPC enc_server(enc, socket_path, false);
 
   if(!enc_server.start()) {
     RX_ERROR("Cannot start the video encoder server");
