@@ -1,3 +1,4 @@
+#include <roxlu/io/Buffer.h>
 #include <videoencoder/VideoEncoderClientIPC.h>
 
 void videoencoderclientipc_on_read(ClientIPC* ipc, void* user) {
@@ -13,27 +14,20 @@ void videoencoderclientipc_on_read(ClientIPC* ipc, void* user) {
     memcpy((char*)&nbytes, &ipc->buffer[sizeof(cmd)], sizeof(nbytes));
 
     if(ipc->buffer.size() - offset >= nbytes) {
-      msgpack::unpacked unp;
-      msgpack::unpack(&unp, &ipc->buffer[offset], nbytes);
+
+      Buffer in;
+      in.putBytes(&ipc->buffer[offset], nbytes);
 
       if(cmd == VE_CMD_ENCODED) {
         VideoEncoderEncodeTask task;
+        in >> task.dir >> task.filemask >> task.video_filename;
 
-        msgpack::object obj = unp.get();
-        try {
-          obj.convert(&task);
-          task.print();
-          ipc->buffer.erase(ipc->buffer.begin(), ipc->buffer.begin() + offset + nbytes);
-        }
-        catch(std::exception& ex) {
-          RX_ERROR("Error while trying to decode: %s", ex.what());
-          ipc->buffer.clear(); // @todo - test if this is correct; we're basically destroying the buffer; but we shouldn't arrive here
-          break;
-        }
+        task.print();
+
+        ipc->buffer.erase(ipc->buffer.begin(), ipc->buffer.begin() + offset + nbytes);
 
         // notify caller
         if(client->cb_encoded) {
-          RX_VERBOSE("{ %p }", client->cb_user);
           client->cb_encoded(task, client->cb_user);
         }
 
@@ -68,7 +62,6 @@ VideoEncoderClientIPC::~VideoEncoderClientIPC() {
 void VideoEncoderClientIPC::setup(video_encoder_on_encoded_callback encodedCB, void* user) {
   cb_encoded = encodedCB;
   cb_user = user;
-  RX_VERBOSE("[ %p ]", cb_user);
 }
 
 bool VideoEncoderClientIPC::connect() {
@@ -80,9 +73,9 @@ void VideoEncoderClientIPC::update() {
 }
 
 void VideoEncoderClientIPC::encode(VideoEncoderEncodeTask task) {
-  msgpack::sbuffer sbuf;
-  msgpack::pack(sbuf, task);
-  writeCommand(VE_CMD_ENCODE, sbuf.data(), sbuf.size());
+  Buffer buf;
+  buf << task.dir << task.filemask << task.video_filename;
+  writeCommand(VE_CMD_ENCODE, buf.ptr(), buf.size());
 }
 
 void VideoEncoderClientIPC::writeCommand(uint32_t command, char* data, uint32_t nbytes) {

@@ -1,3 +1,4 @@
+#include <roxlu/io/Buffer.h>
 #include <videoencoder/VideoEncoder.h>
 #include <videoencoder/VideoEncoderServerIPC.h>
 
@@ -13,29 +14,20 @@ void videoencoder_server_ipc_on_read(ConnectionIPC* con, void* user) {
     memcpy((char*)&nbytes, &con->buffer[sizeof(cmd)], sizeof(nbytes));
 
     if(con->buffer.size() - offset >= nbytes) {
-      msgpack::unpacked unp;
-      msgpack::unpack(&unp, &con->buffer[offset], nbytes);
+      Buffer buf;
+      buf.putBytes(&con->buffer[offset], nbytes);
 
       if(cmd == VE_CMD_ENCODE) {
         VideoEncoderEncodeTask task;
-
-        msgpack::object obj = unp.get();
-        try {
-          obj.convert(&task);
-          task.print();
-          con->buffer.erase(con->buffer.begin(), con->buffer.begin() + offset + nbytes);
-        }
-        catch(std::exception& ex) {
-          RX_ERROR("Error while trying to decode: %s", ex.what());
-          con->buffer.clear(); // @todo - test if this is correct; we're basically destroying the buffer; but we shouldn't arrive here
-          break;
-        }
+        buf >> task.dir >> task.filemask >> task.video_filename;
+        task.print();
+        con->buffer.erase(con->buffer.begin(), con->buffer.begin() + offset + nbytes);
 
         // encode the video + notify the caller on sucess
         if(server->enc.encode(task)) {
-          msgpack::sbuffer sbuf;
-          msgpack::pack(sbuf, task);
-          server->writeCommand(con, VE_CMD_ENCODED, sbuf.data(), sbuf.size());
+          Buffer out;
+          out << task.dir << task.filemask << task.video_filename;
+          server->writeCommand(con, VE_CMD_ENCODED, out.ptr(), out.size());
         }
 
       }
@@ -44,6 +36,7 @@ void videoencoder_server_ipc_on_read(ConnectionIPC* con, void* user) {
         con->buffer.clear();
       }
     }
+
     else {
       break;
     }

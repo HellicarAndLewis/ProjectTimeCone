@@ -1,8 +1,6 @@
 #ifndef ROXLU_VIDEO_ENCODER_TYPES_H
 #define ROXLU_VIDEO_ENCODER_TYPES_H
 
-#undef nil
-#include <msgpack.hpp>
 #include <string>
 
 enum VideoEncoderCommands {
@@ -17,7 +15,6 @@ struct VideoEncoderEncodeTask {
   std::string filemask;
   std::string video_filename;
 
-  MSGPACK_DEFINE(dir, filemask, video_filename);
 };
 
 #endif
