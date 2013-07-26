@@ -35,8 +35,13 @@ void on_video_encoded(VideoEncoderEncodeTask task, void* user) {
 
 //--------------------------------------------------------------
 testApp::testApp()
+#if defined(__APPLE__)
   :enc_client("/tmp/encoder.sock", false)
   ,yt_client("/tmp/youtube.sock", false)
+#elif defined(WIN32) 
+   :enc_client("\\\\.\\pipe\\encoder", false)
+  ,yt_client("\\\\.\\pipe\\youtube", false)
+#endif   
 {
 }
 
@@ -65,13 +70,13 @@ void testApp::setup(){
   enc_client.setup(on_video_encoded, this);
 
   if(!enc_client.connect()) {
-    RX_ERROR("Cannot connect to the video encoder ipc");
-    ::exit(EXIT_FAILURE);
+    RX_ERROR("Cannot connect to the video encoder ipc, make sure that you start it; we will try to connect later");
+    //::exit(EXIT_FAILURE);
   }
 
   if(!yt_client.connect()) {
-    RX_ERROR("Cannot connect to the youtube ipc");
-    ::exit(EXIT_FAILURE);
+    RX_ERROR("Cannot connect to the youtube ipc, make sure that you start it; we will try to connect later");
+    //::exit(EXIT_FAILURE);
   }
 }
 
@@ -162,7 +167,7 @@ void testApp::keyPressed(int key){
     else {
       state = ST_SAVE_PNG;
       grab_timeout = (uv_hrtime()/1000000) + grab_delay;
-      grab_dir = rx_strftime("frames/%F-%H-%M-%S");
+      grab_dir = "frames/" +rx_get_date_time_string(); // rx_strftime("frames/%F-%H-%M-%S");
       if(!rx_create_path(rx_to_data_path(grab_dir))) {
         RX_ERROR("Cannot create destination dir: %s", grab_dir.c_str());
       }
