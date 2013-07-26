@@ -51,14 +51,35 @@ $ git checkout master
 
 ### Updating changes made in a submodule
 
-````sh
+Before you commit your changes, check if you are working in a branch or not. By default,
+after doing `git submodule update` you're not working in a brnach. 
 
+_Check if you're working in a branch_
+
+````sh
 $ cd submodule
-$ git branch -a  # make sure that you've checked out the master branch; else you need to cherry-pick the commits, so if the master hasn't been selected stop here!
+$ git branch -a
+````
+
+_Not working in a branch_
+
+````sh
+$ cd submodule
+$ git checkout master
 $ git commit -am "Updating changes of submodule"
 $ git push origin master
+````
 
-# tell the root project to use the current submodule commit
+_Working in a branch_
+
+````sh
+$ cd submodule
+$ git commit -am "Updating changes of submodule"
+$ git push origin master
+````
+
+_tell the root project to use the current submodule commit_
+```sh
 $ cd ../to/project/root
 $ git commit -am "Updated submodule"
 $ git push origin master
