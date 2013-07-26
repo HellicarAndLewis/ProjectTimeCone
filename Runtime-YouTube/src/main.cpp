@@ -73,7 +73,13 @@ int main() {
 
   // YouTubeIPC
   // ------------------------------------------------------------------
+#if defined(__APPLE__)
   YouTubeServerIPC server_ipc(yt, "/tmp/youtube.sock", false);
+#elif defined(WIN32)
+  YouTubeServerIPC server_ipc(yt, "\\\\.\\pipe\\youtube", false);
+#else
+#  error Only tested on Mac and Win
+#endif
   if(!server_ipc.start()) {
     RX_ERROR("Cannot start the ipc server");
     ::exit(EXIT_FAILURE);
