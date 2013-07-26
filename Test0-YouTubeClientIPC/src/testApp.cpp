@@ -25,21 +25,12 @@ void on_video_encoded(VideoEncoderEncodeTask task, void* user) {
   RX_VERBOSE("Video file created: %s", task.video_filename.c_str());
   testApp* app = static_cast<testApp*>(user);
 
-#if 0
-  app->yt_video.filename = task.dir +task.video_filename;
-  app->yt_video.datapath = false;
-  app->yt_video.title = "automated";
-  app->state = ST_UPLOAD_VIDEO;
-#else
   YouTubeVideo video;
   video.filename = task.dir +"/" +task.video_filename;
   video.datapath = false;
   video.title = "automated";
   app->yt_client.addVideoToUploadQueue(video);
-#endif
-  RX_VERBOSE("{ yt_client: %p }", &app->yt_client);
 
-  
 }
 
 //--------------------------------------------------------------
@@ -54,9 +45,16 @@ void testApp::setup(){
   ofSetWindowTitle("YouTube IPC tester");
 
   grabber.setVerbose(true);
-  grabber.setDeviceID(0);
   grabber.setDesiredFrameRate(30);
-  grabber.initGrabber(CAM_WIDTH, CAM_HEIGHT);
+  grabber.setDeviceID(0);
+
+  if(!grabber.initGrabber(CAM_WIDTH, CAM_HEIGHT)) {
+    grabber.setDeviceID(1);
+    if(!grabber.initGrabber(CAM_WIDTH, CAM_HEIGHT)) {
+      RX_ERROR("Cannot find a camera");
+      ::exit(EXIT_FAILURE);
+    }
+  }
   
   state = ST_NONE;
   grab_timeout = 0;
