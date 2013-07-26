@@ -246,18 +246,10 @@
 		480F742617A1C24F006CB9AE /* roxlu_libs */ = {
 			isa = PBXGroup;
 			children = (
+				48ADCB4517A1641200F6444E /* libuv.a */,
 				480F740C17A1BA09006CB9AE /* libmsgpack.a */,
 			);
 			name = roxlu_libs;
-			sourceTree = "<group>";
-		};
-		48ADCB2517A15AEB00F6444E /* roxlu */ = {
-			isa = PBXGroup;
-			children = (
-				48ADCB4417A163FB00F6444E /* uv */,
-				48ADCB2617A163D700F6444E /* roxlu */,
-			);
-			name = roxlu;
 			sourceTree = "<group>";
 		};
 		48ADCB2617A163D700F6444E /* roxlu */ = {
@@ -305,23 +297,6 @@
 			path = math;
 			sourceTree = "<group>";
 		};
-		48ADCB4417A163FB00F6444E /* uv */ = {
-			isa = PBXGroup;
-			children = (
-				48ADCB4817A1642D00F6444E /* uv */,
-				48ADCB4717A1641500F6444E /* lib */,
-			);
-			name = uv;
-			sourceTree = "<group>";
-		};
-		48ADCB4717A1641500F6444E /* lib */ = {
-			isa = PBXGroup;
-			children = (
-				48ADCB4517A1641200F6444E /* libuv.a */,
-			);
-			name = lib;
-			sourceTree = "<group>";
-		};
 		48ADCB4817A1642D00F6444E /* uv */ = {
 			isa = PBXGroup;
 			children = (
@@ -338,6 +313,12 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				480F742317A1C23F006CB9AE /* sqlite */,
+				480F740E17A1C1E6006CB9AE /* youtube */,
+				480F740117A19285006CB9AE /* videoencoder */,
+				48ADCB4817A1642D00F6444E /* uv */,
+				48ADCB2617A163D700F6444E /* roxlu */,
+				480F742617A1C24F006CB9AE /* roxlu_libs */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -392,11 +373,6 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
-				480F742317A1C23F006CB9AE /* sqlite */,
-				480F740E17A1C1E6006CB9AE /* youtube */,
-				480F740117A19285006CB9AE /* videoencoder */,
-				48ADCB2517A15AEB00F6444E /* roxlu */,
-				480F742617A1C24F006CB9AE /* roxlu_libs */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,

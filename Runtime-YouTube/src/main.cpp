@@ -70,6 +70,7 @@ int main() {
       ::exit(EXIT_FAILURE);
     }
   }
+
   // YouTubeIPC
   // ------------------------------------------------------------------
   YouTubeServerIPC server_ipc(yt, "/tmp/youtube.sock", false);
