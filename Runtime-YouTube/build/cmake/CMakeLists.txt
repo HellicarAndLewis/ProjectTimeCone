@@ -5,8 +5,12 @@ get_filename_component(app_path ${CMAKE_CURRENT_LIST_DIR}/../../ REALPATH)  # ge
 get_filename_component(app_name ${app_path} NAME) # set directory name as application name
 
 roxlu_add_addon(YouTube)
-roxlu_add_addon(Config)
 roxlu_add_addon(Log)
+
+if(WIN32) 
+  roxlu_add_dll(jansson.dll)
+  roxlu_add_extern_lib(jansson.lib)
+endif()
 
 roxlu_app_initialize(${app_name})
    # ---------------------------------------------

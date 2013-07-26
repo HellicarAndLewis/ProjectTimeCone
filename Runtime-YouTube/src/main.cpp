@@ -1,9 +1,9 @@
 #include <iostream>
-#include <libconfig.h++>
 #include <log/Log.h>
 #include <roxlu/core/Log.h>
 #include <roxlu/core/Utils.h>
 #include <youtube/YouTube.h>
+#include <jansson.h>
 
 bool must_run;
 
@@ -21,21 +21,13 @@ int main() {
   log.writeToConsole(true);
   log.maxi();
   log.mini();
-  
+
   // Load configuration
   // ------------------------------------------------------------------
+
   std::string config_file = rx_to_data_path("youtube.cfg");
   if(!rx_file_exists(config_file)) {
     RX_ERROR("Please create the youtube.cfg file; see README.md for more info");
-    ::exit(EXIT_FAILURE);
-  }
-  
-  libconfig::Config cfg;
-  try {
-    cfg.readFile(config_file.c_str());
-  }
-  catch(libconfig::ConfigException& ex) {
-    RX_ERROR("Error loading the data/youtube.cfg file: %s", ex.what());
     ::exit(EXIT_FAILURE);
   }
 
@@ -43,20 +35,35 @@ int main() {
   // ------------------------------------------------------------------
   std::string client_id;
   std::string client_secret;
-  std::string auth_code; 
-  if(!cfg.lookupValue("client_id", client_id) ||
-     !cfg.lookupValue("client_secret", client_secret) ||
-     !cfg.lookupValue("auth_code", auth_code)) 
-    {
-      RX_ERROR("Cannot find all necessary configuration fields: client_id, client_secret, auth_code");
-      ::exit(EXIT_FAILURE);
-    }
+  std::string auth_code;
+  const char* client_id_cstr;
+  const char* client_secret_cstr;
+  const char* auth_code_cstr ;
+
+  json_error_t err;
+  json_t* json = json_load_file(config_file.c_str(), 0, &err);
+  if(!json) {
+    RX_ERROR("Error with json: %s (%d)", err.text, err.line);
+    ::exit(EXIT_FAILURE);
+  }
+
+  json_unpack(json, "{s:s,s:s,s:s}",
+              "client_id", &client_id_cstr, 
+              "client_secret", &client_secret_cstr, 
+              "auth_code", &auth_code_cstr);
+
+  client_id = client_id_cstr;
+  client_secret = client_secret_cstr;
+  auth_code = auth_code_cstr;
+  json_decref(json);
 
   if(!client_id.size() || !client_secret.size() || !auth_code.size()) {
     RX_ERROR("One of the configuration options is empty! Did you set the auth code? See html/index.html and readme.");
     ::exit(EXIT_FAILURE);
   }
-  
+
+  // Setup YouTube
+  // ------------------------------------------------------------------
   YouTube yt;
   if(!yt.setup(client_id, client_secret)) {
     RX_ERROR("Cannot setup the youtube API wrapper.");
@@ -80,6 +87,7 @@ int main() {
 #else
 #  error Only tested on Mac and Win
 #endif
+
   if(!server_ipc.start()) {
     RX_ERROR("Cannot start the ipc server");
     ::exit(EXIT_FAILURE);
