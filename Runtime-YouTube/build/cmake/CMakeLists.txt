@@ -6,6 +6,7 @@ get_filename_component(app_name ${app_path} NAME) # set directory name as applic
 
 roxlu_add_addon(YouTube)
 roxlu_add_addon(Log)
+roxlu_add_addon(Jansson)
 
 if(WIN32) 
   roxlu_add_dll(jansson.dll)

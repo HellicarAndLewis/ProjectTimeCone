@@ -4,6 +4,7 @@
 #include <roxlu/core/Utils.h>
 #include <youtube/YouTube.h>
 #include <jansson.h>
+#include <jansson/Jansson.h>
 
 bool must_run;
 
@@ -24,38 +25,18 @@ int main() {
 
   // Load configuration
   // ------------------------------------------------------------------
-
-  std::string config_file = rx_to_data_path("youtube.cfg");
-  if(!rx_file_exists(config_file)) {
-    RX_ERROR("Please create the youtube.cfg file; see README.md for more info");
-    ::exit(EXIT_FAILURE);
-  }
-
-  // Validate config
-  // ------------------------------------------------------------------
   std::string client_id;
   std::string client_secret;
   std::string auth_code;
-  const char* client_id_cstr;
-  const char* client_secret_cstr;
-  const char* auth_code_cstr ;
 
-  json_error_t err;
-  json_t* json = json_load_file(config_file.c_str(), 0, &err);
-  if(!json) {
-    RX_ERROR("Error with json: %s (%d)", err.text, err.line);
+  Jansson j;
+  if(!j.load("youtube.cfg", true)) {
+    RX_ERROR("Cannot load youtube.cfg");
     ::exit(EXIT_FAILURE);
   }
-
-  json_unpack(json, "{s:s,s:s,s:s}",
-              "client_id", &client_id_cstr, 
-              "client_secret", &client_secret_cstr, 
-              "auth_code", &auth_code_cstr);
-
-  client_id = client_id_cstr;
-  client_secret = client_secret_cstr;
-  auth_code = auth_code_cstr;
-  json_decref(json);
+  j.getString("/client_id", client_id);
+  j.getString("/client_secret", client_secret);
+  j.getString("/auth_code", auth_code);
 
   if(!client_id.size() || !client_secret.size() || !auth_code.size()) {
     RX_ERROR("One of the configuration options is empty! Did you set the auth code? See html/index.html and readme.");
