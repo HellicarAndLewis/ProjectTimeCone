@@ -1,47 +1,55 @@
 #include <iostream>
 #include <stdio.h>
 #include <roxlu/core/Log.h>
+#include <utils/Utils.h>
 #include <videoencoder/VideoEncoder.h>
+#include <videoencoder/VideoEncoderService.h>
 
-bool must_run;
+#if defined(WIN32)
+  std::string avconv_path = rx_get_exe_path() +"\\avconv\\win\\avconv.exe";
+  std::string socket_path = "\\\\.\\pipe\\encoder";
 
-void signal_handler(uv_signal_t* handle, int signum) {
-  RX_WARNING("Received signal");
-  must_run = false;
-  uv_signal_stop(handle);
-}
+#elif defined(__APPLE__)
+  std::string avconv_path = rx_get_exe_path() +"/avconv/mac/avconv";
+  std::string socket_path = "/tmp/encoder.sock";
+
+#else
+#  error VideoEncoder is not tested on this OS
+#endif
+
+
+SignalHandler sighandler;
+VideoEncoderService service(socket_path, avconv_path);
+
+void encoder_start(void* user);
+void encoder_update(void* user);
+void encoder_stop(void* user);
 
 int main() {
   RX_VERBOSE("Runtime-VideoEncoder");
 
-  VideoEncoder enc;
+  sighandler.setup();
 
-  if(!enc.setup("/Users/roxlu/Documents/programming/nissan/apps/NissanBulletTime/Runtime-VideoEncoder/bin/avconv")) {
-    RX_ERROR("Cannot find the convert util");
-    ::exit(EXIT_FAILURE);
+  if(!service.setup()) {
+    RX_ERROR("Cannot setup the VideoEncoder service");
+    return EXIT_FAILURE;
   }
 
-  std::string sockfile = "/tmp/encoder.sock";
-  VideoEncoderServerIPC enc_server(enc, sockfile, false);
 
-  if(!enc_server.start()) {
-    RX_ERROR("Cannot start the video encoder server");
-    ::exit(EXIT_FAILURE);
-  }
+  rx_windows_service_setup("VideoEncoder", encoder_start, encoder_update, encoder_stop, NULL);
+  rx_windows_service_start();
 
-  uv_loop_t* loop = uv_loop_new();
-  uv_signal_t sig;
-  uv_signal_init(loop, &sig);
-  uv_signal_start(&sig, signal_handler, SIGINT);
-
-  must_run = true;
-
-  while(must_run) {
-    enc_server.update();
-    uv_run(loop, UV_RUN_NOWAIT);    
-  }
-
-  // enc.encode("/Users/roxlu/Documents/programming/nissan/apps/NissanBulletTime/Test0-YouTubeClientIPC/bin/data/", "frame_%04d.jpg");
   return EXIT_SUCCESS;
 };
 
+void encoder_start(void* user) {
+  service.start();
+}
+
+void encoder_update(void* user) {
+  service.update();
+}
+
+void encoder_stop(void* user) {
+  service.stop();
+}

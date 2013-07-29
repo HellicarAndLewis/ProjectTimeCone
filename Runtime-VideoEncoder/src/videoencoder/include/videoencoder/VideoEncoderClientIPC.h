@@ -8,7 +8,7 @@ extern "C" {
 #include <string>
 #include <uv/ClientIPC.h>
 #include <videoencoder/VideoEncoderTypes.h>
-#include <msgpack.hpp>
+
 
 void videoencoderclientipc_on_read(ClientIPC* ipc, void* user);
 
