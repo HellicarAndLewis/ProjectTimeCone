@@ -65,7 +65,7 @@ void testApp::setup(){
   grab_timeout = 0;
   grab_delay = (1.0 / 5.0) * 1000;
   grab_frame_num = 0;
-  grab_max_frames = 10;
+  grab_max_frames = 100;
 
   enc_client.setup(on_video_encoded, this);
 
