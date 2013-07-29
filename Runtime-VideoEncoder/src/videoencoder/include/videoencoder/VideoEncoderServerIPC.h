@@ -5,6 +5,7 @@
   IPC wrapper so you can run the encoder in another process
 
  */
+
 #ifndef ROXLU_VIDEO_ENCODER_SERVER_IPC_H
 #define ROXLU_VIDEO_ENCODER_SERVER_IPC_H
 

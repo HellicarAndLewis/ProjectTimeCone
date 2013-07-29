@@ -12,7 +12,6 @@ YouTubeService::YouTubeService()
 #else
 #  error Only tested on Mac and Win
 #endif
-  ,loop(NULL)
 {
   ptr = this;
 }

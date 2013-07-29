@@ -25,9 +25,6 @@ class YouTubeService {
   void stop();
  public:
   roxlu::Log log;
-  uv_loop_t* loop;
-  uv_signal_t sig_int;
-  uv_signal_t sig_kill;
   YouTube yt;
   YouTubeServerIPC server_ipc;
   static YouTubeService* ptr;
