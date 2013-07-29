@@ -105,8 +105,9 @@ _Add these include directories_
 .\..\addons\roxlu\addons\UV\include\
 .\..\addons\roxlu\addons\YouTube\include\
 .\..\addons\roxlu\addons\SQLite\extern\sqlite\
-.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\
 .\..\addons\roxlu\addons\SQLite\include\
+.\..\addons\roxlu\addons\PCRE\include\
+.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\
 ````
 
 _Add these preprocessor flags_
@@ -121,6 +122,8 @@ _Add these linker input libraries_
 .\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libuv.lib
 .\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib
 .\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib
+.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcre.lib
+.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcrecpp.lib
 ws2_32.lib
 psapi.lib
 iphlpapi.lib

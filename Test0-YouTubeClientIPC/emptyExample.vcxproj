@@ -58,7 +58,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\SQLite\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\addons\roxlu\addons\PCRE\include\;%(AdditionalIncludeDirectories);src;.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\SQLite\include\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -82,7 +82,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat />
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\SQLite\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\PCRE\include\;.\..\addons\roxlu\addons\SQLite\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -94,7 +94,7 @@
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
-      <AdditionalDependencies>.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libuv.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;ws2_32.lib;psapi.lib;iphlpapi.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\msgpack.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libuv.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcre.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcrecpp.lib;ws2_32.lib;psapi.lib;iphlpapi.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\msgpack.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
@@ -124,6 +124,7 @@
     <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeTypes.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUpload.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUploadStart.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUploadStatus.cpp" />
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Log.cpp" />
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\StringUtil.cpp" />
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Utils.cpp" />
