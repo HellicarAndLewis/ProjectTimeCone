@@ -6,6 +6,7 @@ void encoder_thread_callback(void* user) {
   std::vector<PixelData*> work_data;
 
   while(true) {
+
     et->lock();
       std::copy(et->data.begin(), et->data.end(), std::back_inserter(work_data));
       et->data.clear();
@@ -27,6 +28,7 @@ void encoder_thread_callback(void* user) {
     }
     work_data.clear();
 
+    // only stop when all files have been created.
     if(et->must_stop) {
       et->lock();
       if(!et->data.size()) {
@@ -36,7 +38,6 @@ void encoder_thread_callback(void* user) {
       et->unlock();
     }
   }
-
 }
 
 EncoderThread::EncoderThread()
@@ -52,6 +53,7 @@ EncoderThread::~EncoderThread() {
   for(std::vector<PixelData*>::iterator it = data.begin(); it != data.end(); ++it) {
     delete *it;
   }
+
   data.clear();
 
   uv_mutex_destroy(&mutex);
@@ -62,6 +64,7 @@ void EncoderThread::start() {
   for(std::vector<PixelData*>::iterator it = data.begin(); it != data.end(); ++it) {
     delete *it;
   }
+
   data.clear();
 
   must_stop = false;
@@ -86,7 +89,7 @@ void on_video_encoded(VideoEncoderEncodeTask task, void* user) {
   RX_VERBOSE("Video file created: %s", task.video_filename.c_str());
 
   task.video_filepath = task.dir +"/" +task.video_filename;
-  task.audio_filepath = rx_to_data_path("audio.wav");
+  task.audio_filepath = rx_to_data_path("audio.mp3");
   task.video_filename = "output2.mov";
 
   testApp* app = static_cast<testApp*>(user);
@@ -104,7 +107,6 @@ void on_audio_added(VideoEncoderEncodeTask task, void* user) {
   testApp* app = static_cast<testApp*>(user);
   app->yt_client.addVideoToUploadQueue(video);
 }
-
 
 //--------------------------------------------------------------
 testApp::testApp()
@@ -141,7 +143,6 @@ void testApp::setup(){
   grab_frame_num = 0;
   grab_max_frames = 10;
 
-  //  enc_client.setup(on_video_encoded, this);
   enc_client.cb_user = this;
   enc_client.cb_encoded = on_video_encoded;
   enc_client.cb_audio_added = on_audio_added;
