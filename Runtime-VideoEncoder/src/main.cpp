@@ -33,7 +33,7 @@ int main() {
 #if defined(__APPLE__)
   sighandler.cb_all = encoder_sighandler;
 #endif
-  sighandler.setup();
+  //  sighandler.setup();
 
   if(!service.setup()) {
     RX_ERROR("Cannot setup the VideoEncoder service");

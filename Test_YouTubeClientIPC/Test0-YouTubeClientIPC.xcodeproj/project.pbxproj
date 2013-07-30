@@ -30,6 +30,9 @@
 		480F743617A1C288006CB9AE /* QueryResult.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 480F742D17A1C288006CB9AE /* QueryResult.cpp */; };
 		480F743717A1C288006CB9AE /* QuerySelect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 480F742E17A1C288006CB9AE /* QuerySelect.cpp */; };
 		480F743817A1C288006CB9AE /* QueryUpdate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 480F742F17A1C288006CB9AE /* QueryUpdate.cpp */; };
+		483BFEF617A8356200E38F17 /* ClientIPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 483BFEF317A8356200E38F17 /* ClientIPC.cpp */; };
+		483BFEF717A8356200E38F17 /* ServerIPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 483BFEF417A8356200E38F17 /* ServerIPC.cpp */; };
+		483BFEF817A8356200E38F17 /* TypesIPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 483BFEF517A8356200E38F17 /* TypesIPC.cpp */; };
 		48ADCB3717A163D700F6444E /* Log.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB2817A163D700F6444E /* Log.cpp */; };
 		48ADCB3817A163D700F6444E /* StringUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB2917A163D700F6444E /* StringUtil.cpp */; };
 		48ADCB3917A163D700F6444E /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB2A17A163D700F6444E /* Utils.cpp */; };
@@ -44,9 +47,7 @@
 		48ADCB4217A163D700F6444E /* Vec3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB3517A163D700F6444E /* Vec3.cpp */; };
 		48ADCB4317A163D700F6444E /* Vec4.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB3617A163D700F6444E /* Vec4.cpp */; };
 		48ADCB4617A1641200F6444E /* libuv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 48ADCB4517A1641200F6444E /* libuv.a */; };
-		48ADCB4E17A1642D00F6444E /* ClientIPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB4917A1642D00F6444E /* ClientIPC.cpp */; };
 		48ADCB4F17A1642D00F6444E /* ClientSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB4A17A1642D00F6444E /* ClientSocket.cpp */; };
-		48ADCB5017A1642D00F6444E /* ServerIPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB4B17A1642D00F6444E /* ServerIPC.cpp */; };
 		48ADCB5117A1642D00F6444E /* ServerSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB4C17A1642D00F6444E /* ServerSocket.cpp */; };
 		48ADCB5217A1642D00F6444E /* WorkQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 48ADCB4D17A1642D00F6444E /* WorkQueue.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
@@ -125,6 +126,9 @@
 		480F742D17A1C288006CB9AE /* QueryResult.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QueryResult.cpp; path = ../addons/roxlu/addons/SQLite/src/sqlite/QueryResult.cpp; sourceTree = "<group>"; };
 		480F742E17A1C288006CB9AE /* QuerySelect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QuerySelect.cpp; path = ../addons/roxlu/addons/SQLite/src/sqlite/QuerySelect.cpp; sourceTree = "<group>"; };
 		480F742F17A1C288006CB9AE /* QueryUpdate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QueryUpdate.cpp; path = ../addons/roxlu/addons/SQLite/src/sqlite/QueryUpdate.cpp; sourceTree = "<group>"; };
+		483BFEF317A8356200E38F17 /* ClientIPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClientIPC.cpp; sourceTree = "<group>"; };
+		483BFEF417A8356200E38F17 /* ServerIPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ServerIPC.cpp; sourceTree = "<group>"; };
+		483BFEF517A8356200E38F17 /* TypesIPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TypesIPC.cpp; sourceTree = "<group>"; };
 		48ADCB2817A163D700F6444E /* Log.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Log.cpp; sourceTree = "<group>"; };
 		48ADCB2917A163D700F6444E /* StringUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringUtil.cpp; sourceTree = "<group>"; };
 		48ADCB2A17A163D700F6444E /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
@@ -139,9 +143,7 @@
 		48ADCB3517A163D700F6444E /* Vec3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vec3.cpp; sourceTree = "<group>"; };
 		48ADCB3617A163D700F6444E /* Vec4.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vec4.cpp; sourceTree = "<group>"; };
 		48ADCB4517A1641200F6444E /* libuv.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libuv.a; path = ../addons/roxlu/extern/lib/mac/gcc/static/32/libuv.a; sourceTree = "<group>"; };
-		48ADCB4917A1642D00F6444E /* ClientIPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClientIPC.cpp; sourceTree = "<group>"; };
 		48ADCB4A17A1642D00F6444E /* ClientSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClientSocket.cpp; sourceTree = "<group>"; };
-		48ADCB4B17A1642D00F6444E /* ServerIPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ServerIPC.cpp; sourceTree = "<group>"; };
 		48ADCB4C17A1642D00F6444E /* ServerSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ServerSocket.cpp; sourceTree = "<group>"; };
 		48ADCB4D17A1642D00F6444E /* WorkQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WorkQueue.cpp; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
@@ -252,6 +254,16 @@
 			name = roxlu_libs;
 			sourceTree = "<group>";
 		};
+		483BFEF217A8356200E38F17 /* ipc */ = {
+			isa = PBXGroup;
+			children = (
+				483BFEF317A8356200E38F17 /* ClientIPC.cpp */,
+				483BFEF417A8356200E38F17 /* ServerIPC.cpp */,
+				483BFEF517A8356200E38F17 /* TypesIPC.cpp */,
+			);
+			path = ipc;
+			sourceTree = "<group>";
+		};
 		48ADCB2617A163D700F6444E /* roxlu */ = {
 			isa = PBXGroup;
 			children = (
@@ -300,9 +312,8 @@
 		48ADCB4817A1642D00F6444E /* uv */ = {
 			isa = PBXGroup;
 			children = (
-				48ADCB4917A1642D00F6444E /* ClientIPC.cpp */,
+				483BFEF217A8356200E38F17 /* ipc */,
 				48ADCB4A17A1642D00F6444E /* ClientSocket.cpp */,
-				48ADCB4B17A1642D00F6444E /* ServerIPC.cpp */,
 				48ADCB4C17A1642D00F6444E /* ServerSocket.cpp */,
 				48ADCB4D17A1642D00F6444E /* WorkQueue.cpp */,
 			);
@@ -501,9 +512,7 @@
 				48ADCB4117A163D700F6444E /* Vec2.cpp in Sources */,
 				48ADCB4217A163D700F6444E /* Vec3.cpp in Sources */,
 				48ADCB4317A163D700F6444E /* Vec4.cpp in Sources */,
-				48ADCB4E17A1642D00F6444E /* ClientIPC.cpp in Sources */,
 				48ADCB4F17A1642D00F6444E /* ClientSocket.cpp in Sources */,
-				48ADCB5017A1642D00F6444E /* ServerIPC.cpp in Sources */,
 				48ADCB5117A1642D00F6444E /* ServerSocket.cpp in Sources */,
 				48ADCB5217A1642D00F6444E /* WorkQueue.cpp in Sources */,
 				480F740717A19293006CB9AE /* VideoEncoder.cpp in Sources */,
@@ -528,6 +537,9 @@
 				480F743617A1C288006CB9AE /* QueryResult.cpp in Sources */,
 				480F743717A1C288006CB9AE /* QuerySelect.cpp in Sources */,
 				480F743817A1C288006CB9AE /* QueryUpdate.cpp in Sources */,
+				483BFEF617A8356200E38F17 /* ClientIPC.cpp in Sources */,
+				483BFEF717A8356200E38F17 /* ServerIPC.cpp in Sources */,
+				483BFEF817A8356200E38F17 /* TypesIPC.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

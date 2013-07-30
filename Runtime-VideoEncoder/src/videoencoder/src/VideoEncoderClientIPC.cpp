@@ -1,57 +1,50 @@
 #include <roxlu/io/Buffer.h>
 #include <videoencoder/VideoEncoderClientIPC.h>
 
-void videoencoderclientipc_on_read(ClientIPC* ipc, void* user) {
+void video_encoder_client_ipc_on_encoded(std::string path, char* data, size_t nbytes, void* user) {
+  if(nbytes > 0) {
 
-  int cmd;
-  uint32_t nbytes;
-  VideoEncoderClientIPC* client = static_cast<VideoEncoderClientIPC*>(user);
-  size_t offset = sizeof(cmd) + sizeof(nbytes);
+    Buffer b(data, nbytes);
+    VideoEncoderEncodeTask task;
+    task.unpack(b);
 
-  while(ipc->buffer.size() > offset) {
-    
-    memcpy((char*)&cmd, &ipc->buffer[0], sizeof(cmd));
-    memcpy((char*)&nbytes, &ipc->buffer[sizeof(cmd)], sizeof(nbytes));
-
-    if(ipc->buffer.size() - offset >= nbytes) {
-
-      Buffer in;
-      in.putBytes(&ipc->buffer[offset], nbytes);
-
-      if(cmd == VE_CMD_ENCODED) {
-        VideoEncoderEncodeTask task;
-        in >> task.dir >> task.filemask >> task.video_filename;
-
-        task.print();
-
-        ipc->buffer.erase(ipc->buffer.begin(), ipc->buffer.begin() + offset + nbytes);
-
-        // notify caller
-        if(client->cb_encoded) {
-          client->cb_encoded(task, client->cb_user);
-        }
-
-      }
-      else {
-        RX_ERROR("Unhandled command: %ld, flushing the buffer!", cmd);
-        ipc->buffer.clear();
-      }
+    VideoEncoderClientIPC* ipc = static_cast<VideoEncoderClientIPC*>(user);
+    if(ipc->cb_encoded) {
+      ipc->cb_encoded(task, ipc->cb_user);
     }
-    else {
-      break;
-    }
+
+    task.print();
   }
 }
 
-// ---------------------------------------------------------------------------------
+void video_encoder_client_ipc_on_audio_added(std::string path, char* data, size_t nbytes, void* user) {
+  RX_VERBOSE("Audio added!");
+  if(nbytes > 0) {
 
+    Buffer b(data, nbytes);
+    VideoEncoderEncodeTask task;
+    task.unpack(b);
+
+    VideoEncoderClientIPC* ipc = static_cast<VideoEncoderClientIPC*>(user);
+    if(ipc->cb_audio_added) {
+      ipc->cb_audio_added(task, ipc->cb_user);
+    }
+
+    task.print();
+  }
+}
+
+
+
+// ---------------------------------------------------------------------------------
 
 VideoEncoderClientIPC::VideoEncoderClientIPC(std::string sockfile, bool datapath) 
   :client(sockfile, datapath)
   ,cb_user(NULL)
   ,cb_encoded(NULL)
 {
-  client.setup(NULL, videoencoderclientipc_on_read, this);
+  client.addMethod("/encoded", video_encoder_client_ipc_on_encoded, this);
+  client.addMethod("/audio_added", video_encoder_client_ipc_on_audio_added, this);
 }
 
 VideoEncoderClientIPC::~VideoEncoderClientIPC() {
@@ -59,11 +52,13 @@ VideoEncoderClientIPC::~VideoEncoderClientIPC() {
   cb_encoded = NULL;
 }
 
-void VideoEncoderClientIPC::setup(video_encoder_on_encoded_callback encodedCB, void* user) {
+// @todo - the user should set the callback members directly!
+/*
+void VideoEncoderClientIPC::setup(video_encoder_callback encodedCB, void* user) {
   cb_encoded = encodedCB;
   cb_user = user;
 }
-
+*/
 bool VideoEncoderClientIPC::connect() {
   return client.connect();
 }
@@ -73,13 +68,16 @@ void VideoEncoderClientIPC::update() {
 }
 
 void VideoEncoderClientIPC::encode(VideoEncoderEncodeTask task) {
-  Buffer buf;
-  buf << task.dir << task.filemask << task.video_filename;
-  writeCommand(VE_CMD_ENCODE, buf.ptr(), buf.size());
+  Buffer b;
+  task.pack(b);
+  client.call("/encode", b.ptr(), b.size());
 }
 
-void VideoEncoderClientIPC::writeCommand(uint32_t command, char* data, uint32_t nbytes) {
-  client.write((char*)&command, sizeof(command));
-  client.write((char*)&nbytes, sizeof(nbytes));
-  client.write(data, nbytes);
+void VideoEncoderClientIPC::addAudio(VideoEncoderEncodeTask task) {
+  RX_VERBOSE("Sending /add_audio command");
+
+  Buffer b;
+  task.pack(b);
+  client.call("/add_audio", b.ptr(), b.size());
 }
+
