@@ -5,80 +5,101 @@ void testApp::setup(){
 	this->exposure = 500;
 	this->gain = 5;
 	this->focus = 0;
-	this->autoCycle = false;
-	this->selectedFrame = 0;
-	this->framesPerPosition = 1;
+
+	this->device = DevicePtr(new Device::VideoInputDevice(1280, 720));
+	this->grabber = new Grabber::Simple(this->device);
+	this->grabber->open();
+	this->grabber->startCapture();
+	this->grabber->setExposure(this->exposure);
+	this->grabber->setGain(this->gain);
+	this->grabber->setFocus(this->focus);
 
 	gui.init();
+	auto livePanel = gui.add(this->grabber->getTextureReference(), "Live");
+	gui.add(images, "Captures");
 
-	vector<int> order;
-	try {
-		ofFile load("save.bin", ofFile::ReadOnly, true);
-		int count = load.getPocoFile().getSize() / sizeof(int);
-		order.resize(count);
-		load.read((char*) &order[0], sizeof(int) * count);
-		load.close();
-	} catch(...) {
-		ofSystemAlertDialog("Couldn't load camera order, please place save.bin into data folder.");
-		ofExit();
-	}
-
-	auto deviceList = ofVideoGrabber().listDevices();
-	if (deviceList.size() != order.size()) {
-		ofSystemAlertDialog("We've saved the order for a different number of cameras");
-		ofExit();
-	}
-
-	vector<int> toAdd;
-	for(auto deviceItem : deviceList) {
-		toAdd.push_back(deviceItem.id);
-	}
-
-	for(auto index : order) {
-		auto rawDevice = new ofxMachineVision::Device::VideoInputDevice(1280, 720);
-		auto device = ofxMachineVision::DevicePtr(rawDevice);
-		auto grabber = new ofxMachineVision::Grabber::Simple(device);
-		grabber->open(toAdd[index]);
-		grabber->startCapture();
-		grabber->setExposure(this->exposure);
-		grabber->setGain(this->gain);
-		grabber->setFocus(this->focus);
-
-		this->grabbers.push_back(grabber);
-		auto panel = this->gui.add(grabber->getTextureReference(), grabber->getModelName());
-		panel->onDraw.addListener([grabber] (DrawArguments &) {
-			AssetRegister.drawText(ofToString(grabber->getFps()), 20, 60);
-		}, this);
-	}
-	
-	this->outputPanel = gui.add(preview);
-	this->controls.setPosition(10, 60);
-	this->outputPanel->setWidgets(this->controls);
-	this->controls.addFPS();
-	this->controls.addSlider("Exposure", 0, 1000, &this->exposure);
-	this->controls.addSlider("Gain", 0, 1.0f, &this->gain);
-	this->controls.addSlider("Focus", 0, 1.0f, &this->focus);
-	this->controls.addToggle("Cycle", &this->autoCycle);
-	this->controls.addSlider("Frames per position", 1, 20, &framesPerPosition);
-	this->controls.addButton("Save set", &this->saveSet);
-	ofAddListener(this->controls.newGUIEvent, this, &testApp::onControls);
-
-	this->outputPanel->onMouse.addListener([this] (MouseArguments& args) {
-		if (args.isLocal()) {
-			this->selectedFrame = args.localNormalised.x * this->grabbers.size();
+	tests.push_back(TestItem("JPEG Single Threaded", [] (vector<ofPixels>& images, string path) {
+		int index = 0;
+		for(auto & image : images) {
+			ofSaveImage(image, path + "JPEG-ST" + ofToString(index) + ".jpg");
+			index++;
 		}
-	}, this);
+	}));
+
+	tests.push_back(TestItem("JPEG Multi Threaded", [] (vector<ofPixels>& images, string path) {
+		int count = images.size();
+#pragma omp parallel for
+		for(int index = 0; index < count; index++) {
+			ofSaveImage(images[index], path + "JPEG-MT" + ofToString(index) + ".jpg");
+		}
+	}));
+
+	tests.push_back(TestItem("PNG Single Threaded", [] (vector<ofPixels>& images, string path) {
+		int index = 0;
+		for(auto & image : images) {
+			ofSaveImage(image, path + "PNG-ST" + ofToString(index) + ".png");
+			index++;
+		}
+	}));
+
+	tests.push_back(TestItem("PNG Multi Threaded", [] (vector<ofPixels>& images, string path) {
+		int count = images.size();
+#pragma omp parallel for
+		for(int index = 0; index < count; index++) {
+			ofSaveImage(images[index], path + "PNG-MT" + ofToString(index) + ".png");
+		}
+	}));
+
+	tests.push_back(TestItem("BMP Single Threaded", [] (vector<ofPixels>& images, string path) {
+		int index = 0;
+		for(auto & image : images) {
+			ofSaveImage(image, path + "BMP-ST" + ofToString(index) + ".bmp");
+			index++;
+		}
+	}));
+
+	tests.push_back(TestItem("BMP Multi Threaded", [] (vector<ofPixels>& images, string path) {
+		int count = images.size();
+#pragma omp parallel for
+		for(int index = 0; index < count; index++) {
+			ofSaveImage(images[index], path + "BMP-MT" + ofToString(index) + ".bmp");
+		}
+	}));
+
+	tests.push_back(TestItem("RAW Single Threaded", [] (vector<ofPixels>& images, string path) {
+		int count = images.size();
+		for(int index = 0; index < count; index++) {
+			auto & image = images[index];
+			string filename = "BMP-ST" + ofToString(index) + ".bmp";
+			ofstream file(ofToDataPath(path + filename).c_str(), ios::binary | ios::out);
+			file.write((char*)image.getPixels(), image.getWidth() * image.getHeight() * 3);
+		}
+	}));
+
+	tests.push_back(TestItem("RAW Multi Threaded", [] (vector<ofPixels>& images, string path) {
+		int count = images.size();
+#pragma omp parallel for
+		for(int index = 0; index < count; index++) {
+			auto & image = images[index];
+			string filename = "BMP-MT" + ofToString(index) + ".bmp";
+			ofstream file(ofToDataPath(path + filename).c_str(), ios::binary | ios::out);
+			file.write((char*)image.getPixels(), image.getWidth() * image.getHeight() * 3);
+		}
+	}));
+
+	livePanel->onKeyboard += [this] (KeyboardArguments& args) {
+		if (args.key == 'c') {
+			this->captureFrames();
+		}
+		if (args.key == 't') {
+			this->runTests();
+		}
+	};
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-	for (int i=0; i<grabbers.size(); i++) {
-		grabbers[i]->update();
-	}
-
-	int index = this->autoCycle ? ofGetFrameNum() / framesPerPosition: selectedFrame;
-	preview.setFromPixels(this->grabbers[index % this->grabbers.size()]->getPixelsRef());
-	preview.update();
+	this->grabber->update();
 }
 
 //--------------------------------------------------------------
@@ -96,26 +117,39 @@ void testApp::dragEvent(ofDragInfo dragInfo){
 }
 
 //--------------------------------------------------------------
-void testApp::onControls(ofxUIEventArgs & args) {
-	for(auto grabber : grabbers) {
-		if (args.widget->getName() == "Exposure")
-			grabber->setExposure(this->exposure);
-		if (args.widget->getName() == "Gain")
-			grabber->setGain(this->gain);
-		if (args.widget->getName() == "Focus")
-			grabber->setFocus(this->focus);
-		if (args.widget->getName() == "Save set") {
-			if (this->saveSet) {
-				for(int i=0; i<grabbers.size(); i++) {
-					string filename = ofToString(i);
-					while(filename.size() < 3) {
-						filename = "0" + filename;
-					}
-					filename += ".png";
-					ofSaveImage(grabbers[i]->getPixelsRef(), filename);
-				}
-				this->saveSet = false;
-			}
+void testApp::captureFrames() {
+	ofThread sleeper;
+	images.reserve(120);
+	while (images.size() < 120) {
+		this->grabber->update();
+		if (this->grabber->isFrameNew()) {
+			images.push_back(this->grabber->getPixelsRef());
+		} else {
+			sleeper.sleep(10);
 		}
+	}
+}
+
+//--------------------------------------------------------------
+void testApp::runTests() {
+	auto path = ofSystemLoadDialog("Select folder for disk speed tests", true, ofToDataPath("")).getPath();
+	LARGE_INTEGER frequency;
+	QueryPerformanceFrequency(&frequency);
+	ofLogNotice() << "Saving to " << path;
+	for(auto test : tests) {
+		ofLogNotice() << "Running test " + test.name;
+
+		LARGE_INTEGER start;
+		LARGE_INTEGER end;
+		QueryPerformanceCounter(&start);
+		for (int i=0; i<5; i++) {
+			test.test(this->images, path);
+		}
+		QueryPerformanceCounter(&end);
+
+		float duration = (float) (end.QuadPart - start.QuadPart) / (float) frequency.QuadPart;
+		test.time = duration / float(5 * this->images.size());
+		ofLogNotice() << "Test complete in " << duration << "s";
+		ofLogNotice() << "Average " << test.time << "s per image";
 	}
 }

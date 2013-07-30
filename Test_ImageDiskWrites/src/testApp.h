@@ -1,10 +1,24 @@
 #pragma once
+#include <thread>
 
 #include "ofMain.h"
 #include "ofxCvGui.h"
 #include "ofxMachineVision.h"
 
 using namespace ofxCvGui;
+using namespace ofxMachineVision;
+
+class TestItem {
+public:
+	typedef function<void (vector<ofPixels>&, string)> Functor;
+	TestItem(string name, Functor test) {
+		this->test = test;
+		this->name = name;
+	}
+	string name;
+	Functor test;
+	float time;
+};
 
 class testApp : public ofBaseApp{
 
@@ -13,24 +27,20 @@ class testApp : public ofBaseApp{
 		void update();
 		void draw();
 
+		void captureFrames();
+		void runTests();
+
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		void onControls(ofxUIEventArgs & args);
-		vector<ofxMachineVision::Grabber::Simple*> grabbers;
 		ofxCvGui::Builder gui;
-		ofPtr<ofxCvGui::Panels::Groups::Grid> previews;
-
-		ofxUICanvas controls;
-
+		DevicePtr device;
+		Grabber::Simple * grabber;
 		float exposure;
 		float gain;
 		float focus;
 
-		ofImage preview;
-		ofxCvGui::PanelPtr outputPanel;
-		bool autoCycle;
-		float framesPerPosition;
-		int selectedFrame;
-		bool saveSet;
+		vector<TestItem> tests;
+		vector<ofPixels> images;
+		thread testRunner;
 };

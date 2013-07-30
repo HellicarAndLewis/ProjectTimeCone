@@ -35,7 +35,7 @@ void testApp::setup(){
 	}
 
 	for(auto index : order) {
-		auto rawDevice = new ofxMachineVision::Device::VideoInputDevice(1280, 720);
+		auto rawDevice = new ofxMachineVision::Device::VideoInputDevice(1280/2, 720/2);
 		auto device = ofxMachineVision::DevicePtr(rawDevice);
 		auto grabber = new ofxMachineVision::Grabber::Simple(device);
 		grabber->open(toAdd[index]);
