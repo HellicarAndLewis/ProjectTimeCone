@@ -110,9 +110,10 @@
     <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryResult.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QuerySelect.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryUpdate.cpp" />
-    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ClientIPC.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ClientSocket.cpp" />
-    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ServerIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ClientIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ServerIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\TypesIPC.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ServerSocket.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\WorkQueue.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTube.cpp" />
