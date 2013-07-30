@@ -2,52 +2,43 @@
 #include <videoencoder/VideoEncoder.h>
 #include <videoencoder/VideoEncoderServerIPC.h>
 
-void videoencoder_server_ipc_on_read(ConnectionIPC* con, void* user) {
-  int cmd;
-  uint32_t nbytes;
-  VideoEncoderServerIPC* server = static_cast<VideoEncoderServerIPC*>(user);
-  size_t offset = sizeof(cmd) + sizeof(nbytes);
+void video_encoder_server_on_encode(std::string path, char* data, size_t nbytes, void* user) {
+  RX_VERBOSE("/encode request received");
 
-  while(con->buffer.size() > offset) {
-    
-    memcpy((char*)&cmd, &con->buffer[0], sizeof(cmd));
-    memcpy((char*)&nbytes, &con->buffer[sizeof(cmd)], sizeof(nbytes));
+  VideoEncoderEncodeTask task;
+  Buffer b(data, nbytes);
+  task.unpack(b);
+  task.print();
 
-    if(con->buffer.size() - offset >= nbytes) {
-      Buffer buf;
-      buf.putBytes(&con->buffer[offset], nbytes);
-
-      if(cmd == VE_CMD_ENCODE) {
-        VideoEncoderEncodeTask task;
-        buf >> task.dir >> task.filemask >> task.video_filename;
-        task.print();
-        con->buffer.erase(con->buffer.begin(), con->buffer.begin() + offset + nbytes);
-
-        // encode the video + notify the caller on sucess
-        if(server->enc.encode(task)) {
-          Buffer out;
-          out << task.dir << task.filemask << task.video_filename;
-          server->writeCommand(con, VE_CMD_ENCODED, out.ptr(), out.size());
-        }
-
-      }
-      else {
-        RX_ERROR("Unhandled command: %ld, flushing the buffer!", cmd);
-        con->buffer.clear();
-      }
-    }
-
-    else {
-      break;
-    }
+  VideoEncoderServerIPC* ipc = static_cast<VideoEncoderServerIPC*>(user);
+  if(ipc->enc.encode(task)) {
+    ipc->server.call("/encoded", data, nbytes);
   }
+
+}
+
+void video_encoder_server_on_add_audio(std::string path, char* data, size_t nbytes, void* user) {
+  RX_VERBOSE("/add_audio received");
+
+  VideoEncoderEncodeTask task;
+  Buffer b(data, nbytes);
+  task.unpack(b);
+  task.print();
+
+  VideoEncoderServerIPC* ipc = static_cast<VideoEncoderServerIPC*>(user);
+  if(ipc->enc.addAudio(task)) {
+    RX_VERBOSE("Sending /audio_added");
+    ipc->server.call("/audio_added", data, nbytes);
+  }
+  
 }
 
 VideoEncoderServerIPC::VideoEncoderServerIPC(VideoEncoder& enc, std::string sockfile, bool datapath)
   :enc(enc)
   ,server(sockfile, datapath)
 {
-  server.setup(videoencoder_server_ipc_on_read, this);
+  server.addMethod("/encode", video_encoder_server_on_encode, this);
+  server.addMethod("/add_audio", video_encoder_server_on_add_audio, this);
 }
 
 VideoEncoderServerIPC::~VideoEncoderServerIPC() {
@@ -64,10 +55,4 @@ bool VideoEncoderServerIPC::stop() {
 
 void VideoEncoderServerIPC::update() {
   server.update();
-}
-
-void VideoEncoderServerIPC::writeCommand(ConnectionIPC* ipc, uint32_t command, char* data, uint32_t nbytes) {
-  ipc->write((char*)&command, sizeof(command));
-  ipc->write((char*)&nbytes, sizeof(nbytes));
-  ipc->write((char*)data, nbytes);
 }
