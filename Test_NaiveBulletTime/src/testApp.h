@@ -33,4 +33,7 @@ class testApp : public ofBaseApp{
 		float framesPerPosition;
 		int selectedFrame;
 		bool saveSet;
+		bool clearLine;
+
+		ofPolyline line;
 };

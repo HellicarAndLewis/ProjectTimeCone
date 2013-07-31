@@ -8,6 +8,8 @@ void testApp::setup(){
 	this->autoCycle = false;
 	this->selectedFrame = 0;
 	this->framesPerPosition = 1;
+	this->saveSet = false;
+	this->clearLine = false;
 
 	gui.init();
 
@@ -34,21 +36,41 @@ void testApp::setup(){
 		toAdd.push_back(deviceItem.id);
 	}
 
-	for(auto index : order) {
-		auto rawDevice = new ofxMachineVision::Device::VideoInputDevice(1280/2, 720/2);
+	this->grabbers.resize(toAdd.size());
+//#pragma omp parallel for
+	for(int i=0; i<toAdd.size(); i++) {
+		int index = toAdd[i];
+		auto rawDevice = new ofxMachineVision::Device::VideoInputDevice(1280, 720);
 		auto device = ofxMachineVision::DevicePtr(rawDevice);
 		auto grabber = new ofxMachineVision::Grabber::Simple(device);
-		grabber->open(toAdd[index]);
-		grabber->startCapture();
+		grabber->open(i);
 		grabber->setExposure(this->exposure);
 		grabber->setGain(this->gain);
 		grabber->setFocus(this->focus);
 
-		this->grabbers.push_back(grabber);
-		auto panel = this->gui.add(grabber->getTextureReference(), grabber->getModelName());
-		panel->onDraw.addListener([grabber] (DrawArguments &) {
-			AssetRegister.drawText(ofToString(grabber->getFps()), 20, 60);
-		}, this);
+		this->grabbers[i] = grabber;
+#pragma omp critical
+		{
+			PanelPtr panel = this->gui.add(grabber->getTextureReference(), grabber->getModelName());
+			panel->onDraw.addListener([this, grabber, panel] (DrawArguments & args) {
+				AssetRegister.drawText(ofToString(grabber->getFps()), 20, 60);
+
+				ofPushMatrix();
+				ofScale(panel->getWidth(), panel->getHeight(), 1.0f);
+				ofPushStyle();
+				ofSetLineWidth(2.0f);
+				ofSetColor(255);
+				ofNoFill();
+				this->line.draw();
+				ofPopStyle();
+				ofPopMatrix();
+			}, this);
+			panel->onMouse += [this] (MouseArguments& args) {
+				if (args.isLocal() && (args.action == MouseArguments::Pressed || args.action == MouseArguments::Dragged)) {
+					this->line.addVertex(args.localNormalised);
+				}
+			};
+		}
 	}
 	
 	this->outputPanel = gui.add(preview);
@@ -61,6 +83,7 @@ void testApp::setup(){
 	this->controls.addToggle("Cycle", &this->autoCycle);
 	this->controls.addSlider("Frames per position", 1, 20, &framesPerPosition);
 	this->controls.addButton("Save set", &this->saveSet);
+	this->controls.addButton("Clear line", &this->clearLine);
 	ofAddListener(this->controls.newGUIEvent, this, &testApp::onControls);
 
 	this->outputPanel->onMouse.addListener([this] (MouseArguments& args) {
@@ -74,6 +97,11 @@ void testApp::setup(){
 void testApp::update(){
 	for (int i=0; i<grabbers.size(); i++) {
 		grabbers[i]->update();
+	}
+
+	if (this->clearLine) {
+		this->clearLine = false;
+		this->line.clear();
 	}
 
 	int index = this->autoCycle ? ofGetFrameNum() / framesPerPosition: selectedFrame;
