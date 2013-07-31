@@ -37,13 +37,14 @@ void testApp::setup(){
 	}
 
 	this->grabbers.resize(toAdd.size());
-//#pragma omp parallel for
+//#pragma omp parallel for num_threads(2) //issues initialising
 	for(int i=0; i<toAdd.size(); i++) {
 		int index = toAdd[i];
 		auto rawDevice = new ofxMachineVision::Device::VideoInputDevice(1280, 720);
 		auto device = ofxMachineVision::DevicePtr(rawDevice);
 		auto grabber = new ofxMachineVision::Grabber::Simple(device);
-		grabber->open(i);
+		grabber->open(index);
+		grabber->startCapture();
 		grabber->setExposure(this->exposure);
 		grabber->setGain(this->gain);
 		grabber->setFocus(this->focus);
