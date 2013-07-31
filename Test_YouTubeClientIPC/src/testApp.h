@@ -16,6 +16,7 @@ extern "C" {
 #define ST_NONE 0
 #define ST_SAVE_PNG 1
 #define ST_CREATE_VIDEO 2
+#define AUTOMATED_UPLOADS 
 
 struct PixelData {
   size_t nbytes;
@@ -26,7 +27,7 @@ struct PixelData {
 
 void encoder_thread_callback(void* user);
 
-class EncoderThread {                                    /* quick 'n dirty threaded writer */
+class EncoderThread {                                                    /* quick 'n dirty threaded writer */
  public:
   EncoderThread(); 
   ~EncoderThread();
@@ -35,11 +36,14 @@ class EncoderThread {                                    /* quick 'n dirty threa
   void stop();
   void lock() { uv_mutex_lock(&mutex); }
   void unlock() { uv_mutex_unlock(&mutex); }
+  bool stillWorking() { return still_working; } 
+  void join() {   uv_thread_join(&thread_id); } 
  public:
   std::vector<PixelData*> data;
   uv_mutex_t mutex;
   uv_thread_t thread_id;
   volatile bool must_stop;
+  volatile bool still_working;
 };
 
 void on_video_encoded(VideoEncoderEncodeTask task, void* user);        /* gets called when the `task` has been completed by the server */
@@ -48,9 +52,11 @@ void on_audio_added(VideoEncoderEncodeTask task, void* user);          /* gets c
 class testApp : public ofBaseApp{
  public:
   testApp();
+  ~testApp();
   void setup();
   void update();
   void draw();
+  void exit();
 		
   void keyPressed(int key);
   void keyReleased(int key);
@@ -61,7 +67,10 @@ class testApp : public ofBaseApp{
   void windowResized(int w, int h);
   void dragEvent(ofDragInfo dragInfo);
   void gotMessage(ofMessage msg);
+ private:
+  void initiateGrabbing();
  public:
+ 
   ofVideoGrabber grabber;
   int state;
   uint64_t grab_timeout;                 /* when should we grab a new image */
@@ -74,4 +83,9 @@ class testApp : public ofBaseApp{
   YouTubeVideo yt_video;
   RingBuffer pixel_buffer;               /* we preallocate some frames to speed things up */
   EncoderThread encoder_thread;          /* quick 'n dirty threaded image write; blocks when we need to stop and there are still iamges in the queue */
+
+#if defined(AUTOMATED_UPLOADS)
+  uint64_t automated_timeout;            /* when we should start another grab process */
+  uint64_t automated_delay;              /* duration between grab processes in millis */
+#endif  
 };

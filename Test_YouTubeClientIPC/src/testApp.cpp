@@ -1,9 +1,12 @@
 #include "testApp.h"
 
+
 void encoder_thread_callback(void* user) {
 
   EncoderThread* et = static_cast<EncoderThread*>(user);
   std::vector<PixelData*> work_data;
+
+  et->still_working = true;
 
   while(true) {
 
@@ -13,8 +16,8 @@ void encoder_thread_callback(void* user) {
     et->unlock();
 
     for(std::vector<PixelData*>::iterator it = work_data.begin(); it != work_data.end(); ++it) {
-
       PixelData* pd = *it;
+
       ofImage img;
       img.setUseTexture(false);
       img.setFromPixels((unsigned char*)pd->buffer->getReadPtr(), CAM_WIDTH, CAM_HEIGHT, OF_IMAGE_COLOR);
@@ -22,10 +25,12 @@ void encoder_thread_callback(void* user) {
       pd->buffer->drain(pd->nbytes);
 
       RX_VERBOSE("Saved: %s", pd->filepath.c_str());
+
       delete pd;
       pd = NULL;
 
     }
+
     work_data.clear();
 
     // only stop when all files have been created.
@@ -33,10 +38,13 @@ void encoder_thread_callback(void* user) {
       et->lock();
       if(!et->data.size()) {
         et->unlock();
+        et->still_working = false;
         break;
       }
       et->unlock();
     }
+
+
   }
 }
 
@@ -47,8 +55,6 @@ EncoderThread::EncoderThread()
 }
 
 EncoderThread::~EncoderThread() {
-
-  stop();
 
   for(std::vector<PixelData*>::iterator it = data.begin(); it != data.end(); ++it) {
     delete *it;
@@ -73,7 +79,6 @@ void EncoderThread::start() {
 
 void EncoderThread::stop() {
   must_stop = true;
-  uv_thread_join(&thread_id);
 }
 
 void EncoderThread::addFrame(PixelData* pd) {
@@ -121,6 +126,9 @@ testApp::testApp()
 {
 }
 
+testApp::~testApp() {
+}
+
 //--------------------------------------------------------------
 void testApp::setup(){
   ofSetWindowTitle("YouTube IPC tester");
@@ -155,10 +163,28 @@ void testApp::setup(){
     RX_ERROR("Cannot connect to the youtube ipc, make sure that you start it; we will try to connect later");
   }
 
+#if defined(AUTOMATED_UPLOADS)
+  automated_delay = 60 * 1000;  // a new video every minute
+  automated_timeout = rx_millis();
+#endif
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
+#if defined(AUTOMATED_UPLOADS)
+  {
+    uint64_t now = rx_millis();
+    if(now > automated_timeout) {
+      if(state == ST_NONE && !encoder_thread.stillWorking()) { 
+        automated_timeout = now + automated_delay;
+        grab_max_frames = rx_random(10, 400);
+        initiateGrabbing();
+        RX_VERBOSE("START AUTOMATED SEQ");
+      }
+    }
+  }
+#endif 
+
   grabber.update();
 
   if(state == ST_SAVE_PNG) {
@@ -190,8 +216,7 @@ void testApp::update(){
 
     RX_VERBOSE("Waiting a bit till the encoder thread has written all files.");
     encoder_thread.stop();
-
-    RX_VERBOSE("Encode.");
+    
     VideoEncoderEncodeTask task;
     task.dir = ofToDataPath(grab_dir, true);
     task.filemask = "frame_%04d.jpg";
@@ -239,20 +264,14 @@ void testApp::draw(){
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
+#if !defined(AUTOMATED_UPLOADS)
   // Start grabbing frames
   if(key == '1') {
     if(state != ST_NONE) {
       RX_ERROR("Cannot start grabber because the current is not 'none'");
     }
     else {
-      state = ST_SAVE_PNG;
-      grab_timeout = (uv_hrtime()/1000000) + grab_delay;
-      grab_dir = "frames/" +rx_get_date_time_string(); // rx_strftime("frames/%F-%H-%M-%S");
-      if(!rx_create_path(rx_to_data_path(grab_dir))) {
-        RX_ERROR("Cannot create destination dir: %s", grab_dir.c_str());
-      }
-
-      encoder_thread.start();
+      initiateGrabbing();
     }
   }
   else if(key == '2') {
@@ -274,7 +293,31 @@ void testApp::keyPressed(int key){
       grab_max_frames--;
     }
   }
+#else
+  RX_VERBOSE("Not handling key input when in automated mode");
+#endif
+}
 
+void testApp::exit() {
+  encoder_thread.stop();
+  encoder_thread.join();
+}
+
+void testApp::initiateGrabbing() {
+
+  if(encoder_thread.stillWorking()) {
+    RX_VERBOSE("Cannot start a new grabbing sequence because the previous one isn't ready yet.");
+    return;
+  }
+
+  state = ST_SAVE_PNG;
+  grab_timeout = (uv_hrtime()/1000000) + grab_delay;
+  grab_dir = "frames/" +rx_get_date_time_string(); // rx_strftime("frames/%F-%H-%M-%S");
+  if(!rx_create_path(rx_to_data_path(grab_dir))) {
+    RX_ERROR("Cannot create destination dir: %s", grab_dir.c_str());
+  }
+
+  encoder_thread.start();
 }
 
 //--------------------------------------------------------------
