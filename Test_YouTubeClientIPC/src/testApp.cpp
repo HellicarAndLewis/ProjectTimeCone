@@ -29,6 +29,10 @@ void encoder_thread_callback(void* user) {
       delete pd;
       pd = NULL;
 
+      et->lock();
+        et->num_added_frames--;
+      et->unlock();
+
     }
 
     work_data.clear();
@@ -43,13 +47,13 @@ void encoder_thread_callback(void* user) {
       }
       et->unlock();
     }
-
-
   }
 }
 
 EncoderThread::EncoderThread()
   :must_stop(false)
+  ,still_working(false)
+  ,num_added_frames(0)
 {
   uv_mutex_init(&mutex);
 }
@@ -63,6 +67,9 @@ EncoderThread::~EncoderThread() {
   data.clear();
 
   uv_mutex_destroy(&mutex);
+  still_working = false;
+  must_stop = true;
+  num_added_frames = 0;
 }
 
 void EncoderThread::start() {
@@ -72,7 +79,7 @@ void EncoderThread::start() {
   }
 
   data.clear();
-
+  num_added_frames = 0;
   must_stop = false;
   uv_thread_create(&thread_id, encoder_thread_callback, this);
 }
@@ -84,6 +91,7 @@ void EncoderThread::stop() {
 void EncoderThread::addFrame(PixelData* pd) {
   lock();
     data.push_back(pd);
+    num_added_frames++;
   unlock();
 }
 
@@ -103,11 +111,32 @@ void on_video_encoded(VideoEncoderEncodeTask task, void* user) {
 
 void on_audio_added(VideoEncoderEncodeTask task, void* user) {
   RX_VERBOSE("Audio added");
+  
+  // remove files once the audio has been added
+  std::vector<std::string> files = rx_get_files(task.dir, "jpg");
+  if(!files.size()){
+    RX_ERROR("Cannot find files after encoding (!)");
+  }
+  else {
+    for(std::vector<std::string>::iterator it = files.begin(); it != files.end(); ++it) {
+      std::string f = *it;
+      if(!rx_file_exists(f)) {
+        RX_ERROR("File removed(!?): %s", f.c_str());
+      }
+      else {
+        rx_file_remove(f);
+        RX_WARNING("Removed: %s", f.c_str());
+      }
+    
+    }
+  }
+  task.print();
+
 
   YouTubeVideo video;
   video.filename = task.dir +"/" +task.video_filename;
   video.datapath = false;
-  video.title = "automated";
+  video.title = rx_get_date_time_string();
 
   testApp* app = static_cast<testApp*>(user);
   app->yt_client.addVideoToUploadQueue(video);
@@ -164,7 +193,7 @@ void testApp::setup(){
   }
 
 #if defined(AUTOMATED_UPLOADS)
-  automated_delay = 60 * 1000;  // a new video every minute
+  automated_delay = 10 * 1000;  // a new video every minute
   automated_timeout = rx_millis();
 #endif
 }
@@ -174,10 +203,11 @@ void testApp::update(){
 #if defined(AUTOMATED_UPLOADS)
   {
     uint64_t now = rx_millis();
-    if(now > automated_timeout) {
-      if(state == ST_NONE && !encoder_thread.stillWorking()) { 
+    if(automated_timeout && now > automated_timeout) {
+      
+      if(state == ST_NONE && !encoder_thread.getNumFramesInQueue()) { 
         automated_timeout = now + automated_delay;
-        grab_max_frames = rx_random(10, 400);
+        grab_max_frames = rx_random(800, 1600);
         initiateGrabbing();
         RX_VERBOSE("START AUTOMATED SEQ");
       }
@@ -208,14 +238,22 @@ void testApp::update(){
       grab_frame_num++;
 
       if(grab_frame_num >= grab_max_frames) {
-        state = ST_CREATE_VIDEO;
+        state = ST_WAIT_ON_THREAD;
+        encoder_thread.stop();
       }
+
+    }
+  }
+  else if(state == ST_WAIT_ON_THREAD) {
+    if(encoder_thread.getNumFramesInQueue() == 0) {
+      state = ST_CREATE_VIDEO;
     }
   }
   else if(state == ST_CREATE_VIDEO) {
 
     RX_VERBOSE("Waiting a bit till the encoder thread has written all files.");
-    encoder_thread.stop();
+   
+    encoder_thread.join();
     
     VideoEncoderEncodeTask task;
     task.dir = ofToDataPath(grab_dir, true);
@@ -225,7 +263,6 @@ void testApp::update(){
     state = ST_NONE;
     grab_frame_num = 0;
   }
-
   enc_client.update();
   yt_client.update();
 }
@@ -251,6 +288,17 @@ void testApp::draw(){
 
     std::stringstream ss;
     ss << "Current state: 1, grabbing images (" << grab_frame_num << "/" << grab_max_frames << ")";
+    std::string str = ss.str();
+    ofDrawBitmapString(str.c_str(), 10, 13);
+  }
+  // waiting on thread to finish
+  else if(state == ST_WAIT_ON_THREAD) {
+    ofSetHexColor(0xFABD4A);
+    ofRect(0,0,CAM_WIDTH,20);
+    ofSetHexColor(0xFFFFFF);
+
+    std::stringstream ss;
+    ss << "Waiting on thread to finish writing files: " << encoder_thread.getNumFramesInQueue();
     std::string str = ss.str();
     ofDrawBitmapString(str.c_str(), 10, 13);
   }

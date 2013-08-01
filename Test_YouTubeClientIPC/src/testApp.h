@@ -1,5 +1,18 @@
 #pragma once
 
+/*
+
+  # Test_YouTubeClientIPC
+
+  Quick 'n dirty test application that writes frames from webcam to 
+  disc, then encodes them, adds audio (all through ipc, using Runtime-VideoEncoder and
+  Runtime-YouTube). The frames are saved in a separate thread; the threaded writer should
+  implement the task-paradigm which would make it way cleanier to shutdown the 
+  thread. 
+
+
+ */
+
 extern "C" {
 # include <uv.h>
 };
@@ -13,9 +26,12 @@ extern "C" {
 
 #define CAM_WIDTH 1280
 #define CAM_HEIGHT 720
+
 #define ST_NONE 0
 #define ST_SAVE_PNG 1
-#define ST_CREATE_VIDEO 2
+#define ST_WAIT_ON_THREAD 2
+#define ST_CREATE_VIDEO 3
+
 #define AUTOMATED_UPLOADS 
 
 struct PixelData {
@@ -38,7 +54,9 @@ class EncoderThread {                                                    /* quic
   void unlock() { uv_mutex_unlock(&mutex); }
   bool stillWorking() { return still_working; } 
   void join() {   uv_thread_join(&thread_id); } 
+  int getNumFramesInQueue() { lock(); int i = num_added_frames; unlock(); return i; } 
  public:
+  int num_added_frames;
   std::vector<PixelData*> data;
   uv_mutex_t mutex;
   uv_thread_t thread_id;

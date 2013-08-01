@@ -18,7 +18,7 @@ void video_encoder_server_on_encode(std::string path, char* data, size_t nbytes,
 }
 
 void video_encoder_server_on_add_audio(std::string path, char* data, size_t nbytes, void* user) {
-  RX_VERBOSE("/add_audio received");
+  RX_VERBOSE("/add_audio received, with %ld bytes", nbytes);
 
   VideoEncoderEncodeTask task;
   Buffer b(data, nbytes);
