@@ -28,11 +28,12 @@ class VideoEncoderClientIPC {
  public:
   VideoEncoderClientIPC(std::string sockfile, bool datapath);
   ~VideoEncoderClientIPC();
-  //  void setup(video_encoder_callback encodedCB, void* user);                                        /* setup the callbacks */
+  //  void setup(video_encoder_callback encodedCB, void* user);                                    /* setup the callbacks */
   bool connect();                                                                                  /* connect to the VideoEncoder IPC server */
   void update();                                                                                   /* call this as often as possible */
   void encode(VideoEncoderEncodeTask task);                                                        /* encode the given video task; when ready the callback set by `setup()` will be called   */
   void addAudio(VideoEncoderEncodeTask task);                                                      /* combine video and audio, make sure to set `video_filepath` and `audio_filepath` */
+  void customCommand(VideoEncoderEncodeTask task);                                                 /* execute a custom command; set the cmd member */
  private:
   ClientIPC client;                                                                                /* our ipc helper which does all of the hard work for us */
  public:

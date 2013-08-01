@@ -54,10 +54,10 @@ VideoEncoderClientIPC::~VideoEncoderClientIPC() {
 
 // @todo - the user should set the callback members directly!
 /*
-void VideoEncoderClientIPC::setup(video_encoder_callback encodedCB, void* user) {
+  void VideoEncoderClientIPC::setup(video_encoder_callback encodedCB, void* user) {
   cb_encoded = encodedCB;
   cb_user = user;
-}
+  }
 */
 bool VideoEncoderClientIPC::connect() {
   return client.connect();
@@ -81,3 +81,10 @@ void VideoEncoderClientIPC::addAudio(VideoEncoderEncodeTask task) {
   client.call("/add_audio", b.ptr(), b.size());
 }
 
+void VideoEncoderClientIPC::customCommand(VideoEncoderEncodeTask task) {
+  RX_VERBOSE("Sending /cmd command");
+
+  Buffer b;
+  task.pack(b);
+  client.call("/cmd", b.ptr(), b.size());
+}

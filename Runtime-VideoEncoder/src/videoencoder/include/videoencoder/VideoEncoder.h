@@ -20,7 +20,8 @@ class VideoEncoder {
   ~VideoEncoder();
   bool setup(std::string convpath);                            /* sets the path to the convert util (avconv) */
   bool encode(VideoEncoderEncodeTask task);                    /* this will encode all the images in the directory `task.dir` (full path). The task.filemask should be something like: frame_%04d.jpg */
-  bool addAudio(VideoEncoderEncodeTask task);           /* add audio to a video */
+  bool addAudio(VideoEncoderEncodeTask task);                  /* add audio to a video */
+  bool customCommand(VideoEncoderEncodeTask task);             /* execute the command given by the `cmd` member ; do not add the path to avconv in the command */
  private:
   bool isSetup();                                              /* checks if we've been setup correctly and we can use avconv */
  private:

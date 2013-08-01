@@ -134,6 +134,25 @@ bool VideoEncoder::addAudio(VideoEncoderEncodeTask task) {
   return true;
 }
 
+bool VideoEncoder::customCommand(VideoEncoderEncodeTask task) {
+
+  if(!isSetup()) {
+    return false;
+  }
+
+  if(!task.cmd.size()) {
+    RX_VERBOSE("No command found.");
+    return false;
+  }
+
+  std::stringstream ss;
+  ss << conv_util << " " << task.cmd;
+  std::string cmd = ss.str();
+  int r = system(cmd.c_str());
+  
+  RX_VERBOSE("Executed custom command: %s, result: %d", cmd.c_str(), r);
+  return true;
+}
 
 bool VideoEncoder::isSetup() {
 

@@ -14,6 +14,7 @@
 
 void video_encoder_server_on_encode(std::string path, char* data, size_t nbytes, void* user);
 void video_encoder_server_on_add_audio(std::string path, char* data, size_t nbytes, void* user);
+void video_encoder_server_on_cmd(std::string path, char* data, size_t nbytes, void* user);
 
 class VideoEncoder;
 class VideoEncoderServerIPC {
