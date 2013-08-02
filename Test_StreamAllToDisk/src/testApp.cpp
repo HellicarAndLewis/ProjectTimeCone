@@ -9,45 +9,14 @@ void testApp::setup(){
 	this->clearLine = false;
 
 	gui.init();
+	
+	this->outputFolder = Poco::Path(ofSystemLoadDialog("Select output folder", true).getPath() + "/");
 
-	vector<int> order;
-	try {
-		ofFile load("save.bin", ofFile::ReadOnly, true);
-		int count = load.getPocoFile().getSize() / sizeof(int);
-		order.resize(count);
-		load.read((char*) &order[0], sizeof(int) * count);
-		load.close();
-	} catch(...) {
-		ofSystemAlertDialog("Couldn't load camera order, please place save.bin into data folder.");
-		ofExit();
-	}
-
-	auto deviceList = ofVideoGrabber().listDevices();
-	if (deviceList.size() != order.size()) {
-		ofSystemAlertDialog("We've saved the order for a different number of cameras");
-		ofExit();
-	}
-
-	vector<int> toAdd;
-	for(auto deviceItem : deviceList) {
-		toAdd.push_back(deviceItem.id);
-	}
-
-	Poco::Path outputPath(ofSystemLoadDialog("Select output folder", true).getPath());
-
-	for(auto index : toAdd) {
-		auto device = DevicePtr(new Device::VideoInputDevice(1280, 720));
-		auto grabber = ofPtr<Grabber::Simple>(new Grabber::Simple(device));
-		grabber->open(index);
-		grabber->startCapture();
-		grabber->setExposure(this->exposure);
-		grabber->setGain(this->gain);
-		grabber->setFocus(this->focus);
-
-		this->grabbers.push_back(grabber);
+	ProjectTimeCone::Initialisation::LoadCameras(this->grabbers, [this] (int index, ofPtr<Grabber::Simple> grabber) {
 		PanelPtr panel = this->gui.add(grabber->getTextureReference(), grabber->getModelName());
 		panel->onDraw.addListener([this, grabber, panel] (DrawArguments & args) {
 			AssetRegister.drawText(ofToString(grabber->getFps()), 20, 60);
+
 			ofPushMatrix();
 			ofScale(panel->getWidth(), panel->getHeight(), 1.0f);
 			ofPushStyle();
@@ -66,11 +35,9 @@ void testApp::setup(){
 
 		auto streamer = ofPtr<Stream::DiskStreamer>(new Stream::DiskStreamer());
 		streamer->setGrabber(grabber);
-		auto path = outputPath;
-		path.pushDirectory(ofToString(streamers.size()));
-		streamer->setOutputFolder(path.toString());
 		this->streamers.push_back(streamer);
-	}
+	}, this->exposure, this->gain, this->focus, 1280, 720);
+
 	
 	this->controlPanel = PanelPtr(new Panels::Base());
 	gui.add(this->controlPanel);
@@ -87,6 +54,11 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
+	if (ofGetFrameNum() == 0) {
+		ofSetWindowPosition(0,0);
+		ofSetWindowShape(1080*2, 1920);
+	}
+
 	for (int i=0; i<grabbers.size(); i++) {
 		grabbers[i]->update();
 	}
@@ -122,8 +94,13 @@ void testApp::onControls(ofxUIEventArgs & args) {
 			grabber->setFocus(this->focus);
 		if (args.widget->getName() == "Record") {
 			if (this->doRecord) {
-				for(auto streamer : streamers) {
-					streamer->start();
+				auto thisRecordingPath = this->outputFolder;
+				thisRecordingPath.pushDirectory(ofToString(ofGetHours()) + "." + ofToString(ofGetMinutes()));
+				for (int i=0; i<streamers.size(); i++) {
+					auto path = thisRecordingPath;
+					path.pushDirectory(ofToString(i));
+					streamers[i]->setOutputFolder(path.toString());
+					streamers[i]->start();
 				} 
 			} else {
 				for(auto streamer : streamers) {

@@ -4,6 +4,8 @@
 #include "ofxCvGui.h"
 #include "ofxMachineVision.h"
 
+#include "ProjectTimeCone.h"
+
 using namespace ofxCvGui;
 using namespace ofxMachineVision;
 
@@ -34,5 +36,7 @@ class testApp : public ofBaseApp{
 		ofPolyline line;
 
 		bool doRecord;
+
+		Poco::Path outputFolder;
 
 };

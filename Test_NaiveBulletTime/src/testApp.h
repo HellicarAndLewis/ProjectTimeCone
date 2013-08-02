@@ -4,7 +4,11 @@
 #include "ofxCvGui.h"
 #include "ofxMachineVision.h"
 
+#include "ProjectTimeCone.h"
+
 using namespace ofxCvGui;
+using namespace ofxMachineVision;
+using namespace ProjectTimeCone;
 
 class testApp : public ofBaseApp{
 
@@ -17,7 +21,7 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		void onControls(ofxUIEventArgs & args);
-		vector<ofxMachineVision::Grabber::Simple*> grabbers;
+		vector<ofPtr<Grabber::Simple>> grabbers;
 		ofxCvGui::Builder gui;
 		ofPtr<ofxCvGui::Panels::Groups::Grid> previews;
 
