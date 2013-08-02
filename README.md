@@ -3,12 +3,20 @@ ProjectTimeCone
 
 An interactive installation that use multiple cameras to create a bullet-time like effect using frame interpolation.
 
-### Setup development environment Windows (7, 8) 
+### Get the right development tools
+ - Download CMake 2.8+
+ - Download Git 
 
-- Download [openFrameworks 0.7.4](http://www.openframeworks.cc/download) for 
-  [win vs2010](http://www.openframeworks.cc/versions/v0.7.4/of_v0.7.4_vs2010_release.zip)
-  or [mac](http://www.openframeworks.cc/versions/v0.7.4/of_v0.7.4_osx_release.zip), 
-  and extract it to: `c:\projects\ProjectTimeCone`
+#### Windows 7
+- For Windows 7 download [openFrameworks 0.7.4](http://www.openframeworks.cc/download) for  [win vs2010](http://www.openframeworks.cc/versions/v0.7.4/of_v0.7.4_vs2010_release.zip)
+
+#### Windows 8
+ - Download and install the _MicroSoft VisualStudio C++ Redistributable Package (x86)_ [link](http://www.microsoft.com/en-us/download/details.aspx?id=5555) and extract it to: `c:\projects\ProjectTimeCone`
+ - For Windows 8, clone the current OF git repository and make sure you have this revision: 5125fdf5c1e52659690497b0bfaceafb17f8143a (git checkout 5125fdf5c1e52659690497b0bfaceafb17f8143a )
+ - Install Visual Studio 2012 Professional Trial (you can use it for 90 days)
+
+#### Mac
+ - Download the [mac](http://www.openframeworks.cc/versions/v0.7.4/of_v0.7.4_osx_release.zip) version. 
 
 - Clone the repository:
 
@@ -25,11 +33,11 @@ $ git checkout master
 
 ````
 
-### Setup Runtime-VideoEncoer
+### Setup Runtime-VideoEncoder
 
 - [Download the nightly of libav (from 2013.07.24).](http://win32.libav.org/win32/libav-win32-20130724.7z)
 - After extracting the package copy **all the dll files** and the **avconv.exe** to `c:\projects\ProjectTimeCone\apps\ProjectTimeCone\Runtime-VideoEncoder\bin\avconv\win\`
-- To compile, open a VS2010 terminal, go to `Runtime-VideoEncoder/build/cmake/` and execute `build_release.bat` or `build_debug.bat`
+- To compile, open a VS2010/VS2012 terminal, go to `Runtime-VideoEncoder/build/cmake/` and execute `build_release.bat` or `build_debug.bat`
 
 
 ### Setup Runtime-YouTube
@@ -43,6 +51,14 @@ $ git checkout master
 - Open `apps\ProjectTimeCone\addons\roxlu\addons\YouTube\html\index.html` in Chrome, paste the `client ID` into the field and press `GO`. Accept the permission popup, and copy the `auth-code` you get into `youtube.cfg`.
 - To compile, open a VS2010 terminal, go to `Runtime-YouTube/build/cmake/` and execute `build_release.bat` or `build_debug.bat`
 
+_Install the Runtime-YouTube as a service_
+- Open a Command Prompt as Administrator (from start screen, search for `cmd.exe`, then right click and select Run as Administrator from bottom menu
+- Type: `sc create "YouTubeUploader" binpath= "C:\projects\ProjectTimeCone\apps\ProjectTimeCone\Runtime-YouTube\bin\Runtime-YouTube.exe"
+  [SC] CreateService SUCCESS
+
+_Start/stop the YouTubeUploader_
+- `net start YouTubeUploader`
+- `net stop YouTubeUploader`
 
 ### Setup Test-YouTubeClientIPC
 
