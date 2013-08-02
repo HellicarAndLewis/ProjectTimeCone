@@ -1,9 +1,12 @@
 #include "testApp.h"
 
+
 void encoder_thread_callback(void* user) {
 
   EncoderThread* et = static_cast<EncoderThread*>(user);
   std::vector<PixelData*> work_data;
+
+  et->still_working = true;
 
   while(true) {
 
@@ -13,8 +16,8 @@ void encoder_thread_callback(void* user) {
     et->unlock();
 
     for(std::vector<PixelData*>::iterator it = work_data.begin(); it != work_data.end(); ++it) {
-
       PixelData* pd = *it;
+
       ofImage img;
       img.setUseTexture(false);
       img.setFromPixels((unsigned char*)pd->buffer->getReadPtr(), CAM_WIDTH, CAM_HEIGHT, OF_IMAGE_COLOR);
@@ -22,10 +25,16 @@ void encoder_thread_callback(void* user) {
       pd->buffer->drain(pd->nbytes);
 
       RX_VERBOSE("Saved: %s", pd->filepath.c_str());
+
       delete pd;
       pd = NULL;
 
+      et->lock();
+        et->num_added_frames--;
+      et->unlock();
+
     }
+
     work_data.clear();
 
     // only stop when all files have been created.
@@ -33,6 +42,7 @@ void encoder_thread_callback(void* user) {
       et->lock();
       if(!et->data.size()) {
         et->unlock();
+        et->still_working = false;
         break;
       }
       et->unlock();
@@ -42,13 +52,13 @@ void encoder_thread_callback(void* user) {
 
 EncoderThread::EncoderThread()
   :must_stop(false)
+  ,still_working(false)
+  ,num_added_frames(0)
 {
   uv_mutex_init(&mutex);
 }
 
 EncoderThread::~EncoderThread() {
-
-  stop();
 
   for(std::vector<PixelData*>::iterator it = data.begin(); it != data.end(); ++it) {
     delete *it;
@@ -57,6 +67,9 @@ EncoderThread::~EncoderThread() {
   data.clear();
 
   uv_mutex_destroy(&mutex);
+  still_working = false;
+  must_stop = true;
+  num_added_frames = 0;
 }
 
 void EncoderThread::start() {
@@ -66,19 +79,19 @@ void EncoderThread::start() {
   }
 
   data.clear();
-
+  num_added_frames = 0;
   must_stop = false;
   uv_thread_create(&thread_id, encoder_thread_callback, this);
 }
 
 void EncoderThread::stop() {
   must_stop = true;
-  uv_thread_join(&thread_id);
 }
 
 void EncoderThread::addFrame(PixelData* pd) {
   lock();
     data.push_back(pd);
+    num_added_frames++;
   unlock();
 }
 
@@ -98,14 +111,39 @@ void on_video_encoded(VideoEncoderEncodeTask task, void* user) {
 
 void on_audio_added(VideoEncoderEncodeTask task, void* user) {
   RX_VERBOSE("Audio added");
+  
+  // remove files once the audio has been added
+  std::vector<std::string> files = rx_get_files(task.dir, "jpg");
+  if(!files.size()){
+    RX_ERROR("Cannot find files after encoding (!)");
+  }
+  else {
+    for(std::vector<std::string>::iterator it = files.begin(); it != files.end(); ++it) {
+      std::string f = *it;
+      if(!rx_file_exists(f)) {
+        RX_ERROR("File removed(!?): %s", f.c_str());
+      }
+      else {
+        rx_file_remove(f);
+        RX_WARNING("Removed: %s", f.c_str());
+      }
+    
+    }
+  }
+  task.print();
+
 
   YouTubeVideo video;
   video.filename = task.dir +"/" +task.video_filename;
   video.datapath = false;
-  video.title = "automated";
+  video.title = rx_get_date_time_string();
 
   testApp* app = static_cast<testApp*>(user);
   app->yt_client.addVideoToUploadQueue(video);
+}
+
+void on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
+  RX_VERBOSE("COMMAND EXECUTED!");
 }
 
 //--------------------------------------------------------------
@@ -119,6 +157,9 @@ testApp::testApp()
 #endif   
   ,pixel_buffer(CAM_WIDTH * CAM_HEIGHT * 3 * 400) // 400 frames 
 {
+}
+
+testApp::~testApp() {
 }
 
 //--------------------------------------------------------------
@@ -146,6 +187,7 @@ void testApp::setup(){
   enc_client.cb_user = this;
   enc_client.cb_encoded = on_video_encoded;
   enc_client.cb_audio_added = on_audio_added;
+  enc_client.cb_cmd_executed = on_cmd_executed;
 
   if(!enc_client.connect()) {
     RX_ERROR("Cannot connect to the video encoder ipc, make sure that you start it; we will try to connect later");
@@ -155,10 +197,29 @@ void testApp::setup(){
     RX_ERROR("Cannot connect to the youtube ipc, make sure that you start it; we will try to connect later");
   }
 
+#if defined(AUTOMATED_UPLOADS)
+  automated_delay = 10 * 1000;  // a new video every minute
+  automated_timeout = rx_millis();
+#endif
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
+#if defined(AUTOMATED_UPLOADS)
+  {
+    uint64_t now = rx_millis();
+    if(automated_timeout && now > automated_timeout) {
+      
+      if(state == ST_NONE && !encoder_thread.getNumFramesInQueue()) { 
+        automated_timeout = now + automated_delay;
+        grab_max_frames = rx_random(40, 60);
+        initiateGrabbing();
+        RX_VERBOSE("START AUTOMATED SEQ");
+      }
+    }
+  }
+#endif 
+
   grabber.update();
 
   if(state == ST_SAVE_PNG) {
@@ -182,25 +243,54 @@ void testApp::update(){
       grab_frame_num++;
 
       if(grab_frame_num >= grab_max_frames) {
-        state = ST_CREATE_VIDEO;
+        state = ST_WAIT_ON_THREAD;
+        encoder_thread.stop();
       }
+
+    }
+  }
+  else if(state == ST_WAIT_ON_THREAD) {
+    if(encoder_thread.getNumFramesInQueue() == 0) {
+      state = ST_CREATE_VIDEO;
     }
   }
   else if(state == ST_CREATE_VIDEO) {
 
     RX_VERBOSE("Waiting a bit till the encoder thread has written all files.");
-    encoder_thread.stop();
+   
+    encoder_thread.join();
 
-    RX_VERBOSE("Encode.");
+#if 0
+    // use default command
     VideoEncoderEncodeTask task;
     task.dir = ofToDataPath(grab_dir, true);
     task.filemask = "frame_%04d.jpg";
     task.video_filename = "output.mp4";
     enc_client.encode(task);
+#else
+    // use custom command
+    std::stringstream ss;
+    std::string head_frames = rx_to_data_path("red/*.jpg");
+    std::string tail_frames = rx_to_data_path("green/*.jpg");
+    std::string body_frames = rx_to_data_path(grab_dir) +"/*.jpg";
+    std::string out_file = rx_to_data_path(grab_dir) +"/out.mov";
+    std::string audio_file = rx_to_data_path("audio.aif");
+
+    ss << "cat " << head_frames  << " " 
+       << body_frames << " "
+       << tail_frames << " "
+       << " | %s -y -v debug -f image2pipe -vcodec mjpeg -i - -i " << audio_file << " -acodec libmp3lame -qscale 20 -shortest -r 25 -map 0 -map 1 " << out_file;
+    
+    RX_VERBOSE("%s\n%s\n%s\n", head_frames.c_str(), tail_frames.c_str(), body_frames.c_str());
+    // cat frames/*.jpg frames_a/*.jpg | ./avconv -y -v debug -f image2pipe -vcodec mjpeg -i - -r 25 -map 0 out.mov
+    VideoEncoderEncodeTask task;
+    task.cmd = ss.str();
+    enc_client.customCommand(task);
+#endif
+
     state = ST_NONE;
     grab_frame_num = 0;
   }
-
   enc_client.update();
   yt_client.update();
 }
@@ -229,6 +319,17 @@ void testApp::draw(){
     std::string str = ss.str();
     ofDrawBitmapString(str.c_str(), 10, 13);
   }
+  // waiting on thread to finish
+  else if(state == ST_WAIT_ON_THREAD) {
+    ofSetHexColor(0xFABD4A);
+    ofRect(0,0,CAM_WIDTH,20);
+    ofSetHexColor(0xFFFFFF);
+
+    std::stringstream ss;
+    ss << "Waiting on thread to finish writing files: " << encoder_thread.getNumFramesInQueue();
+    std::string str = ss.str();
+    ofDrawBitmapString(str.c_str(), 10, 13);
+  }
 
   // info
   ofSetHexColor(0x37D1BB);
@@ -239,20 +340,14 @@ void testApp::draw(){
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
+#if !defined(AUTOMATED_UPLOADS)
   // Start grabbing frames
   if(key == '1') {
     if(state != ST_NONE) {
       RX_ERROR("Cannot start grabber because the current is not 'none'");
     }
     else {
-      state = ST_SAVE_PNG;
-      grab_timeout = (uv_hrtime()/1000000) + grab_delay;
-      grab_dir = "frames/" +rx_get_date_time_string(); // rx_strftime("frames/%F-%H-%M-%S");
-      if(!rx_create_path(rx_to_data_path(grab_dir))) {
-        RX_ERROR("Cannot create destination dir: %s", grab_dir.c_str());
-      }
-
-      encoder_thread.start();
+      initiateGrabbing();
     }
   }
   else if(key == '2') {
@@ -274,7 +369,31 @@ void testApp::keyPressed(int key){
       grab_max_frames--;
     }
   }
+#else
+  RX_VERBOSE("Not handling key input when in automated mode");
+#endif
+}
 
+void testApp::exit() {
+  encoder_thread.stop();
+  encoder_thread.join();
+}
+
+void testApp::initiateGrabbing() {
+
+  if(encoder_thread.stillWorking()) {
+    RX_VERBOSE("Cannot start a new grabbing sequence because the previous one isn't ready yet.");
+    return;
+  }
+
+  state = ST_SAVE_PNG;
+  grab_timeout = (uv_hrtime()/1000000) + grab_delay;
+  grab_dir = "frames/" +rx_get_date_time_string(); // rx_strftime("frames/%F-%H-%M-%S");
+  if(!rx_create_path(rx_to_data_path(grab_dir))) {
+    RX_ERROR("Cannot create destination dir: %s", grab_dir.c_str());
+  }
+
+  encoder_thread.start();
 }
 
 //--------------------------------------------------------------

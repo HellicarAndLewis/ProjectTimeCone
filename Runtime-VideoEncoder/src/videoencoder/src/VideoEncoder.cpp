@@ -134,6 +134,37 @@ bool VideoEncoder::addAudio(VideoEncoderEncodeTask task) {
   return true;
 }
 
+bool VideoEncoder::customCommand(VideoEncoderEncodeTask task) {
+
+  if(!isSetup()) {
+    return false;
+  }
+
+  if(!task.cmd.size()) {
+    RX_VERBOSE("No command found.");
+    return false;
+  }
+
+  size_t needed_len = task.cmd.size() + conv_util.size() + 32; 
+  if(needed_len > 1024 * 10) {
+    RX_ERROR("The command length exceeds 1024 * 10; a bit too much");
+    return false;
+  }
+
+  char* cstr = new char[needed_len];
+  sprintf(cstr, task.cmd.c_str(), conv_util.c_str());
+  
+  //  std::stringstream ss;
+  //   ss << conv_util << " " << task.cmd;
+   //  std::string cmd = ss.str();
+  int r = system(cstr);
+
+  RX_VERBOSE("Executed custom command: %s, result: %d", cstr, r);
+  delete[] cstr;
+  cstr = NULL;
+
+  return true;
+}
 
 bool VideoEncoder::isSetup() {
 

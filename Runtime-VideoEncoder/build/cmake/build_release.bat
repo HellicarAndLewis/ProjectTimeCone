@@ -11,8 +11,9 @@ if not exist "%d%\..\..\bin\data" (
 )
 
 cd %d%\build.release
-cmake -DCMAKE_BUILD_TYPE=Release -G "Visual Studio 10" ..\
-cmake --build . --target install 
+cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake --build .
+:: cmake --build . --target install 
 :: -- /p:Configuration=Release
 
 :: -- /p:Configuration=Release /v:q

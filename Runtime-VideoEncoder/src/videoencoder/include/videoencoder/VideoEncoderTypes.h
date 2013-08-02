@@ -13,9 +13,12 @@ struct VideoEncoderEncodeTask {
 
   std::string audio_filepath;             /* used with `VideoEncoder::addAudio()`, the audio file that you want to add to the video */
   std::string video_filepath;             /* used with `VideoEncoder::addAudio()`, the source video underneath you want to add the audio file */
+  
+  std::string cmd;                        /* used with `VideoEncoder::customCommand()`, we simple execute the command given using avconv; you don't need to supply the path to avconv */
 
   BUFFERIZE(dir, filemask, video_filename, 
-            audio_filepath, video_filepath);
+            audio_filepath, video_filepath,
+            cmd);
 };
 
 #endif

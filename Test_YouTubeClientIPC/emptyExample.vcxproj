@@ -69,7 +69,7 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libuv.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;ws2_32.lib;psapi.lib;iphlpapi.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32d\msgpack.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libuv.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcre.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcrecpp.lib;ws2_32.lib;psapi.lib;iphlpapi.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32d\msgpack.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
@@ -112,6 +112,7 @@
     <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryUpdate.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ClientSocket.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ClientIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ParserIPC.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ServerIPC.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\TypesIPC.cpp" />
     <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ServerSocket.cpp" />

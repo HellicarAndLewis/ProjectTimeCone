@@ -18,7 +18,7 @@ void video_encoder_server_on_encode(std::string path, char* data, size_t nbytes,
 }
 
 void video_encoder_server_on_add_audio(std::string path, char* data, size_t nbytes, void* user) {
-  RX_VERBOSE("/add_audio received");
+  RX_VERBOSE("/add_audio received, with %ld bytes", nbytes);
 
   VideoEncoderEncodeTask task;
   Buffer b(data, nbytes);
@@ -33,12 +33,29 @@ void video_encoder_server_on_add_audio(std::string path, char* data, size_t nbyt
   
 }
 
+void video_encoder_server_on_cmd(std::string path, char* data, size_t nbytes, void* user) {
+  RX_VERBOSE("/cmd received");
+
+  VideoEncoderEncodeTask task;
+  Buffer b(data, nbytes);
+  task.unpack(b);
+  task.print();
+
+  VideoEncoderServerIPC* ipc = static_cast<VideoEncoderServerIPC*>(user);
+  if(ipc->enc.customCommand(task)) {
+    RX_VERBOSE("Sending /cmd_executed");
+    ipc->server.call("/cmd_executed", data, nbytes);
+  }
+
+}
+
 VideoEncoderServerIPC::VideoEncoderServerIPC(VideoEncoder& enc, std::string sockfile, bool datapath)
   :enc(enc)
   ,server(sockfile, datapath)
 {
   server.addMethod("/encode", video_encoder_server_on_encode, this);
   server.addMethod("/add_audio", video_encoder_server_on_add_audio, this);
+  server.addMethod("/cmd", video_encoder_server_on_cmd, this);
 }
 
 VideoEncoderServerIPC::~VideoEncoderServerIPC() {
