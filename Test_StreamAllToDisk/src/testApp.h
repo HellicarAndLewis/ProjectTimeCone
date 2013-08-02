@@ -8,7 +8,6 @@
 
 using namespace ofxCvGui;
 using namespace ofxMachineVision;
-using namespace ProjectTimeCone;
 
 class testApp : public ofBaseApp{
 
@@ -21,23 +20,23 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		void onControls(ofxUIEventArgs & args);
-		vector<ofPtr<Grabber::Simple>> grabbers;
-		ofxCvGui::Builder gui;
-		ofPtr<ofxCvGui::Panels::Groups::Grid> previews;
 
+		vector<ofPtr<Grabber::Simple>> grabbers;
+		vector<ofPtr<ofxMachineVision::Stream::DiskStreamer>> streamers;
+		ofxCvGui::Builder gui;
+
+		PanelPtr controlPanel;
 		ofxUICanvas controls;
 
 		float exposure;
 		float gain;
 		float focus;
 
-		ofImage preview;
-		ofxCvGui::PanelPtr outputPanel;
-		bool autoCycle;
-		float framesPerPosition;
-		int selectedFrame;
-		bool saveSet;
 		bool clearLine;
-
 		ofPolyline line;
+
+		bool doRecord;
+
+		Poco::Path outputFolder;
+
 };

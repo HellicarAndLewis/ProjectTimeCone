@@ -5,13 +5,12 @@ void testApp::setup(){
 	this->exposure = 500;
 	this->gain = 5;
 	this->focus = 0;
-	this->autoCycle = false;
-	this->selectedFrame = 0;
-	this->framesPerPosition = 1;
-	this->saveSet = false;
+	this->doRecord = false;
 	this->clearLine = false;
 
 	gui.init();
+	
+	this->outputFolder = Poco::Path(ofSystemLoadDialog("Select output folder", true).getPath() + "/");
 
 	ProjectTimeCone::Initialisation::LoadCameras(this->grabbers, [this] (int index, ofPtr<Grabber::Simple> grabber) {
 		PanelPtr panel = this->gui.add(grabber->getTextureReference(), grabber->getModelName());
@@ -33,32 +32,31 @@ void testApp::setup(){
 				this->line.addVertex(args.localNormalised);
 			}
 		};
+
+		auto streamer = ofPtr<Stream::DiskStreamer>(new Stream::DiskStreamer());
+		streamer->setGrabber(grabber);
+		this->streamers.push_back(streamer);
 	}, this->exposure, this->gain, this->focus, 1280, 720);
+
 	
-	this->outputPanel = gui.add(preview);
+	this->controlPanel = PanelPtr(new Panels::Base());
+	gui.add(this->controlPanel);
 	this->controls.setPosition(10, 60);
-	this->outputPanel->setWidgets(this->controls);
+	this->controlPanel->setWidgets(this->controls);
 	this->controls.addFPS();
+	this->controls.addToggle("Record", &this->doRecord);
 	this->controls.addSlider("Exposure", 0, 1000, &this->exposure);
 	this->controls.addSlider("Gain", 0, 1.0f, &this->gain);
 	this->controls.addSlider("Focus", 0, 1.0f, &this->focus);
-	this->controls.addToggle("Cycle", &this->autoCycle);
-	this->controls.addSlider("Frames per position", 1, 20, &framesPerPosition);
-	this->controls.addButton("Save set", &this->saveSet);
 	this->controls.addButton("Clear line", &this->clearLine);
 	ofAddListener(this->controls.newGUIEvent, this, &testApp::onControls);
-
-	this->outputPanel->onMouse.addListener([this] (MouseArguments& args) {
-		if (args.isLocal()) {
-			this->selectedFrame = args.localNormalised.x * this->grabbers.size();
-		}
-	}, this);
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
 	if (ofGetFrameNum() == 0) {
-		Initialisation::FillDevelopmentScreens();
+		ofSetWindowPosition(0,0);
+		ofSetWindowShape(1080*2, 1920);
 	}
 
 	for (int i=0; i<grabbers.size(); i++) {
@@ -69,10 +67,6 @@ void testApp::update(){
 		this->clearLine = false;
 		this->line.clear();
 	}
-
-	int index = this->autoCycle ? ofGetFrameNum() / framesPerPosition: selectedFrame;
-	preview.setFromPixels(this->grabbers[index % this->grabbers.size()]->getPixelsRef());
-	preview.update();
 }
 
 //--------------------------------------------------------------
@@ -98,17 +92,20 @@ void testApp::onControls(ofxUIEventArgs & args) {
 			grabber->setGain(this->gain);
 		if (args.widget->getName() == "Focus")
 			grabber->setFocus(this->focus);
-		if (args.widget->getName() == "Save set") {
-			if (this->saveSet) {
-				for(int i=0; i<grabbers.size(); i++) {
-					string filename = ofToString(i);
-					while(filename.size() < 3) {
-						filename = "0" + filename;
-					}
-					filename += ".png";
-					ofSaveImage(grabbers[i]->getPixelsRef(), filename);
+		if (args.widget->getName() == "Record") {
+			if (this->doRecord) {
+				auto thisRecordingPath = this->outputFolder;
+				thisRecordingPath.pushDirectory(ofToString(ofGetHours()) + "." + ofToString(ofGetMinutes()));
+				for (int i=0; i<streamers.size(); i++) {
+					auto path = thisRecordingPath;
+					path.pushDirectory(ofToString(i));
+					streamers[i]->setOutputFolder(path.toString());
+					streamers[i]->start();
+				} 
+			} else {
+				for(auto streamer : streamers) {
+					streamer->stop();
 				}
-				this->saveSet = false;
 			}
 		}
 	}

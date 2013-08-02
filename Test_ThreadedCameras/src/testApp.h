@@ -4,6 +4,8 @@
 #include "ofxCvGui.h"
 #include "ofxMachineVision.h"
 
+#define ORDER_FILENAME "../../../Data/order.bin"
+
 using namespace ofxCvGui;
 
 class testApp : public ofBaseApp{
@@ -20,15 +22,7 @@ class testApp : public ofBaseApp{
 
 		vector<ofxMachineVision::Grabber::Simple*> grabbers;
 		ofxCvGui::Builder gui;
-		ofxCvGui::PanelPtr blankPanel;
 
-
-		enum Mode {
-			Waiting = 0,
-			Ordering = 1
-		};
-
-		Mode mode;
-
+		//
 		vector<int> order;
 };
