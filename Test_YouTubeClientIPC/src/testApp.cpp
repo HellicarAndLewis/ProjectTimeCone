@@ -142,6 +142,10 @@ void on_audio_added(VideoEncoderEncodeTask task, void* user) {
   app->yt_client.addVideoToUploadQueue(video);
 }
 
+void on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
+  RX_VERBOSE("COMMAND EXECUTED!");
+}
+
 //--------------------------------------------------------------
 testApp::testApp()
 #if defined(__APPLE__)
@@ -183,6 +187,7 @@ void testApp::setup(){
   enc_client.cb_user = this;
   enc_client.cb_encoded = on_video_encoded;
   enc_client.cb_audio_added = on_audio_added;
+  enc_client.cb_cmd_executed = on_cmd_executed;
 
   if(!enc_client.connect()) {
     RX_ERROR("Cannot connect to the video encoder ipc, make sure that you start it; we will try to connect later");
@@ -207,7 +212,7 @@ void testApp::update(){
       
       if(state == ST_NONE && !encoder_thread.getNumFramesInQueue()) { 
         automated_timeout = now + automated_delay;
-        grab_max_frames = rx_random(800, 1600);
+        grab_max_frames = rx_random(40, 60);
         initiateGrabbing();
         RX_VERBOSE("START AUTOMATED SEQ");
       }
@@ -254,12 +259,35 @@ void testApp::update(){
     RX_VERBOSE("Waiting a bit till the encoder thread has written all files.");
    
     encoder_thread.join();
-    
+
+#if 0
+    // use default command
     VideoEncoderEncodeTask task;
     task.dir = ofToDataPath(grab_dir, true);
     task.filemask = "frame_%04d.jpg";
     task.video_filename = "output.mp4";
     enc_client.encode(task);
+#else
+    // use custom command
+    std::stringstream ss;
+    std::string head_frames = rx_to_data_path("red/*.jpg");
+    std::string tail_frames = rx_to_data_path("green/*.jpg");
+    std::string body_frames = rx_to_data_path(grab_dir) +"/*.jpg";
+    std::string out_file = rx_to_data_path(grab_dir) +"/out.mov";
+    std::string audio_file = rx_to_data_path("audio.aif");
+
+    ss << "cat " << head_frames  << " " 
+       << body_frames << " "
+       << tail_frames << " "
+       << " | %s -y -v debug -f image2pipe -vcodec mjpeg -i - -i " << audio_file << " -acodec libmp3lame -qscale 20 -shortest -r 25 -map 0 -map 1 " << out_file;
+    
+    RX_VERBOSE("%s\n%s\n%s\n", head_frames.c_str(), tail_frames.c_str(), body_frames.c_str());
+    // cat frames/*.jpg frames_a/*.jpg | ./avconv -y -v debug -f image2pipe -vcodec mjpeg -i - -r 25 -map 0 out.mov
+    VideoEncoderEncodeTask task;
+    task.cmd = ss.str();
+    enc_client.customCommand(task);
+#endif
+
     state = ST_NONE;
     grab_frame_num = 0;
   }

@@ -55,6 +55,7 @@ VideoEncoderServerIPC::VideoEncoderServerIPC(VideoEncoder& enc, std::string sock
 {
   server.addMethod("/encode", video_encoder_server_on_encode, this);
   server.addMethod("/add_audio", video_encoder_server_on_add_audio, this);
+  server.addMethod("/cmd", video_encoder_server_on_cmd, this);
 }
 
 VideoEncoderServerIPC::~VideoEncoderServerIPC() {

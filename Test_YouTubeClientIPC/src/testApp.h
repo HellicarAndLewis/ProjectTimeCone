@@ -2,13 +2,6 @@
 
 /*
 
-  # Test_YouTubeClientIPC
-
-  Quick 'n dirty test application that writes frames from webcam to 
-  disc, then encodes them, adds audio (all through ipc, using Runtime-VideoEncoder and
-  Runtime-YouTube). The frames are saved in a separate thread; the threaded writer should
-  implement the task-paradigm which would make it way cleanier to shutdown the 
-  thread. 
 
 
  */
@@ -66,6 +59,7 @@ class EncoderThread {                                                    /* quic
 
 void on_video_encoded(VideoEncoderEncodeTask task, void* user);        /* gets called when the `task` has been completed by the server */
 void on_audio_added(VideoEncoderEncodeTask task, void* user);          /* gets called when the `task` has been completed */
+void on_cmd_executed(VideoEncoderEncodeTask task, void* user);         /* 2nd approach to encode the video; we use a custom command that we send to the VideoEncoderIPCServer; we used this approach to be a bit more flexible with the encoder/avconv command */
 
 class testApp : public ofBaseApp{
  public:

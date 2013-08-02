@@ -29,11 +29,24 @@ void video_encoder_client_ipc_on_audio_added(std::string path, char* data, size_
     if(ipc->cb_audio_added) {
       ipc->cb_audio_added(task, ipc->cb_user);
     }
-
-    task.print();
   }
 }
 
+
+void video_encoder_client_ipc_on_cmd_executed(std::string path, char* data, size_t nbytes, void* user) {
+  RX_VERBOSE("Command executed  added!");
+  if(nbytes > 0) {
+
+    Buffer b(data, nbytes);
+    VideoEncoderEncodeTask task;
+    task.unpack(b);
+
+    VideoEncoderClientIPC* ipc = static_cast<VideoEncoderClientIPC*>(user);
+    if(ipc->cb_cmd_executed) {
+      ipc->cb_cmd_executed(task, ipc->cb_user);
+    }
+  }
+}
 
 
 // ---------------------------------------------------------------------------------
@@ -42,23 +55,21 @@ VideoEncoderClientIPC::VideoEncoderClientIPC(std::string sockfile, bool datapath
   :client(sockfile, datapath)
   ,cb_user(NULL)
   ,cb_encoded(NULL)
+  ,cb_audio_added(NULL)
+  ,cb_cmd_executed(NULL)
 {
   client.addMethod("/encoded", video_encoder_client_ipc_on_encoded, this);
   client.addMethod("/audio_added", video_encoder_client_ipc_on_audio_added, this);
+  client.addMethod("/cmd_executed", video_encoder_client_ipc_on_cmd_executed, this);
 }
 
 VideoEncoderClientIPC::~VideoEncoderClientIPC() {
   cb_user = NULL;
   cb_encoded = NULL;
+  cb_cmd_executed = NULL;
+  cb_audio_added = NULL;
 }
 
-// @todo - the user should set the callback members directly!
-/*
-  void VideoEncoderClientIPC::setup(video_encoder_callback encodedCB, void* user) {
-  cb_encoded = encodedCB;
-  cb_user = user;
-  }
-*/
 bool VideoEncoderClientIPC::connect() {
   return client.connect();
 }
