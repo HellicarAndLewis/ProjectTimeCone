@@ -124,6 +124,12 @@ _Add these include directories_
 .\..\addons\roxlu\addons\SQLite\include\
 .\..\addons\roxlu\addons\PCRE\include\
 .\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\
+.\..\addons\roxlu\addons\Log\include\
+````
+
+_As a one liner for VS_
+````
+.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\addons\SQLite\include\;.\..\addons\roxlu\addons\PCRE\include\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\Log\include\
 ````
 
 _Add these preprocessor flags_
@@ -145,6 +151,11 @@ psapi.lib
 iphlpapi.lib
 .\..\addons\roxlu\extern\lib\win\vs2010\MD\32d\msgpack.lib
  
+````
+
+_As a one liner for VS_
+````
+.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libuv.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcre.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcrecpp.lib;ws2_32.lib;psapi.lib;iphlpapi.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32d\msgpack.lib; 
 ````
 
 
