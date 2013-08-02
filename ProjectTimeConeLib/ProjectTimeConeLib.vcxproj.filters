@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{e221329f-61cf-4b95-8fc8-eabfae57f020}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ProjectTimeCone">
+      <UniqueIdentifier>{9d9b9cc5-594e-4f4e-ac12-0535412884b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ProjectTimeCone\Interpolation">
+      <UniqueIdentifier>{08f50afe-5a3a-4e01-b327-e5c42e08103a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ProjectTimeCone.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProjectTimeCone\Initialisation.h">
+      <Filter>src\ProjectTimeCone</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProjectTimeCone\Interpolation\Base.h">
+      <Filter>src\ProjectTimeCone\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProjectTimeCone\Interpolation\OpticalFlow.h">
+      <Filter>src\ProjectTimeCone\Interpolation</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\ProjectTimeCone\Initialisation.cpp">
+      <Filter>src\ProjectTimeCone</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProjectTimeCone\Interpolation\OpticalFlow.cpp">
+      <Filter>src\ProjectTimeCone\Interpolation</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
