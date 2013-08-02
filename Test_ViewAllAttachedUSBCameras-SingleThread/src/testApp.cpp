@@ -5,12 +5,14 @@ void testApp::setup(){
 	gui.init();
 
 	auto deviceList = ofVideoGrabber().listDevices();
+	ofThread sleeper;
 	for(auto device : deviceList) {
 		auto grabber = new ofVideoGrabber();
 		grabber->setDeviceID(device.id);
 		grabber->initGrabber(1280, 720, true);
 		gui.add(*grabber, device.deviceName);
 		devices.push_back(ofPtr<ofVideoGrabber>(grabber));
+		sleeper.sleep(1000);
 	}
 
 	if (deviceList.size() == 0) {

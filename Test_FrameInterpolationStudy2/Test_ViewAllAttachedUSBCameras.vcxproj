@@ -115,6 +115,9 @@
     <ProjectReference Include="..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
       <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\ProjectTimeConeLib\ProjectTimeConeLib.vcxproj">
+      <Project>{a5fd3097-9a2c-4eab-a0a2-9f96bac70540}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc">

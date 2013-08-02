@@ -4,10 +4,12 @@
 #include "ofxCvGui.h"
 #include "ofxMachineVision.h"
 #include "ofxCv.h"
+#include "ProjectTimeCone.h"
 
 using namespace ofxCvGui;
 using namespace ofxCv;
 using namespace cv;
+using namespace ProjectTimeCone;
 
 class testApp : public ofBaseApp{
 
@@ -20,32 +22,15 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		void onControls(ofxUIEventArgs & args);
-		void updateFlow(int selection);
-		void updateFlow();
-		void updateInterpolation();
+
+		ofPtr<Interpolation::OpticalFlow> interpolation;
 
 		ofxCvGui::Builder gui;
+		PanelPtr outputPanel;
+
 		vector<ofPixels> images;
 
-		float pyramidScale;
-		float numLevels;
-		float windowSize;
-		float numIterations;
-		float polyN;
-		float polySigma;
-		bool useGaussian;
-		float viewScaleLow;
-		float viewScaleHigh;
+		ofImage A, B;
 
-		int width, height;
-		Mat flow;
-		Mat grayLHS, grayRHS;
-		ofFloatImage flowPreview;
-
-		ofxUICanvas controls;
-
-		ofMesh pointCloud;
-		ofTexture texture;
-
-		float interpolatePosition;
+		float width, height;
 };

@@ -29,8 +29,8 @@ Global
 		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.Debug|Win32.Build.0 = Debug|Win32
 		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.Release|Win32.ActiveCfg = Release|Win32
 		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.Release|Win32.Build.0 = Release|Win32
-		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.RemoteDebug|Win32.ActiveCfg = RemoteDebug|Win32
-		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.RemoteDebug|Win32.Build.0 = RemoteDebug|Win32
+		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.RemoteDebug|Win32.ActiveCfg = Debug|Win32
+		{6F0DDB4F-4014-4433-919B-9D956C034BAD}.RemoteDebug|Win32.Build.0 = Debug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
