@@ -43,13 +43,18 @@ $ git checkout master
 ### Setup Runtime-YouTube
 
 - Create a Google Application:
-  - Go to [Google API Console](https://code.google.com/apis/console) and create a new project. [See this page](https://developers.google.com/youtube/registering_an_application) for more information on how to do that (just 2 steps)
+  - Go to [Google API Console](https://code.google.com/apis/console) and create a new project. [See this page for more info](https://developers.google.com/youtube/registering_an_application) 
   - Make sure that you enable the **YouTube Data API v3** in the servics pane.
-  - Click on the **API Access** menu item, then on that big blue button **Create an oAuth client ID...**, create an `installed application`
-- Go to `c:\projects\ProjectTimeCone\apps\ProjectTimeCone\Runtime-YouTube\bin\data` and copy `youtube_example.cfg` to `youtube.cfg`
-- After you've created a YouTube application, open the `youtube.cfg` file and copy the `client ID` and `client SECRET` into this file. Next step is to authorize this application by an specifc google account. 
+  - Click on the **API Access**, then  **Create an oAuth client ID...**
+  - Create an `installed application`
+- Go to `ProjectTimeCone\Runtime-YouTube\bin\data` and copy `youtube_example.cfg` to `youtube.cfg`
+- Open the `youtube.cfg` file and copy the `client ID` and `client SECRET` into this file. 
 - Open `apps\ProjectTimeCone\addons\roxlu\addons\YouTube\html\index.html` in Chrome, paste the `client ID` into the field and press `GO`. Accept the permission popup, and copy the `auth-code` you get into `youtube.cfg`.
-- To compile, open a VS2010 terminal, go to `Runtime-YouTube/build/cmake/` and execute `build_release.bat` or `build_debug.bat`
+- To compile:
+  - open a VS2010/vs2012 terminal
+  - go to `Runtime-YouTube/build/cmake/` 
+     - for release: `build_release_[vs2010,vs2012].bat` 
+     - for debug:  `build_debug_[vs2010,vs2012].bat`
 
 _Install the Runtime-YouTube as a service_
 - Open a Command Prompt as Administrator (from start screen, search for `cmd.exe`, then right click and select Run as Administrator from bottom menu
@@ -155,7 +160,7 @@ _As a one liner for VS_
 _Add these preprocessor flags_
 
 ````
-
+WIN32_LEAN_AND_MEAN
 ````
 
 _Add these linker input libraries_
