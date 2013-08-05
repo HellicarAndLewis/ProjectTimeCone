@@ -29,21 +29,27 @@ namespace ProjectTimeCone {
 			this->BtoA = Mat(this->height, this->width, CV_32FC2);
 			this->AtoBimage.allocate(this->width, this->height, OF_IMAGE_COLOR);
 			this->BtoAimage.allocate(this->width, this->height, OF_IMAGE_COLOR);
+
+			this->textureA.allocate(this->width, this->height, GL_RGB);
+			this->textureB.allocate(this->width, this->height, GL_RGB);
+			this->left.allocate(this->width, this->height, GL_RGBA8);
+			this->right.allocate(this->width, this->height, GL_RGBA8);
+			this->fbo.allocate(this->width, this->height, GL_RGBA8);
+
 			this->reload();
-
-			this->fbo.allocate(this->width, this->height, GL_RGBA8, 2);
-
-			float pyrWidth = this->width;
-			float pyrHeight = this->height;
-			for(int i=0; i<PYRAMID_COUNT; i++) {
-				this->pyramid[i].allocate(pyrWidth, pyrHeight, GL_RGBA8);
-				pyrWidth /= 2.0f;
-				pyrHeight /= 2.0f;
-			}
 		}
 
 		//---------
-		void OpticalFlow::UpdateFlow(ofImage & A, ofImage & B) {
+		void OpticalFlow::Interpolate(float x, ofPixels & A, ofPixels & B, ofPixels & result) {
+			this->UpdateFlow(A, B);
+			this->textureA.loadData(A);
+			this->textureB.loadData(B);
+			this->UpdateResult(x, this->textureA, this->textureB);
+			this->fbo.readToPixels(result);
+		}
+
+		//---------
+		void OpticalFlow::UpdateFlow(ofPixels & A, ofPixels & B) {
 			cvtColor(toCv(A), this->A, CV_RGB2GRAY);
 			cvtColor(toCv(B), this->B, CV_RGB2GRAY);
 
@@ -61,13 +67,10 @@ namespace ProjectTimeCone {
 				this->pyramidScale, this->numLevels,
 				this->windowSize, this->numIterations,
 				this->polyN, this->polySigma, flags);
-		}
 
-		//---------
-		void OpticalFlow::Interpolate(float x, ofImage & A, ofImage & B, ofPixels & result) {
 			float* AtoBdataIn = (float*) AtoB.data;
 			float* AtoBdataOut = this->AtoBimage.getPixels();
-			float* BtoAdataIn = (float*) AtoB.data;
+			float* BtoAdataIn = (float*) BtoA.data;
 			float* BtoAdataOut = this->BtoAimage.getPixels();
 			for(int i=0; i<this->width * this->height; i++) {
 				*AtoBdataOut++ = *AtoBdataIn++;
@@ -81,64 +84,69 @@ namespace ProjectTimeCone {
 			
 			this->AtoBimage.update();
 			this->BtoAimage.update();
+		}
+
+		//---------
+		void OpticalFlow::UpdateResult(float x, ofTexture & A, ofTexture & B) {
+			//--
+			//Draw points
+			//
+			this->displace.begin();
+			ofEnableAlphaBlending();
+
+			//A to B points
+			this->left.begin();
+			this->displace.setUniformTexture("imageDisplace", AtoBimage.getTextureReference(), 0);
+			this->displace.setUniformTexture("texture", A, 1);
+			this->displace.setUniform1f("x", x);
+			this->mesh.drawVertices();
+			this->left.end();
+
+			//B to A points
+			this->right.begin();
+			this->displace.setUniformTexture("imageDisplace", BtoAimage.getTextureReference(), 0);
+			this->displace.setUniformTexture("texture", B, 1);
+			this->displace.setUniform1f("x", 1.0f - x);
+			this->mesh.drawVertices();
+			this->right.end();
+
+			ofDisableAlphaBlending();
+			this->displace.end();
+			//
+			//--
+			
 
 			//--
-			//Create pyramid fbo's
+			//Crossfade
 			//
-			ofPushMatrix();
-			for (int i=0; i<PYRAMID_COUNT; i++) {
-				pyramid[i].begin();
-				ofClear(0,0,0,0);
-				float scale = 1.0f / pow(2.0f, (float) i);
-				ofScale(scale, scale);
-				this->drawPoints(x, A.getTextureReference(), B.getTextureReference());
-				pyramid[i].end();
-			}
-			ofPopMatrix();
-			//
-			//--
-
-
 			fbo.begin();
 			ofClear(0,0,0,0);
 
-			//--
-			//background cross fade
-			//
-			ofPushStyle();
 			ofEnableAlphaBlending();
-
-			ofSetColor(255, 255, 255, 255.0f * (1.0f - x));
-			A.draw(0,0);
-			ofSetColor(255, 255, 255, 255.0f * x);
-			B.draw(0,0);
-
-			ofDisableAlphaBlending();
-			ofPopStyle();
-			//
-			//--
-
+			morphFill.begin();
 			
-			//--
-			//pyramids
-			//
-			ofEnableAlphaBlending();
-			for (int i=PYRAMID_COUNT - 1; i>=0; i--) {
-				this->pyramid[i].draw(0, 0, this->width, this->height);
-			}
+			//left
+			morphFill.setUniformTexture("texture", this->left, 0);
+			morphFill.setUniform1f("x", 1.0f);
+			this->left.draw(0,0);
+
+			//right
+			morphFill.setUniformTexture("texture", this->right, 0);
+			morphFill.setUniform1f("x", x);
+			this->right.draw(0,0);
+
+			morphFill.end();
 			ofDisableAlphaBlending();
+			fbo.end();
 			//
 			//--
-
-			fbo.end();
-
-			fbo.draw(0,0);
 		}
 
 		//---------
 		void OpticalFlow::reload() {
 				this->displace.load("shaders/displace.vert", "shaders/constant.frag");
-				ofLogNotice() << "Reloaded displacement shader.";
+				this->morphFill.load("shaders/constant.vert", "shaders/morphFill.frag");
+				ofLogNotice() << "Reloaded shaders.";
 		}
 		
 		//---------
@@ -158,37 +166,6 @@ namespace ProjectTimeCone {
 
 		//----------
 		void OpticalFlow::drawPoints(float x, ofTexture & A, ofTexture & B) {
-			this->displace.begin();
-
-			ofEnableAlphaBlending();
-
-			//--
-			//A to B points
-			//
-			this->displace.setUniformTexture("imageDisplace", AtoBimage.getTextureReference(), 0);
-			this->displace.setUniformTexture("texture", A, 1);
-			this->displace.setUniform1f("alpha", 1.0f - x);
-			this->displace.setUniform1f("x", x);
-
-			this->mesh.drawVertices();
-			//
-			//--
-
-			//--
-			//B to A points
-			//
-			this->displace.setUniformTexture("imageDisplace", BtoAimage.getTextureReference(), 0);
-			this->displace.setUniformTexture("texture", B, 1);
-			this->displace.setUniform1f("alpha", x);
-			this->displace.setUniform1f("x", 1.0f - x);
-
-			this->mesh.drawVertices();
-			//
-			//--
-
-			ofDisableAlphaBlending();
-
-			this->displace.end();
 		}
 	}
 }
