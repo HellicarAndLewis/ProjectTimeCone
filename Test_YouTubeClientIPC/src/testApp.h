@@ -2,12 +2,18 @@
 
 /*
 
-
+    # Test_YouTubeClientIPC
+    
+    Quick 'n dirty test application that writes frames from webcam to 
+    disc, then encodes them, adds audio (all through ipc, using Runtime-VideoEncoder and
+    Runtime-YouTube). The frames are saved in a separate thread; the threaded writer should
+    implement the task-paradigm which would make it way cleanier to shutdown the 
+    thread. 
 
  */
 
 extern "C" {
-# include <uv.h>
+#  include <uv.h>
 };
 
 #include "ofMain.h"
@@ -25,7 +31,7 @@ extern "C" {
 #define ST_WAIT_ON_THREAD 2
 #define ST_CREATE_VIDEO 3
 
-#define AUTOMATED_UPLOADS 
+// #define AUTOMATED_UPLOADS 
 
 struct PixelData {
   size_t nbytes;
