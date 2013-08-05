@@ -36,32 +36,60 @@ $ git checkout master
 ### Setup Runtime-VideoEncoder
 
 - [Download the nightly of libav (from 2013.07.24).](http://win32.libav.org/win32/libav-win32-20130724.7z)
-- After extracting the package copy **all the dll files** and the **avconv.exe** to `c:\projects\ProjectTimeCone\apps\ProjectTimeCone\Runtime-VideoEncoder\bin\avconv\win\`
-- To compile, open a VS2010/VS2012 terminal, go to `Runtime-VideoEncoder/build/cmake/` and execute `build_release.bat` or `build_debug.bat`
+- Extract the file 
+- Copy all the dll files and the **avconv.exe** to `Runtime-VideoEncoder/bin/avconv/win/`
+- **To compile**
+  - open a VS2010/VS2012 terminal
+  - go to `Runtime-VideoEncoder/build/cmake/` 
+     - for release: `build_release_[vs2010,vs2012].bat` 
+     - for debug:  `build_debug_[vs2010,vs2012].bat`
 
+### Install Runtime-VideoEncoder
+
+- The debug version can be run from the command line 
+- The release version should be installed as service
+- To install the release version do:    
+  - Open a command prompt
+  - Remove the service:
+  - Install service: 
+      - Open a Command Prompt as Administrator:
+      - from start screen, search for `cmd.exe`
+      - then right click and select Run as Administrator from bottom menu
+      - Type: `sc create "VideoEncoder" binpath= "C:\projects\ProjectTimeCone\apps\ProjectTimeCone\Runtime-VideoEncoder\bin\Runtime-VideoEncoder.exe"  
+
+_Start/stop the VideoEncoder Service_
+- `net start VideoEncoder`
+- `net stop VideoEncoder`
 
 ### Setup Runtime-YouTube
 
 - Create a Google Application:
+  - Get a Google account _and make sure_ to login into YouTube before continueing
   - Go to [Google API Console](https://code.google.com/apis/console) and create a new project. [See this page for more info](https://developers.google.com/youtube/registering_an_application) 
-  - Make sure that you enable the **YouTube Data API v3** in the servics pane.
-  - Click on the **API Access**, then  **Create an oAuth client ID...**
-  - Create an `installed application`
+  - Make sure that you enable the _YouTube Data API v3_ in the servics pane.
+  - Click on the _API Access_, then _Create an oAuth client ID..._
+     - Leave all things default
+     - Create an _installed application_
+     - Select _other_ as type
 - Go to `ProjectTimeCone\Runtime-YouTube\bin\data` and copy `youtube_example.cfg` to `youtube.cfg`
-- Open the `youtube.cfg` file and copy the `client ID` and `client SECRET` into this file. 
-- Open `apps\ProjectTimeCone\addons\roxlu\addons\YouTube\html\index.html` in Chrome, paste the `client ID` into the field and press `GO`. Accept the permission popup, and copy the `auth-code` you get into `youtube.cfg`.
-- To compile:
+- Open the `youtube.cfg` file and copy the `Client ID` and `Client SECRET` into this file. 
+- Open `ProjectTimeCone\addons\roxlu\addons\YouTube\html\index.html` in Chrome
+  - paste the `client ID` into the field and press `GO`. 
+  - Accept the permission popup, and copy the `auth-code` you get into `youtube.cfg`.
+- **To compile**:
   - open a VS2010/vs2012 terminal
   - go to `Runtime-YouTube/build/cmake/` 
      - for release: `build_release_[vs2010,vs2012].bat` 
      - for debug:  `build_debug_[vs2010,vs2012].bat`
 
-_Install the Runtime-YouTube as a service_
-- Open a Command Prompt as Administrator (from start screen, search for `cmd.exe`, then right click and select Run as Administrator from bottom menu
+### Install Runtime-YouTube
+- Open a Command Prompt as Administrator:
+  - from start screen, search for `cmd.exe`
+  - then right click and select Run as Administrator from bottom menu
 - Type: `sc create "YouTubeUploader" binpath= "C:\projects\ProjectTimeCone\apps\ProjectTimeCone\Runtime-YouTube\bin\Runtime-YouTube.exe"
-  [SC] CreateService SUCCESS
 
-_Start/stop the YouTubeUploader_
+
+_Start/stop the YouTubeUploader Service_
 - `net start YouTubeUploader`
 - `net stop YouTubeUploader`
 
