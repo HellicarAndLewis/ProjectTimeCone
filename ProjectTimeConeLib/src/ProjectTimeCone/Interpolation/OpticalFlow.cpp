@@ -32,9 +32,9 @@ namespace ProjectTimeCone {
 
 			this->textureA.allocate(this->width, this->height, GL_RGB);
 			this->textureB.allocate(this->width, this->height, GL_RGB);
-			this->left.allocate(this->width, this->height, GL_RGBA8);
-			this->right.allocate(this->width, this->height, GL_RGBA8);
-			this->fbo.allocate(this->width, this->height, GL_RGBA8);
+			this->left.allocate(this->width, this->height, GL_RGBA);
+			this->right.allocate(this->width, this->height, GL_RGBA);
+			this->fbo.allocate(this->width, this->height, GL_RGBA);
 
 			this->reload();
 		}
