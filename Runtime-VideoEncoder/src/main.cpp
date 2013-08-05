@@ -5,7 +5,9 @@
 #include <videoencoder/VideoEncoder.h>
 #include <videoencoder/VideoEncoderService.h>
 
-//#define RUN_AS_SERVICE
+#if defined(NDEBUG)
+#  define RUN_AS_SERVICE
+# endif
 
 #if defined(WIN32)
   std::string avconv_path = rx_get_exe_path() +"\\avconv\\win\\avconv.exe";

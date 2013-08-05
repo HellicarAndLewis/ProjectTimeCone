@@ -2,7 +2,9 @@
 #include <utils/Utils.h>
 #include "YouTubeService.h"
 
-// #define RUN_AS_SERVICE
+#if defined(NDEBUG)
+#  define RUN_AS_SERVICE
+#endifre
 
 void youtube_sighandler(int signum, void* user);
 void yt_start(void* user);
