@@ -3,8 +3,6 @@
 #include "Base.h"
 #include "ofxCv.h"
 
-#define PYRAMID_COUNT 2
-
 namespace ProjectTimeCone {
 	namespace Interpolation {
 		class OpticalFlow : public Base {
@@ -36,9 +34,10 @@ namespace ProjectTimeCone {
 			ofFloatImage AtoBimage;
 			ofFloatImage BtoAimage;
 
+			ofFbo left, right;
 			ofFbo fbo;
-			ofFbo pyramid[PYRAMID_COUNT];
 			ofShader displace;
+			ofShader morphFill;
 			ofMesh mesh;
 		};
 	}
