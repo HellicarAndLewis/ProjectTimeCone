@@ -4,7 +4,7 @@
 
 #if defined(NDEBUG)
 #  define RUN_AS_SERVICE
-#endifre
+#endif
 
 void youtube_sighandler(int signum, void* user);
 void yt_start(void* user);

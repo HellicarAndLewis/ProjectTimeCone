@@ -76,6 +76,7 @@ _Start/stop the VideoEncoder Service_
 - Open `ProjectTimeCone\addons\roxlu\addons\YouTube\html\index.html` in Chrome
   - paste the `client ID` into the field and press `GO`. 
   - Accept the permission popup, and copy the `auth-code` you get into `youtube.cfg`.
+- Now make sure you remove `bin\data\youtube.db` before starting the app
 - **To compile**:
   - open a VS2010/vs2012 terminal
   - go to `Runtime-YouTube/build/cmake/` 
