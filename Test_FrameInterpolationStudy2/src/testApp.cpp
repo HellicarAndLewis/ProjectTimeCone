@@ -37,8 +37,7 @@ void testApp::setup(){
 	};
 
 	this->outputPanel->onMouse += [this] (MouseArguments & args) {
-		ofPixels dummy;
-		this->interpolation->Interpolate(args.localNormalised.x, this->A, this->B, dummy);
+		this->interpolation->UpdateResult(args.localNormalised.x, this->A.getTextureReference(), this->B.getTextureReference());
 	};
 }
 

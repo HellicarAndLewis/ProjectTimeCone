@@ -8,8 +8,11 @@ namespace ProjectTimeCone {
 		class OpticalFlow : public Base {
 		public:
 			OpticalFlow(int width, int height);
-			void UpdateFlow(ofImage & A, ofImage & B);
-			void Interpolate(float x, ofImage & A, ofImage & B, ofPixels & result) override;
+			
+			void Interpolate(float x, ofPixels & A, ofPixels & B, ofPixels & result) override;
+			
+			void UpdateFlow(ofPixels & A, ofPixels & B);
+			void UpdateResult(float x, ofTexture & A, ofTexture & B);
 			void reload();
 
 			ofFloatImage & getAtoB();
@@ -34,6 +37,7 @@ namespace ProjectTimeCone {
 			ofFloatImage AtoBimage;
 			ofFloatImage BtoAimage;
 
+			ofTexture textureA, textureB;
 			ofFbo left, right;
 			ofFbo fbo;
 			ofShader displace;

@@ -30,6 +30,8 @@ namespace ProjectTimeCone {
 			this->AtoBimage.allocate(this->width, this->height, OF_IMAGE_COLOR);
 			this->BtoAimage.allocate(this->width, this->height, OF_IMAGE_COLOR);
 
+			this->textureA.allocate(this->width, this->height, GL_RGB);
+			this->textureB.allocate(this->width, this->height, GL_RGB);
 			this->left.allocate(this->width, this->height, GL_RGBA8);
 			this->right.allocate(this->width, this->height, GL_RGBA8);
 			this->fbo.allocate(this->width, this->height, GL_RGBA8);
@@ -38,7 +40,16 @@ namespace ProjectTimeCone {
 		}
 
 		//---------
-		void OpticalFlow::UpdateFlow(ofImage & A, ofImage & B) {
+		void OpticalFlow::Interpolate(float x, ofPixels & A, ofPixels & B, ofPixels & result) {
+			this->UpdateFlow(A, B);
+			this->textureA.loadData(A);
+			this->textureB.loadData(B);
+			this->UpdateResult(x, this->textureA, this->textureB);
+			this->fbo.readToPixels(result);
+		}
+
+		//---------
+		void OpticalFlow::UpdateFlow(ofPixels & A, ofPixels & B) {
 			cvtColor(toCv(A), this->A, CV_RGB2GRAY);
 			cvtColor(toCv(B), this->B, CV_RGB2GRAY);
 
@@ -76,7 +87,7 @@ namespace ProjectTimeCone {
 		}
 
 		//---------
-		void OpticalFlow::Interpolate(float x, ofImage & A, ofImage & B, ofPixels & result) {
+		void OpticalFlow::UpdateResult(float x, ofTexture & A, ofTexture & B) {
 			//--
 			//Draw points
 			//
@@ -126,12 +137,9 @@ namespace ProjectTimeCone {
 
 			morphFill.end();
 			ofDisableAlphaBlending();
+			fbo.end();
 			//
 			//--
-
-			fbo.end();
-
-			fbo.draw(0,0);
 		}
 
 		//---------
