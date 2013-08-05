@@ -2,6 +2,8 @@
 #include <utils/Utils.h>
 #include "YouTubeService.h"
 
+// #define RUN_AS_SERVICE
+
 void youtube_sighandler(int signum, void* user);
 void yt_start(void* user);
 void yt_update(void* user);
@@ -9,10 +11,7 @@ void yt_stop(void* user);
 
 SignalHandler sighandler;
 YouTubeService youtube;
-
-#if !defined(WIN32)
 bool must_run = true;
-#endif
 
 int main() {
 
@@ -26,7 +25,7 @@ int main() {
     return EXIT_FAILURE;
   }
 
-#if defined(WIN32)
+#if defined(WIN32) && defined(RUN_AS_SERVICE)
   rx_windows_service_setup("YouTubeUploader", yt_start, yt_update, yt_stop, NULL);
   rx_windows_service_start();
 #else

@@ -144,6 +144,15 @@ void on_audio_added(VideoEncoderEncodeTask task, void* user) {
 
 void on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
   RX_VERBOSE("COMMAND EXECUTED!");
+  task.print();
+  YouTubeVideo video;
+  video.filename = task.dir +"/" +task.video_filename;
+  video.datapath = false;
+  video.title = rx_get_date_time_string();
+  
+
+  testApp* app = static_cast<testApp*>(user);
+  app->yt_client.addVideoToUploadQueue(video);
 }
 
 //--------------------------------------------------------------
@@ -268,24 +277,41 @@ void testApp::update(){
     task.video_filename = "output.mp4";
     enc_client.encode(task);
 #else
+
     // use custom command
     std::stringstream ss;
-    std::string head_frames = rx_to_data_path("red/*.jpg");
-    std::string tail_frames = rx_to_data_path("green/*.jpg");
-    std::string body_frames = rx_to_data_path(grab_dir) +"/*.jpg";
-    std::string out_file = rx_to_data_path(grab_dir) +"/out.mov";
-    std::string audio_file = rx_to_data_path("audio.aif");
+    std::string head_frames = rx_norm_path(rx_to_data_path("red/*.jpg"));
+    std::string tail_frames = rx_norm_path(rx_to_data_path("green/*.jpg"));
+    std::string body_frames = rx_norm_path(rx_to_data_path(grab_dir) +"/*.jpg");
+    std::string out_file = rx_norm_path(rx_to_data_path(grab_dir) +"/out.mov");
+    std::string audio_file = rx_norm_path(rx_to_data_path("audio.mp3"));
 
+#if !defined(WIN32)
     ss << "cat " << head_frames  << " " 
        << body_frames << " "
        << tail_frames << " "
        << " | %s -y -v debug -f image2pipe -vcodec mjpeg -i - -i " << audio_file << " -acodec libmp3lame -qscale 20 -shortest -r 25 -map 0 -map 1 " << out_file;
+#else   
+    ss << "type " << head_frames  << " " 
+       << body_frames << " "
+       << tail_frames << " "
+       << " | %s -y -v debug -f image2pipe -vcodec mjpeg -i - -i " << audio_file << " -acodec libmp3lame -qscale 20 -shortest -r 25 " << out_file;
+
+    rx_put_file_contents(rx_get_date_time_string() +"_exec.bat", ss.str(), true);
+#endif
+
     
     RX_VERBOSE("%s\n%s\n%s\n", head_frames.c_str(), tail_frames.c_str(), body_frames.c_str());
     // cat frames/*.jpg frames_a/*.jpg | ./avconv -y -v debug -f image2pipe -vcodec mjpeg -i - -r 25 -map 0 out.mov
+
     VideoEncoderEncodeTask task;
     task.cmd = ss.str();
+    task.dir = ofToDataPath(grab_dir, true);
+    task.filemask = "frame_%04d.jpg";
+    task.video_filename = "out.mov";
+
     enc_client.customCommand(task);
+
 #endif
 
     state = ST_NONE;

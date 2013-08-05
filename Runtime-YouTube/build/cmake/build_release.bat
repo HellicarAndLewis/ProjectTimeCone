@@ -12,9 +12,9 @@ if not exist "%d%\..\..\bin\data" (
 
 cd %d%\build.release
 cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake --build . --target install --config Release
 
-cmake --build . --target install 
-
+:: cmake --build . --target install 
 :: -- /p:Configuration=Release /v:q
 :: %d%\bin\011_windows.exe
 :: cmake --build . --target install -- /p:Configuration=Debug
