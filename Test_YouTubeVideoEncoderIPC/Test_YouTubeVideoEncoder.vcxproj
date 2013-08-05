@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Test_YouTubeVideoEncoder</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\addons\SQLite\include\;.\..\addons\roxlu\addons\PCRE\include\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\Log\include\</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies);.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libuv.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcre.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcrecpp.lib;ws2_32.lib;psapi.lib;iphlpapi.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32_LEAN_AND_MEAN</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\addons\SQLite\include\;.\..\addons\roxlu\addons\PCRE\include\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\Log\include\</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies);.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcre.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcrecpp.lib;ws2_32.lib;psapi.lib;iphlpapi.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">CompileAsC</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">CompileAsC</CompileAs>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\Database.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\Query.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryDelete.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryInsert.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryParam.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryParams.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryResult.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QuerySelect.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryUpdate.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ClientSocket.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ClientIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ParserIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ServerIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\TypesIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ServerSocket.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\WorkQueue.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTube.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeClientIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeExchangeKey.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeModel.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeRefreshToken.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeServerIPC.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeTypes.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUpload.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUploadStart.cpp" />
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUploadStatus.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Log.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\StringUtil.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Utils.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\io\Buffer.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\io\File.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\io\RingBuffer.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Mat3.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Mat4.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Noise.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Quat.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec2.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec3.cpp" />
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec4.cpp" />
+    <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoder.cpp" />
+    <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderClientIPC.cpp" />
+    <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderServerIPC.cpp" />
+    <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderTypes.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\testApp.cpp" />
+    <ClCompile Include="src\YouTubeVideoEncoder.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.h" />
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Constants.h" />
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Core.h" />
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Log.h" />
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\StringUtil.h" />
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Utils.h" />
+    <ClInclude Include="src\testApp.h" />
+    <ClInclude Include="src\YouTubeVideoEncoder.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
+      <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

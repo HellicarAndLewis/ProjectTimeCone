@@ -144,9 +144,6 @@
     <Filter Include="addons\roxlu">
       <UniqueIdentifier>{c9311709-55f4-47ce-ac3a-4b995eff4328}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\log">
-      <UniqueIdentifier>{38c8dc2b-575a-4e8a-b92e-2ee263da632e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="addons\sqlite\extern">
       <UniqueIdentifier>{6a177f27-b680-40b6-ad77-65da99683707}</UniqueIdentifier>
     </Filter>

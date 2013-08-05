@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\testApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTube.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeClientIPC.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeExchangeKey.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeModel.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeRefreshToken.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeServerIPC.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeTypes.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUpload.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUploadStart.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUploadStatus.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\Database.cpp">
+      <Filter>addons\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\Query.cpp">
+      <Filter>addons\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryDelete.cpp">
+      <Filter>addons\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryInsert.cpp">
+      <Filter>addons\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryParam.cpp">
+      <Filter>addons\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryParams.cpp">
+      <Filter>addons\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryResult.cpp">
+      <Filter>addons\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QuerySelect.cpp">
+      <Filter>addons\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\src\sqlite\QueryUpdate.cpp">
+      <Filter>addons\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.c">
+      <Filter>addons\sqlite\extern</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ClientSocket.cpp">
+      <Filter>addons\uv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ServerSocket.cpp">
+      <Filter>addons\uv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\WorkQueue.cpp">
+      <Filter>addons\uv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ClientIPC.cpp">
+      <Filter>addons\uv\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ParserIPC.cpp">
+      <Filter>addons\uv\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ServerIPC.cpp">
+      <Filter>addons\uv\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\TypesIPC.cpp">
+      <Filter>addons\uv\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\io\Buffer.cpp">
+      <Filter>addons\roxlu\src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\io\File.cpp">
+      <Filter>addons\roxlu\src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\io\RingBuffer.cpp">
+      <Filter>addons\roxlu\src\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Mat3.cpp">
+      <Filter>addons\roxlu\src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Mat4.cpp">
+      <Filter>addons\roxlu\src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Noise.cpp">
+      <Filter>addons\roxlu\src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Quat.cpp">
+      <Filter>addons\roxlu\src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec2.cpp">
+      <Filter>addons\roxlu\src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec3.cpp">
+      <Filter>addons\roxlu\src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec4.cpp">
+      <Filter>addons\roxlu\src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoder.cpp">
+      <Filter>addons\videoencoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderClientIPC.cpp">
+      <Filter>addons\videoencoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderServerIPC.cpp">
+      <Filter>addons\videoencoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderTypes.cpp">
+      <Filter>addons\videoencoder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Log.cpp">
+      <Filter>addons\roxlu\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\StringUtil.cpp">
+      <Filter>addons\roxlu\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Utils.cpp">
+      <Filter>addons\roxlu\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\YouTubeVideoEncoder.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{54ee5949-2baa-4e49-9792-c814ab919e53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\roxlu">
+      <UniqueIdentifier>{0ec86873-8190-4b1b-b7b9-2e8739ba4107}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\uv">
+      <UniqueIdentifier>{459c1172-b2d2-4527-80a3-11de0c92b463}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\sqlite">
+      <UniqueIdentifier>{ac1390d2-4289-48f8-bf5b-8302ba87ecf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\videoencoder">
+      <UniqueIdentifier>{c6a36566-da91-4594-9a58-57681aedd48d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\youtube">
+      <UniqueIdentifier>{61859164-2f06-47ed-85fb-dd95212d99ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\sqlite\extern">
+      <UniqueIdentifier>{e34b4214-5c9f-4497-8c47-ece0dbdc2bec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\uv\ipc">
+      <UniqueIdentifier>{9d5eb92b-c9da-4b64-a348-307dd862e666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\roxlu\src">
+      <UniqueIdentifier>{35c8aa94-8e71-48b4-a4a4-1e6eceb8b42e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\roxlu\src\core">
+      <UniqueIdentifier>{56006d68-69a0-4f2f-b79f-27fef29d7e71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\roxlu\src\io">
+      <UniqueIdentifier>{07c161db-e73c-4abd-b35d-902eeff8ed40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\roxlu\src\math">
+      <UniqueIdentifier>{a6fa8d83-0511-4019-a35b-26b233dfecf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\roxlu\include">
+      <UniqueIdentifier>{2a411f37-725d-4c5b-a2b8-d4708c7db3c2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\testApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.h">
+      <Filter>addons\sqlite\extern</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Constants.h">
+      <Filter>addons\roxlu\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Core.h">
+      <Filter>addons\roxlu\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Log.h">
+      <Filter>addons\roxlu\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\StringUtil.h">
+      <Filter>addons\roxlu\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Utils.h">
+      <Filter>addons\roxlu\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\YouTubeVideoEncoder.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+</Project>
