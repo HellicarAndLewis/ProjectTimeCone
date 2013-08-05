@@ -110,9 +110,29 @@ $ git clone origin/master   # get the latest submodule info
 $ git submodule update      # let git update the submodule info which is stored in the root project
 ````
 
-### Configuring a project with some shared addons
+### Configuring a project for the YouTube and VideoEncoder code
 
-_Add these include directories_
+When you're using the `Runtime-VideoEncoder/src/videoencoder` and `addons/roxlu/addons/Youtube`
+code you need to add some files and configs to your Visual Studio project so everything compiles
+nice and smooth. Follow the steps below.
+
+_General config settings_
+- Add `WIN32_LEAN_AND_MEAN` to your preprocessor flags
+- Change Configuration Properties > General > Character Set to **not set**  
+- After adding the sqlite sources, you need to tell MSVC2012 that it's a `C` file and not a `C++`: 
+  Right click the sqlite3.c file, go to 'C/C++ > Advanced > Compile As' and select "Compile as C Code"
+
+_We need to add the following source files:_
+
+ - roxlu/addons/log/src/*.cpp
+ - roxlu/addons/sqlite/src/*.cpp
+ - roxlu/addons/sqlite/extern/sqlite/*.cpp
+ - roxlu/addons/uv/src/*.cpp
+ - roxlu/addons/youtube/src/*.cpp
+ - Runtime-VideoEncoder/src/videoencoder/src/*.cpp
+ - roxlu/lib/src/*.cpp
+
+_Add these include directories:_
 
 ````
 .\..\addons\roxlu\lib\include\
@@ -135,7 +155,7 @@ _As a one liner for VS_
 _Add these preprocessor flags_
 
 ````
-WIN32_LEAN_AND_MEAN
+
 ````
 
 _Add these linker input libraries_
@@ -149,14 +169,22 @@ _Add these linker input libraries_
 ws2_32.lib
 psapi.lib
 iphlpapi.lib
-.\..\addons\roxlu\extern\lib\win\vs2010\MD\32d\msgpack.lib
- 
 ````
 
 _As a one liner for VS_
 ````
 .\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libuv.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcre.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcrecpp.lib;ws2_32.lib;psapi.lib;iphlpapi.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32d\msgpack.lib; 
 ````
+
+_Copy these DLLs files to your bin dir_
+````
+addons/roxlu/extern/bin/win/vs2010/MD/32/janson.dll        
+addons/roxlu/extern/bin/win/vs2010/MD/32/libcurl.dll
+addons/roxlu/extern/bin/win/vs2010/MD/32/libcurl.dll
+addons/roxlu/extern/bin/win/vs2010/MD/32/libeay32.dll
+addons/roxlu/extern/bin/win/vs2010/MD/32/pcre.dll
+addons/roxlu/extern/bin/win/vs2010/MD/32/pcrecpp.dll
+````      
 
 
 
