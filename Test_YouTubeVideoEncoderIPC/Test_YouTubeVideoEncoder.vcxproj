@@ -58,7 +58,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\addons\SQLite\include\;.\..\addons\roxlu\addons\PCRE\include\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\Log\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ProjectTimeConeLib\src\;%(AdditionalIncludeDirectories);.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\addons\SQLite\include\;.\..\addons\roxlu\addons\PCRE\include\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\Log\include\</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -133,13 +133,13 @@
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec2.cpp" />
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec3.cpp" />
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec4.cpp" />
+    <ClCompile Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.cpp" />
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoder.cpp" />
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderClientIPC.cpp" />
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderServerIPC.cpp" />
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderTypes.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\testApp.cpp" />
-    <ClCompile Include="src\YouTubeVideoEncoder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.h" />
@@ -148,8 +148,8 @@
     <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Log.h" />
     <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\StringUtil.h" />
     <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Utils.h" />
+    <ClInclude Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.h" />
     <ClInclude Include="src\testApp.h" />
-    <ClInclude Include="src\YouTubeVideoEncoder.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">

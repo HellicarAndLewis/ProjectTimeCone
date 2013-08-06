@@ -130,17 +130,17 @@
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderTypes.cpp">
       <Filter>addons\videoencoder</Filter>
     </ClCompile>
-    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Log.cpp">
-      <Filter>addons\roxlu\src\core</Filter>
-    </ClCompile>
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\StringUtil.cpp">
       <Filter>addons\roxlu\src\core</Filter>
     </ClCompile>
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Utils.cpp">
       <Filter>addons\roxlu\src\core</Filter>
     </ClCompile>
-    <ClCompile Include="src\YouTubeVideoEncoder.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Log.cpp">
+      <Filter>addons\roxlu\src\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.cpp">
+      <Filter>src\YouTubeVideoEncoder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -186,6 +186,9 @@
     <Filter Include="addons\roxlu\include">
       <UniqueIdentifier>{2a411f37-725d-4c5b-a2b8-d4708c7db3c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\YouTubeVideoEncoder">
+      <UniqueIdentifier>{3f46685e-8fce-47e4-a45f-49604a1866cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\testApp.h">
@@ -209,8 +212,8 @@
     <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Utils.h">
       <Filter>addons\roxlu\include</Filter>
     </ClInclude>
-    <ClInclude Include="src\YouTubeVideoEncoder.h">
-      <Filter>src</Filter>
+    <ClInclude Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.h">
+      <Filter>src\YouTubeVideoEncoder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

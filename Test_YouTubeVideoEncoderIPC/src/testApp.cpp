@@ -1,19 +1,35 @@
 #include "testApp.h"
 #include <roxlu/core/Log.h>
 
+
+//--------------------------------------------------------------
+
+void on_video_encoded(VideoEncoderEncodeTask task, void *user) {
+  testApp* app = static_cast<testApp*>(user);
+  app->yt.removeInputFrames(task);
+}
+
+void on_video_uploaded(YouTubeVideo video, void* user) {
+  testApp* app = static_cast<testApp*>(user);
+  app->yt.removeEncodedVideoFile(video);
+}
+
 //--------------------------------------------------------------
 void testApp::setup(){
 
   if(!yt.setAudioFile("audio.mp3", true)) {
     // handle ... check the audio file..
   }
-  if(!yt.setFramesHeadDir("frames_head", true)) {
+  if(!yt.setFramesHeadDir("png/frames_head", true)) {
     // handle ... create the frames head dir
   }
-  if(!yt.setFramesTailDir("frames_tail", true)) {
+  if(!yt.setFramesTailDir("png/frames_tail", true)) {
     // handle ... create the frames tail dir
   }
 
+  if(!yt.setup(on_video_encoded, on_video_uploaded, this)) {
+    // handle setup error .... 
+  }
 }
 
 //--------------------------------------------------------------
@@ -30,7 +46,7 @@ void testApp::draw(){
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
   if(key == ' ') {
-    yt.encodeFrames("frames_recording", true);
+    yt.encodeFrames("png/frames_recording", true);
   }
 }
 

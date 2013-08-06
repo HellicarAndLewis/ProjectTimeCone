@@ -10,6 +10,9 @@
     implement the task-paradigm which would make it way cleanier to shutdown the 
     thread. 
 
+    AUTOMATED_UPLOADS:  uncomment if you want to perform automated stress tests
+    USE_RAW_IPC: use the somewhat older code for IPC with the video encoder and uploader
+
  */
 
 extern "C" {
@@ -22,6 +25,7 @@ extern "C" {
 #include <videoencoder/VideoEncoder.h>
 #include <youtube/YouTube.h>
 #include <roxlu/io/RingBuffer.h>
+#include "YouTubeVideoEncoder.h"
 
 #define CAM_WIDTH 1280
 #define CAM_HEIGHT 720
@@ -31,7 +35,8 @@ extern "C" {
 #define ST_WAIT_ON_THREAD 2
 #define ST_CREATE_VIDEO 3
 
-// #define AUTOMATED_UPLOADS 
+#define AUTOMATED_UPLOADS 
+//#define USE_RAW_IPC     /* if you want to use the VideoEncoderClientIPC and YouTube ipc directly instead of the wrapper YouTubeVideoEncoder */
 
 struct PixelData {
   size_t nbytes;
@@ -96,11 +101,15 @@ class testApp : public ofBaseApp{
   int grab_frame_num;                    /* current frame num that is grabbed */
   int grab_max_frames;                   /* total number of frames to grab per session */
   std::string grab_dir;                  /* directory into which we write the video frames */
+#if defined(USE_RAW_IPC)
   VideoEncoderClientIPC enc_client;      /* communicates with the video encoder, this must be running! */
   YouTubeClientIPC yt_client;            /* the youtube client ipc; used to kick off youtube api stuff */
+#endif
   YouTubeVideo yt_video;
   RingBuffer pixel_buffer;               /* we preallocate some frames to speed things up */
   EncoderThread encoder_thread;          /* quick 'n dirty threaded image write; blocks when we need to stop and there are still iamges in the queue */
+
+  YouTubeVideoEncoder yt;
 
 #if defined(AUTOMATED_UPLOADS)
   uint64_t automated_timeout;            /* when we should start another grab process */
