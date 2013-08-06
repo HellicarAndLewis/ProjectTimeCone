@@ -97,6 +97,7 @@
     <ClInclude Include="src\ProjectTimeCone\Initialisation.h" />
     <ClInclude Include="src\ProjectTimeCone\Interpolation\Base.h" />
     <ClInclude Include="src\ProjectTimeCone\Interpolation\OpticalFlow.h" />
+    <ClInclude Include="src\ProjectTimeCone\Profiling\Timer.h" />
     <ClInclude Include="src\ProjectTimeCone\YouTube\VideoEncoder.h" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +150,7 @@
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderTypes.cpp" />
     <ClCompile Include="src\ProjectTimeCone\Initialisation.cpp" />
     <ClCompile Include="src\ProjectTimeCone\Interpolation\OpticalFlow.cpp" />
+    <ClCompile Include="src\ProjectTimeCone\Profiling\Timer.cpp" />
     <ClCompile Include="src\ProjectTimeCone\YouTube\VideoEncoder.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

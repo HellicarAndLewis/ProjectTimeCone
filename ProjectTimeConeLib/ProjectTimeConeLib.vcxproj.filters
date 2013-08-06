@@ -52,6 +52,9 @@
     <Filter Include="addons\youtube">
       <UniqueIdentifier>{35efd7b2-b843-4537-aa9c-798b3516943c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ProjectTimeCone\Profiling">
+      <UniqueIdentifier>{49a1dd72-de35-44ce-8e8b-8f18e532c81f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ProjectTimeCone.h">
@@ -86,6 +89,9 @@
     </ClInclude>
     <ClInclude Include="src\ProjectTimeCone\YouTube\VideoEncoder.h">
       <Filter>src\ProjectTimeCone\YouTube</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProjectTimeCone\Profiling\Timer.h">
+      <Filter>src\ProjectTimeCone\Profiling</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="src\ProjectTimeCone\YouTube\VideoEncoder.cpp">
       <Filter>src\ProjectTimeCone\YouTube</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProjectTimeCone\Profiling\Timer.cpp">
+      <Filter>src\ProjectTimeCone\Profiling</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
