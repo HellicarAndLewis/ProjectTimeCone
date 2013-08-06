@@ -58,6 +58,10 @@ namespace ProjectTimeCone {
 				flags |= OPTFLOW_FARNEBACK_GAUSSIAN;
 			}
 
+			//--
+			//
+			Profiler["Calculate optical flow"].begin();
+
 			calcOpticalFlowFarneback(this->A, this->B, AtoB,
 				this->pyramidScale, this->numLevels,
 				this->windowSize, this->numIterations,
@@ -67,6 +71,15 @@ namespace ProjectTimeCone {
 				this->pyramidScale, this->numLevels,
 				this->windowSize, this->numIterations,
 				this->polyN, this->polySigma, flags);
+
+			Profiler["Calculate optical flow"].end();
+			//
+			//--
+
+
+			//--
+			//
+			Profiler["Load flow to GPU"].begin();
 
 			float* AtoBdataIn = (float*) AtoB.data;
 			float* AtoBdataOut = this->AtoBimage.getPixels();
@@ -84,6 +97,10 @@ namespace ProjectTimeCone {
 			
 			this->AtoBimage.update();
 			this->BtoAimage.update();
+
+			Profiler["Load flow to GPU"].end();
+			//
+			//--
 		}
 
 		//---------
@@ -91,6 +108,7 @@ namespace ProjectTimeCone {
 			//--
 			//Draw points
 			//
+			Profiler["Draw displaced points"].begin();
 			this->displace.begin();
 			ofEnableAlphaBlending();
 
@@ -112,6 +130,7 @@ namespace ProjectTimeCone {
 
 			ofDisableAlphaBlending();
 			this->displace.end();
+			Profiler["Draw displaced points"].end();
 			//
 			//--
 			
@@ -119,6 +138,7 @@ namespace ProjectTimeCone {
 			//--
 			//Crossfade
 			//
+			Profiler["Crossfade and fill"].begin();
 			fbo.begin();
 			ofClear(0,0,0,0);
 
@@ -138,6 +158,7 @@ namespace ProjectTimeCone {
 			morphFill.end();
 			ofDisableAlphaBlending();
 			fbo.end();
+			Profiler["Crossfade and fill"].end();
 			//
 			//--
 		}

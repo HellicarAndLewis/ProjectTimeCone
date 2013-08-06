@@ -3,8 +3,9 @@
 namespace ProjectTimeCone {
 	namespace Profiling {
 		//---------
-		Timer::Action::Action() {
+		Timer::Action::Action(string name) {
 			this->open = false;
+			this->name = name;
 			
 			LARGE_INTEGER frequency;
 			QueryPerformanceFrequency(&frequency);
@@ -14,7 +15,7 @@ namespace ProjectTimeCone {
 		//---------
 		void Timer::Action::begin() {
 			if (this->open) {
-				ofLogError("Profiler::Timer::Action") << "Cannot begin as this action is already running";
+				ofLogError("Profiler::Timer::Action") << "Cannot begin as this action [" << this->name << "] is already running";
 			} else {
 				QueryPerformanceCounter(&this->startTime);
 				this->open = true;
@@ -24,8 +25,9 @@ namespace ProjectTimeCone {
 		//---------
 		void Timer::Action::end() {
 			if (!this->open) {
-				ofLogError("Profiler::Timer::Action") << "Cannot end as this action is not currently running";
+				ofLogError("Profiler::Timer::Action") << "Cannot end as this action [" << this->name << "] is not currently running";
 			} else {
+				this->open = false;
 				LARGE_INTEGER endTime;
 				QueryPerformanceCounter(&endTime);
 				float difference = (float) (endTime.QuadPart - startTime.QuadPart) / this->frequency;
@@ -48,11 +50,16 @@ namespace ProjectTimeCone {
 		}
 
 		//---------
+		void Timer::clear() {
+			this->actions.clear();
+		}
+
+		//---------
 		Timer::Action & Timer::operator[](string actionName) {
 			auto it = this->actions.find(actionName);
 			if (it == this->actions.end()) {
 				//we need to add this action as it doesn't exist
-				this->actions.insert(pair<string, Action>(actionName, Action()));
+				this->actions.insert(pair<string, Action>(actionName, Action(actionName)));
 				it = this->actions.find(actionName);
 			}
 
@@ -76,21 +83,23 @@ namespace ProjectTimeCone {
 
 			for (auto & it : durations) {
 				result << it.second;
-				int requiredTabs = (int) ceil(float(it.second.size() -  longestName)/4.0f);
-				for(int i=0; i<requiredTabs; i++) {
-					result << "\t";
+				for(int i=0; i<longestName - it.second.size(); i++) {
+					result << " ";
 				}
 				result << " : ";
-				int barLength = it.first * 20 / maxDuration;
+				
+				result << "(" << ofToString(this->actions.at(it.second).getDurationSum(), 4) << "s)";
+				result << " " << ofToString(it.first, 4) << "s ";
+				int barLength = it.first / maxDuration * 20.0f;
 				for(int i=0; i<20; i++) {
-					cout << (i <= barLength) ? "#" : " ";
+					result << ((i <= barLength) ? "#" : ".");
 				}
-				cout << " " << ofToString(it.first, 4) << "s ";
-				cout << "(" << ofToString(this->actions.at(it.second).getDurationSum(), 4) << "s)";
-				cout << endl;
+				result << endl;
 			}
 
 			return result.str();
 		}
 	}
+
+	Profiling::Timer Profiler = Profiling::Timer();
 }

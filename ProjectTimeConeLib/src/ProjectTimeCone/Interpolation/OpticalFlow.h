@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Profiling/Timer.h"
 #include "Base.h"
 #include "ofxCv.h"
 
