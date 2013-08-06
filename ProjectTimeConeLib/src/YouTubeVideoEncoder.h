@@ -41,8 +41,8 @@ extern "C" {
 
 typedef void(*yt_encode_callback)(VideoEncoderEncodeTask task, void* user);      /* callback typedef for events */
 
-void on_cmd_executed(VideoEncoderEncodeTask task, void* user);                   /* gets called when the encoder has encoded the given task, at this the avconv command has been executed and it's where you want to remove the raw frames */
-void on_uploaded(YouTubeVideo video, void* user);                                /* gets called when a video has been upload to youtube, at this point you might remove or move the video to another place */
+void ytv_on_cmd_executed(VideoEncoderEncodeTask task, void* user);                   /* gets called when the encoder has encoded the given task, at this the avconv command has been executed and it's where you want to remove the raw frames */
+void ytv_on_uploaded(YouTubeVideo video, void* user);                                /* gets called when a video has been upload to youtube, at this point you might remove or move the video to another place */
 
 class YouTubeVideoEncoder {
  public:

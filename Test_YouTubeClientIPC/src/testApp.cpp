@@ -1,5 +1,19 @@
 #include "testApp.h"
 
+//--------------------------------------------------------------
+#if !defined(USE_RAW_IPC)
+static void yt_on_video_encoded(VideoEncoderEncodeTask task, void *user) {
+  testApp* app = static_cast<testApp*>(user);
+  // app->yt.removeInputFrames(task);
+}
+
+static void yt_on_video_uploaded(YouTubeVideo video, void* user) {
+  testApp* app = static_cast<testApp*>(user);
+  //app->yt.removeEncodedVideoFile(video);
+}
+#endif
+
+//--------------------------------------------------------------
 
 void encoder_thread_callback(void* user) {
 
@@ -104,9 +118,10 @@ void on_video_encoded(VideoEncoderEncodeTask task, void* user) {
   task.video_filepath = task.dir +"/" +task.video_filename;
   task.audio_filepath = rx_to_data_path("audio.mp3");
   task.video_filename = "output2.mov";
-
+#if USE_RAW_IPC
   testApp* app = static_cast<testApp*>(user);
   app->enc_client.addAudio(task);
+#endif
 }
 
 void on_audio_added(VideoEncoderEncodeTask task, void* user) {
@@ -137,9 +152,10 @@ void on_audio_added(VideoEncoderEncodeTask task, void* user) {
   video.filename = task.dir +"/" +task.video_filename;
   video.datapath = false;
   video.title = rx_get_date_time_string();
-
+#if USE_RAW_IPC
   testApp* app = static_cast<testApp*>(user);
   app->yt_client.addVideoToUploadQueue(video);
+#endif
 }
 
 void on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
@@ -150,21 +166,26 @@ void on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
   video.datapath = false;
   video.title = rx_get_date_time_string();
   
-
+#if USE_RAW_IPC
   testApp* app = static_cast<testApp*>(user);
   app->yt_client.addVideoToUploadQueue(video);
+#endif
 }
 
 //--------------------------------------------------------------
 testApp::testApp()
-#if defined(__APPLE__)
-  :enc_client("/tmp/encoder.sock", false)
-  ,yt_client("/tmp/youtube.sock", false)
-#elif defined(WIN32) 
-   :enc_client("\\\\.\\pipe\\encoder", false)
-  ,yt_client("\\\\.\\pipe\\youtube", false)
-#endif   
+#if USE_RAW_IPC
+#  if defined(__APPLE__)
+    :enc_client("/tmp/encoder.sock", false)
+    ,yt_client("/tmp/youtube.sock", false)
+#  elif defined(WIN32) 
+     :enc_client("\\\\.\\pipe\\encoder", false)
+    ,yt_client("\\\\.\\pipe\\youtube", false)
+#  endif   
   ,pixel_buffer(CAM_WIDTH * CAM_HEIGHT * 3 * 400) // 400 frames 
+#else
+   :pixel_buffer(CAM_WIDTH * CAM_HEIGHT * 3 * 400) // 400 frames 
+#endif
 {
 }
 
@@ -193,6 +214,7 @@ void testApp::setup(){
   grab_frame_num = 0;
   grab_max_frames = 10;
 
+#if USE_RAW_IPC
   enc_client.cb_user = this;
   enc_client.cb_encoded = on_video_encoded;
   enc_client.cb_audio_added = on_audio_added;
@@ -205,6 +227,21 @@ void testApp::setup(){
   if(!yt_client.connect()) {
     RX_ERROR("Cannot connect to the youtube ipc, make sure that you start it; we will try to connect later");
   }
+#else 
+  if(!yt.setAudioFile("audio.mp3", true)) {
+    RX_ERROR("Couldn't find the audio.mp3");
+  }
+  if(!yt.setFramesHeadDir("red", true)) {
+    RX_ERROR("Couldn't find the test directory with the head frames");
+  }
+  if(!yt.setFramesTailDir("green", true)) {
+    RX_ERROR("Couldn't find the test directory with the tail frames");
+  }
+
+  if(!yt.setup(yt_on_video_encoded, yt_on_video_uploaded, this)) {
+    // handle setup error .... 
+  }
+#endif
 
 #if defined(AUTOMATED_UPLOADS)
   automated_delay = 10 * 1000;  // a new video every minute
@@ -278,6 +315,7 @@ void testApp::update(){
     enc_client.encode(task);
 #else
 
+#  if USE_RAW_IPC
     // use custom command
     std::stringstream ss;
     std::string head_frames = rx_norm_path(rx_to_data_path("red/*.jpg"));
@@ -286,19 +324,19 @@ void testApp::update(){
     std::string out_file = rx_norm_path(rx_to_data_path(grab_dir) +"/out.mov");
     std::string audio_file = rx_norm_path(rx_to_data_path("audio.mp3"));
 
-#if !defined(WIN32)
+#   if !defined(WIN32)
     ss << "cat " << head_frames  << " " 
        << body_frames << " "
        << tail_frames << " "
        << " | %s -y -v debug -f image2pipe -vcodec mjpeg -i - -i " << audio_file << " -acodec libmp3lame -qscale 20 -shortest -r 25 -map 0 -map 1 " << out_file;
-#else   
+#   else   
     ss << "type " << head_frames  << " " 
        << body_frames << " "
        << tail_frames << " "
        << " | %s -y -v debug -f image2pipe -vcodec mjpeg -i - -i " << audio_file << " -acodec libmp3lame -qscale 20 -shortest -r 25 " << out_file;
 
     rx_put_file_contents(rx_get_date_time_string() +"_exec.bat", ss.str(), true);
-#endif
+#   endif
 
     
     RX_VERBOSE("%s\n%s\n%s\n", head_frames.c_str(), tail_frames.c_str(), body_frames.c_str());
@@ -312,13 +350,23 @@ void testApp::update(){
 
     enc_client.customCommand(task);
 
-#endif
+
 
     state = ST_NONE;
     grab_frame_num = 0;
   }
   enc_client.update();
   yt_client.update();
+# else // USE_RAW_IPC
+     yt.encodeFrames(grab_dir, true);
+     state = ST_NONE;
+     grab_frame_num = 0;
+  } // st = ST_CREATE_VIDEO
+
+  yt.update();
+
+# endif
+#endif 
 }
 
 //--------------------------------------------------------------

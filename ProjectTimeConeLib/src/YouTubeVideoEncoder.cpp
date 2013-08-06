@@ -6,7 +6,7 @@
 // --------------------------------------------------------------
 
 // when the encoding is ready this function gets called; next thing is adding it to the upload queue
-void on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
+void ytv_on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
   YouTubeVideoEncoder* ytv = static_cast<YouTubeVideoEncoder*>(user);
 
   YouTubeVideo video;
@@ -22,7 +22,7 @@ void on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
 }
 
 // when a video (doesnt have to be the last one) has been uploaded this function is called
-void on_uploaded(YouTubeVideo video, void* user) {
+void ytv_on_uploaded(YouTubeVideo video, void* user) {
   YouTubeVideoEncoder* ytv = static_cast<YouTubeVideoEncoder*>(user);
   if(ytv->cb_uploaded) {
     ytv->cb_uploaded(video, ytv->cb_user);
@@ -40,7 +40,7 @@ YouTubeVideoEncoder::YouTubeVideoEncoder()
    :enc_client("\\\\.\\pipe\\encoder", false)
   ,yt_client("\\\\.\\pipe\\youtube", false)
 #endif   
-  ,frames_glob("*.png")
+  ,frames_glob("*.jpg")
   ,cb_user(NULL)
   ,cb_encoded(NULL)
   ,cb_uploaded(NULL)
@@ -48,7 +48,7 @@ YouTubeVideoEncoder::YouTubeVideoEncoder()
   RX_VERBOSE("YouTubeVideoEncoder");
 
   enc_client.cb_user = this;
-  enc_client.cb_cmd_executed = on_cmd_executed;
+  enc_client.cb_cmd_executed = ytv_on_cmd_executed;
 
   if(!enc_client.connect()) {
     RX_ERROR("Something went wrong while trying to connect to the video encoder server; is it running?");
@@ -58,7 +58,7 @@ YouTubeVideoEncoder::YouTubeVideoEncoder()
     RX_ERROR("Something went wrong while trying to connect to the youtube uploader; is it running?");
   }
 
-  yt_client.setUploadReadyCallback(on_uploaded, this);
+  yt_client.setUploadReadyCallback(ytv_on_uploaded, this);
 
 }
 
