@@ -3,6 +3,9 @@
 #include "YouTubeVideoEncoder.h"
 #include "ofMain.h"
 
+void on_video_encoded(VideoEncoderEncodeTask task, void *user);
+void on_video_uploaded(YouTubeVideo video, void* user);
+
 class testApp : public ofBaseApp{
 
 	public:
@@ -21,5 +24,4 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
     YouTubeVideoEncoder yt;
-		
 };

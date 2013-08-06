@@ -130,9 +130,6 @@
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderTypes.cpp">
       <Filter>addons\videoencoder</Filter>
     </ClCompile>
-    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Log.cpp">
-      <Filter>addons\roxlu\src\core</Filter>
-    </ClCompile>
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\StringUtil.cpp">
       <Filter>addons\roxlu\src\core</Filter>
     </ClCompile>
@@ -141,6 +138,9 @@
     </ClCompile>
     <ClCompile Include="src\YouTubeVideoEncoder.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\lib\src\roxlu\core\Log.cpp">
+      <Filter>addons\roxlu\src\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
