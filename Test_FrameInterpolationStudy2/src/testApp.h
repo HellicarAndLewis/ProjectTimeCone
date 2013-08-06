@@ -1,10 +1,11 @@
 #pragma once
+#define NO_YOUTUBE
+#include "ProjectTimeCone.h"
 
 #include "ofMain.h"
 #include "ofxCvGui.h"
 #include "ofxMachineVision.h"
 #include "ofxCv.h"
-#include "ProjectTimeCone.h"
 
 using namespace ofxCvGui;
 using namespace ofxCv;
@@ -31,6 +32,6 @@ class testApp : public ofBaseApp{
 		vector<ofPixels> images;
 
 		ofImage A, B;
-
+		float x;
 		float width, height;
 };
