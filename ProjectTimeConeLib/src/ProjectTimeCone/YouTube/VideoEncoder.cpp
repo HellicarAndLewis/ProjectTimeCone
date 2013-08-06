@@ -8,7 +8,7 @@ namespace ProjectTimeCone {
 		// --------------------------------------------------------------
 
 		// when the encoding is ready this function gets called; next thing is adding it to the upload queue
-		void on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
+		void ytv_on_cmd_executed(VideoEncoderEncodeTask task, void* user) {
 		  VideoEncoder* ytv = static_cast<VideoEncoder*>(user);
 
 		  YouTubeVideo video;
@@ -18,9 +18,18 @@ namespace ProjectTimeCone {
   
 		  ytv->yt_client.addVideoToUploadQueue(video);
 
-		  // @todo -> add callback
+		  if(ytv->cb_encoded) {
+			ytv->cb_encoded(task, ytv->cb_user);
+		  }
 		}
 
+		// when a video (doesnt have to be the last one) has been uploaded this function is called
+		void ytv_on_uploaded(YouTubeVideo video, void* user) {
+		  VideoEncoder* ytv = static_cast<VideoEncoder*>(user);
+		  if(ytv->cb_uploaded) {
+			ytv->cb_uploaded(video, ytv->cb_user);
+		  }
+		}
 
 		// --------------------------------------------------------------
 
@@ -33,13 +42,15 @@ namespace ProjectTimeCone {
 		   :enc_client("\\\\.\\pipe\\encoder", false)
 		  ,yt_client("\\\\.\\pipe\\youtube", false)
 		#endif   
-		  ,frames_glob("*.png")
-
+		  ,frames_glob("*.jpg")
+		  ,cb_user(NULL)
+		  ,cb_encoded(NULL)
+		  ,cb_uploaded(NULL)
 		{
-		  RX_VERBOSE("VideoEncoder");
+		  RX_VERBOSE("YouTubeVideoEncoder");
 
 		  enc_client.cb_user = this;
-		  enc_client.cb_cmd_executed = on_cmd_executed;
+		  enc_client.cb_cmd_executed = ytv_on_cmd_executed;
 
 		  if(!enc_client.connect()) {
 			RX_ERROR("Something went wrong while trying to connect to the video encoder server; is it running?");
@@ -49,9 +60,29 @@ namespace ProjectTimeCone {
 			RX_ERROR("Something went wrong while trying to connect to the youtube uploader; is it running?");
 		  }
 
+		  yt_client.setUploadReadyCallback(ytv_on_uploaded, this);
+
 		}
 
-		VideoEncoder::~VideoEncoder() {
+		VideoEncoder::~VideoEncoder() 
+		{
+		  cb_user = NULL;
+		  cb_encoded = NULL;
+		  cb_uploaded = NULL;
+		  frames_glob = "";
+		  audio_file_path = "";
+		  frames_head_path = "";
+		  frames_tail_path = "";
+		}
+
+		bool VideoEncoder::setup(yt_encode_callback onEncoded, 
+										youtube_upload_ready_callback onUploaded,
+										void* user) 
+		{
+		  cb_user = user;
+		  cb_encoded = onEncoded;
+		  cb_uploaded = onUploaded;
+		  return true;
 		}
 
 		bool VideoEncoder::setAudioFile(std::string filename, bool datapath) {
@@ -141,15 +172,14 @@ namespace ProjectTimeCone {
 		  ss << "type " << head_frames  << " " 
 			 << body_frames << " "
 			 << tail_frames << " "
-			 << " | %s -y -v debug -f image2pipe -vcodec png -i - -i " << audio_file << " -acodec libmp3lame -qscale 20 -shortest -r 25 " << out_file;
+			 << " | %s -y -v debug -f image2pipe -vcodec mjpeg -i - -i " << audio_file << " -acodec libmp3lame -qscale 20 -shortest -r 25 " << out_file;
 
-		  rx_put_file_contents(rx_get_date_time_string() +"_exec.bat", ss.str(), true);
+			//  rx_put_file_contents(rx_get_date_time_string() +"_exec.bat", ss.str(), true);
 		#endif
   
-
 		  VideoEncoderEncodeTask task;
 		  task.cmd = ss.str();
-		  task.dir = path;
+		  task.dir = body_path;
 		  task.video_filename = out_file;
 
 		  enc_client.customCommand(task);
@@ -160,6 +190,36 @@ namespace ProjectTimeCone {
 		void VideoEncoder::update() {
 		  enc_client.update();
 		  yt_client.update();
+		}
+
+		bool VideoEncoder::removeEncodedVideoFile(YouTubeVideo video) {
+
+		  if(!rx_file_exists(video.filename)) {
+			return false;
+		  }
+
+		  rx_file_remove(video.filename);
+		  return true;
+		}
+
+		bool VideoEncoder::removeInputFrames(VideoEncoderEncodeTask task) {
+		  std::vector<std::string> files = rx_get_files(task.dir, "jpg");
+		  if(!files.size()) {
+			RX_ERROR("Cannot find the raw input frames int the dir: '%s', check the file extension", task.dir.c_str());
+			return false;
+		  }
+
+		  for(std::vector<std::string>::iterator it = files.begin(); it != files.end(); ++it) {
+			std::string f = *it;
+			if(!rx_file_exists(f)) {
+			  RX_ERROR("File removed already (!?) - '%s'", f.c_str());
+			}
+			else {
+			  rx_file_remove(f);
+			}
+		  }
+
+		  return true;
 		}
 	}
 }
