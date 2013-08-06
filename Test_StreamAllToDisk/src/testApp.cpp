@@ -2,6 +2,10 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
+#ifdef BUILD_DEBUG
+	ofSystemAlertDialog("You are building in debug mode, this app may not work properly if not built with optimisations turned on");
+#endif
+
 	this->exposure = 500;
 	this->gain = 5;
 	this->focus = 0;
@@ -9,8 +13,11 @@ void testApp::setup(){
 	this->clearLine = false;
 
 	gui.init();
-	
-	this->outputFolder = Poco::Path(ofSystemLoadDialog("Select output folder", true).getPath() + "/");
+	auto dialogResult = ofSystemLoadDialog("Select output folder", true);
+	if (!dialogResult.bSuccess) {
+		ofExit();
+	}
+	this->outputFolder = Poco::Path(dialogResult.getPath() + "/");
 
 	ProjectTimeCone::Initialisation::LoadCameras(this->grabbers, [this] (int index, ofPtr<Grabber::Simple> grabber) {
 		PanelPtr panel = this->gui.add(grabber->getTextureReference(), grabber->getModelName());
@@ -99,6 +106,9 @@ void testApp::onControls(ofxUIEventArgs & args) {
 				for (int i=0; i<streamers.size(); i++) {
 					auto path = thisRecordingPath;
 					path.pushDirectory(ofToString(i));
+
+					auto device = (Device::VideoInputDevice*) this->grabbers[i]->getDevice().get();
+					device->resetTimestamp();
 					streamers[i]->setOutputFolder(path.toString());
 					streamers[i]->start();
 				} 

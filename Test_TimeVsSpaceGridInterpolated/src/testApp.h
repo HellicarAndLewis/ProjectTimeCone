@@ -1,4 +1,8 @@
 #pragma once
+extern "C" {
+# include <uv.h>
+};
+#undef small
 
 #include "ofMain.h"
 #include "ofxCvGui.h"
@@ -63,4 +67,7 @@ public:
 	ofPtr<Interpolation::OpticalFlow> interpolator;
 	string intepolatorCachedA, intepolatorCachedB; //filesnames of cached content
 	ofImage A, B;
+	ofImage result;
+
+	ProjectTimeCone::YouTube::VideoEncoder youTubeEncoder;
 };

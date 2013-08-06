@@ -4,6 +4,7 @@
 #include "ofxCvGui.h"
 #include "ofxMachineVision.h"
 
+#define NO_YOUTUBE
 #include "ProjectTimeCone.h"
 
 using namespace ofxCvGui;
@@ -39,4 +40,5 @@ class testApp : public ofBaseApp{
 
 		Poco::Path outputFolder;
 
+		ofXml cameraSettings;
 };

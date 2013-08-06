@@ -1,4 +1,5 @@
 #include "testApp.h"
+#include "Poco/DirectoryIterator.h"
 
 //--------------------------------------------------------------
 void testApp::setup(){
@@ -8,7 +9,12 @@ void testApp::setup(){
 	this->minTimestamp = std::numeric_limits<float>::max();
 	this->maxTimestamp = std::numeric_limits<float>::min();
 
-	this->inputFolder = Poco::Path(ofSystemLoadDialog("Select recording folder", true).getPath() + "/");
+	auto result = ofSystemLoadDialog("Select recording folder", true);
+	if (!result.bSuccess) {
+		ofExit();
+	}
+	this->inputFolder = Poco::Path(result.getPath() + "/");
+
 	ofDirectory listDir;
 	listDir.listDir(this->inputFolder.toString());
 	listDir.sort();
@@ -20,12 +26,16 @@ void testApp::setup(){
 			this->files.push_back(map<float, string>());
 			auto & currentFolder = this->files.back();
 
-			ofDirectory listImages;
-			listImages.listDir(folder.getAbsolutePath());
-			auto files = listImages.getFiles();
-			float timeOffset;
-			for (auto file : files) {
-				auto timestamp = ofToFloat(file.getBaseName()) / 1e6;
+			auto dirIt = Poco::DirectoryIterator(folder.getAbsolutePath());
+			auto dirEnd = Poco::DirectoryIterator();
+
+			//add items to file map
+			float timeOffset = 0;
+			for (;dirIt != dirEnd; dirIt++) {
+				auto path = Poco::Path(dirIt->path());
+
+				auto timestamp = ofToFloat(path.getBaseName()) / 1e6;
+
 				if (currentFolder.size() == 0) {
 					//set the time offset as the first timestamp
 					timeOffset = timestamp;
@@ -33,7 +43,7 @@ void testApp::setup(){
 				}
 				timestamp -= timeOffset;
 
-				currentFolder.insert(std::pair<float, string>(timestamp, file.getAbsolutePath()));
+				currentFolder.insert(std::pair<float, string>(timestamp, path.toString()));
 				if (timestamp > maxTimestamp) {
 					maxTimestamp = timestamp;
 				}
@@ -76,6 +86,17 @@ void testApp::setup(){
 	this->intepolatorCachedB = "";
 	this->A.allocate(1280, 720, OF_IMAGE_COLOR);
 	this->B.allocate(1280, 720, OF_IMAGE_COLOR);
+	this->result.allocate(1280, 720, OF_IMAGE_COLOR);
+
+	if (!this->youTubeEncoder.setAudioFile("audio.mp3", true)) {
+		ofSystemAlertDialog("Audio file missing");
+	}
+	if (!this->youTubeEncoder.setFramesHeadDir("frames_head", true)) {
+		ofSystemAlertDialog("Header frames missing");
+	}
+	if (!this->youTubeEncoder.setFramesTailDir("frames_tail", true)) {
+		ofSystemAlertDialog("Tail frames missing");
+	}
 }
 
 //--------------------------------------------------------------
@@ -91,8 +112,10 @@ void testApp::update(){
 		searchTime -= floor(searchTime / 10.0f) * 10.0f;
 		searchTime /= 10.0f;
 
-		this->buildFrame(this->lengthToFrame(searchTime * totalLength));
+		this->buildFrame(this->lengthToFrame(searchTime * totalLength), false);
 	}
+
+	this->youTubeEncoder.update();
 }
 
 //--------------------------------------------------------------
@@ -101,7 +124,7 @@ void testApp::draw(){
 	if (this->editing || this->positions.size() <= 1) {
 		this->gridView.draw(0,0);
 	} else {
-		this->interpolator->getResultFbo().draw(0,0);
+		this->result.draw(0,0, ofGetWidth(), ofGetHeight());
 	}
 
 	ofPushStyle();
@@ -126,7 +149,7 @@ void testApp::draw(){
 testApp::Frame testApp::screenToFrame(const ofVec2f & screen) const {
 	testApp::Frame frame;
 	frame.time = screen.x / ofGetWidth() * (this->maxTimestamp - this->minTimestamp) + minTimestamp;
-	frame.camera = ofClamp((screen.y * 13) / ofGetHeight() - 1, 0, 12);
+	frame.camera = ofClamp((screen.y * 13) / ofGetHeight() - 1, 0, 11);
 	return frame;
 }
 
@@ -193,8 +216,13 @@ bool testApp::getFrame(int camera, float time, ofPixels & output) {
 	auto & frames = files[camera];
 	auto find = frames.find(time);
 
-	if (camera < 0 || camera >= this->files.size() - 1) {
+	if (camera < 0 || camera >= this->files.size()) {
 		ofLogError() << "Camera index " << camera << " out of bounds";
+	}
+
+	if (frames.size() == 0) {
+		ofLogError() << "No frames available for camera " << camera;
+		return false;
 	}
 
 	if (find == frames.end()) {
@@ -202,17 +230,12 @@ bool testApp::getFrame(int camera, float time, ofPixels & output) {
 		find = frames.lower_bound(time);
 	}
 	if (find == frames.end()) {
-		find = frames.upper_bound(time);
+		//we want to look back in time to find the last frame
+		find--;
 	}
-	if (find == frames.end()) {
-		//no frame found. very strange situation
-		ofLogError() << "No frame found for camera:" << camera << ", time:" << time;
-		return false;
-	}
-	else {
-		getFrame(find->second, output);
-		return true;
-	}
+
+	getFrame(find->second, output);
+	return true;
 }
 
 //--------------------------------------------------------------
@@ -259,18 +282,21 @@ bool testApp::cacheInterpolation(const Frame & frame) {
 
 //--------------------------------------------------------------
 void testApp::buildFrame(const Frame & frame, bool interpolate) {
-	if (interpolate && this->cacheInterpolation(frame)) {
+	bool needsInterpolation = interpolate;
+	if (interpolate) {
+		needsInterpolation = this->cacheInterpolation(frame);
+	}
+	
+	if (needsInterpolation) {
 		float x = frame.camera;
 		x -= floor(x); // strip to 0...1
 		this->interpolator->UpdateResult(x, this->A.getTextureReference(), this->B.getTextureReference());
+		this->interpolator->getResultFbo().readToPixels(result.getPixelsRef());
 	} else {
-		// just draw the A frame onto our interpolator's fbo
-		auto fbo = this->interpolator->getResultFbo();
-		fbo.begin();
-		ofClear(0,0,0,0);
-		A.draw(0,0);
-		fbo.end();
+		this->getFrame(frame.camera, frame.time, this->result.getPixelsRef());
 	}
+
+	this->result.update();
 
 	this->cursor = frameToScreen(frame);
 }
@@ -296,21 +322,33 @@ void testApp::keyPressed(int key) {
 	}
 
 	if (key == ' ') {
-		Poco::Path outputPath(ofToDataPath("output/"));
+		this->editing = false;
+		this->beginPlaybackTime = ofGetElapsedTimef();
+	}
+
+	if (key == 'b') {
+		Poco::Path outputPath(ofToDataPath("frames_recording/"));
 		Poco::File(outputPath).createDirectories();
 
 		ofPixels output;
 		output.allocate(1280, 720, OF_PIXELS_RGB);
 		for (int frame=0; frame<FRAME_LENGTH; frame++) {
-			this->buildFrame(lengthToFrame(this->totalLength * (float) frame / (float) FRAME_LENGTH), true);
-			this->interpolator->getResultFbo().readToPixels(output);
+			auto x = lengthToFrame(this->totalLength * (float) frame / (float) FRAME_LENGTH);
+			this->buildFrame(x, true);
 
 			string frameString = ofToString(frame);
 			while(frameString.length() < 4) {
 				frameString = "0" + frameString;
 			}
-			ofSaveImage(output, outputPath.toString() + frameString + ".png");
+
+			frameString = "frame_" + frameString;
+			auto filename = outputPath.toString() + frameString + ".jpg";
+
+			this->result.saveImage(filename);
+			cout << frameString << endl;
 		}
+
+		this->youTubeEncoder.encodeFrames("frames_recording", true);
 	}
 }
 
