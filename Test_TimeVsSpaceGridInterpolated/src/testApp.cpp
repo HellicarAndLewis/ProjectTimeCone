@@ -206,9 +206,11 @@ testApp::Frame testApp::lengthToFrame(float position) const {
 
 //--------------------------------------------------------------
 void testApp::getFrame(string path, ofPixels & pixels) {
+	Profiler["Load frame from disk"].begin();
 	ifstream file(path, ios::binary | ios::in);
 	file.read((char*) pixels.getPixels(), pixels.size());
 	file.close();
+	Profiler["Load frame from disk"].end();
 }
 
 //--------------------------------------------------------------
@@ -265,13 +267,17 @@ bool testApp::cacheInterpolation(const Frame & frame) {
 	if (filenameA != intepolatorCachedA) {
 		intepolatorCachedA = filenameA;
 		getFrame(filenameA, A.getPixelsRef());
+		Profiler["Load frame to GPU"].begin();
 		A.update();
+		Profiler["Load frame to GPU"].end();
 		needsCache = true;
 	}
 	if (filenameB != intepolatorCachedB) {
 		intepolatorCachedB = filenameB;
 		getFrame(filenameB, B.getPixelsRef());
+		Profiler["Load frame to GPU"].begin();
 		B.update();
+		Profiler["Load frame to GPU"].end();
 		needsCache = true;
 	}
 	
@@ -332,10 +338,17 @@ void testApp::keyPressed(int key) {
 
 		ofPixels output;
 		output.allocate(1280, 720, OF_PIXELS_RGB);
+
+		Profiler.clear();
+
+		Profiler["Build frames"].begin();
 		for (int frame=0; frame<FRAME_LENGTH; frame++) {
+			Profiler["Compute frame"].begin();
 			auto x = lengthToFrame(this->totalLength * (float) frame / (float) FRAME_LENGTH);
 			this->buildFrame(x, true);
+			Profiler["Compute frame"].end();
 
+			Profiler["Save frame"].begin();
 			string frameString = ofToString(frame);
 			while(frameString.length() < 4) {
 				frameString = "0" + frameString;
@@ -346,9 +359,15 @@ void testApp::keyPressed(int key) {
 
 			this->result.saveImage(filename);
 			cout << frameString << endl;
+			Profiler["Save frame"].end();
 		}
+		Profiler["Build frames"].end();
 
+		Profiler["Dispatch encoding"].begin();
 		this->youTubeEncoder.encodeFrames("frames_recording", true);
+		Profiler["Dispatch encoding"].end();
+
+		cout << Profiler.getResultsString();
 	}
 }
 
