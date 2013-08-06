@@ -28,10 +28,6 @@
 
  */
 
-extern "C" {
-# include <uv.h>
-}
-
 #include <videoencoder/VideoEncoder.h>
 #include <youtube/YouTube.h>
 #include <youtube/YouTubeUpload.h>

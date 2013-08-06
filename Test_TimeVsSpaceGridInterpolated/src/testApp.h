@@ -1,14 +1,10 @@
 #pragma once
-extern "C" {
-# include <uv.h>
-};
-#undef small
 
+#include "ProjectTimeCone.h"
 #include "ofMain.h"
 #include "ofxCvGui.h"
 #include "ofxMachineVision.h"
 
-#include "ProjectTimeCone.h"
 
 #define FRAME_LENGTH (25 * 10)
 

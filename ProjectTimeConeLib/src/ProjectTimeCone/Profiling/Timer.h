@@ -1,5 +1,10 @@
 #pragma once
 
+extern "C" {
+#include <uv.h>
+};
+#undef small
+
 #include <windows.h>
 #include "ofMain.h"
 
