@@ -46,20 +46,6 @@ void testApp::setup(){
 
 		index++;
 	}
-
-	/*
-	//we presume we want to start from scratch
-	try {
-		ofFile load(ORDER_FILENAME, ofFile::ReadOnly, true);
-		if (load.getPocoFile().getSize() == sizeof(int) * this->grabbers.size()) {
-			order.resize(grabbers.size());
-			load.read((char*) &order[0], sizeof(int) * grabbers.size());
-		}
-		load.close();
-	} catch(...) {
-		ofLogWarning() << "Couldn't load camera order";
-	}
-	*/
 }
 
 //--------------------------------------------------------------
