@@ -93,6 +93,9 @@
     <ClInclude Include="src\ProjectTimeCone\Profiling\Timer.h">
       <Filter>src\ProjectTimeCone\Profiling</Filter>
     </ClInclude>
+    <ClInclude Include="src\ProjectTimeCone\Interpolation\GPUOpticalFlow.h">
+      <Filter>src\ProjectTimeCone\Interpolation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ProjectTimeCone\Initialisation.cpp">
@@ -241,6 +244,9 @@
     </ClCompile>
     <ClCompile Include="src\ProjectTimeCone\Profiling\Timer.cpp">
       <Filter>src\ProjectTimeCone\Profiling</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProjectTimeCone\Interpolation\GPUOpticalFlow.cpp">
+      <Filter>src\ProjectTimeCone\Interpolation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

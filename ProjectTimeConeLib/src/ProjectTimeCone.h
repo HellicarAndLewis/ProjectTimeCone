@@ -8,5 +8,6 @@
 
 #include "ProjectTimeCone/Initialisation.h"
 #include "ProjectTimeCone/Interpolation/OpticalFlow.h"
+#include "ProjectTimeCone/Interpolation/GPUOpticalFlow.h"
 #include "ProjectTimeCone/Profiling/Timer.h"
 

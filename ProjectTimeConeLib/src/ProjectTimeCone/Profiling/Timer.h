@@ -1,9 +1,11 @@
 #pragma once
 
-extern "C" {
-#include <uv.h>
-};
-#undef small
+#ifndef NO_YOUTUBE
+	extern "C" {
+		#include <uv.h>
+	};
+	#undef small
+#endif
 
 #include <windows.h>
 #include "ofMain.h"

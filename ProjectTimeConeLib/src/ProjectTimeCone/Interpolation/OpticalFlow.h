@@ -12,9 +12,9 @@ namespace ProjectTimeCone {
 			
 			void Interpolate(float x, ofPixels & A, ofPixels & B, ofPixels & result) override;
 			
-			void UpdateFlow(ofPixels & A, ofPixels & B);
-			void UpdateResult(float x, ofTexture & A, ofTexture & B);
-			void reload();
+			virtual void UpdateFlow(ofPixels & A, ofPixels & B);
+			virtual void UpdateResult(float x, ofTexture & A, ofTexture & B);
+			virtual void reload();
 
 			ofFloatImage & getAtoB();
 			ofFloatImage & getBtoA();
