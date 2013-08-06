@@ -1,3 +1,8 @@
+extern "C" {
+#include <uv.h>
+};
+#undef small
+
 #include "ofMain.h"
 #include "testApp.h"
 
