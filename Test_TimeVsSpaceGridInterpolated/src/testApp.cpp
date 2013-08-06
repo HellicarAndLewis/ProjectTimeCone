@@ -9,7 +9,11 @@ void testApp::setup(){
 	this->minTimestamp = std::numeric_limits<float>::max();
 	this->maxTimestamp = std::numeric_limits<float>::min();
 
-	this->inputFolder = Poco::Path(ofSystemLoadDialog("Select recording folder", true).getPath() + "/");
+	auto result = ofSystemLoadDialog("Select recording folder", true);
+	if (!result.bSuccess) {
+		ofExit();
+	}
+	this->inputFolder = Poco::Path(result.getPath() + "/");
 
 	ofDirectory listDir;
 	listDir.listDir(this->inputFolder.toString());
@@ -46,7 +50,6 @@ void testApp::setup(){
 				if (timestamp < minTimestamp) {
 					minTimestamp = timestamp;
 				}
-				cout << dirIt->path() << endl;
 			}
 		}
 	}
@@ -146,7 +149,7 @@ void testApp::draw(){
 testApp::Frame testApp::screenToFrame(const ofVec2f & screen) const {
 	testApp::Frame frame;
 	frame.time = screen.x / ofGetWidth() * (this->maxTimestamp - this->minTimestamp) + minTimestamp;
-	frame.camera = ofClamp((screen.y * 13) / ofGetHeight() - 1, 0, 12);
+	frame.camera = ofClamp((screen.y * 13) / ofGetHeight() - 1, 0, 11);
 	return frame;
 }
 
@@ -217,22 +220,22 @@ bool testApp::getFrame(int camera, float time, ofPixels & output) {
 		ofLogError() << "Camera index " << camera << " out of bounds";
 	}
 
+	if (frames.size() == 0) {
+		ofLogError() << "No frames available for camera " << camera;
+		return false;
+	}
+
 	if (find == frames.end()) {
 		//general case, we need to find the closest frame
 		find = frames.lower_bound(time);
 	}
 	if (find == frames.end()) {
-		find = frames.upper_bound(time);
+		//we want to look back in time to find the last frame
+		find--;
 	}
-	if (find == frames.end()) {
-		//no frame found. very strange situation
-		ofLogError() << "No frame found for camera:" << camera << ", time:" << time;
-		return false;
-	}
-	else {
-		getFrame(find->second, output);
-		return true;
-	}
+
+	getFrame(find->second, output);
+	return true;
 }
 
 //--------------------------------------------------------------
@@ -331,7 +334,7 @@ void testApp::keyPressed(int key) {
 		output.allocate(1280, 720, OF_PIXELS_RGB);
 		for (int frame=0; frame<FRAME_LENGTH; frame++) {
 			auto x = lengthToFrame(this->totalLength * (float) frame / (float) FRAME_LENGTH);
-			this->buildFrame(x, false);
+			this->buildFrame(x, true);
 
 			string frameString = ofToString(frame);
 			while(frameString.length() < 4) {
