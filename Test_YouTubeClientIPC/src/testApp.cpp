@@ -4,12 +4,12 @@
 #if !defined(USE_RAW_IPC)
 static void yt_on_video_encoded(VideoEncoderEncodeTask task, void *user) {
   testApp* app = static_cast<testApp*>(user);
-  // app->yt.removeInputFrames(task);
+  app->yt.removeInputFrames(task);
 }
 
 static void yt_on_video_uploaded(YouTubeVideo video, void* user) {
   testApp* app = static_cast<testApp*>(user);
-  //app->yt.removeEncodedVideoFile(video);
+  app->yt.removeEncodedVideoFile(video);
 }
 #endif
 
@@ -244,7 +244,7 @@ void testApp::setup(){
 #endif
 
 #if defined(AUTOMATED_UPLOADS)
-  automated_delay = 10 * 1000;  // a new video every minute
+  automated_delay = 25 * 1000;  // a new video every minute
   automated_timeout = rx_millis();
 #endif
 }

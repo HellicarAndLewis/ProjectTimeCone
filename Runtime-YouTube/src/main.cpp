@@ -23,7 +23,7 @@ int main() {
 #endif
 
   if(!youtube.setup()) {
-    RX_ERROR("Failed to setup the youtube service.");
+    RX_ERROR("Failed to setup the youtube service. Try to remove the database + reset your authorization token");
     return EXIT_FAILURE;
   }
 

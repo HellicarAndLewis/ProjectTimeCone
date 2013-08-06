@@ -58,7 +58,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>.\..\addons\roxlu\addons\PCRE\include\;%(AdditionalIncludeDirectories);src;.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\SQLite\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\..\ProjectTimeConeLib\src\;.\..\addons\roxlu\addons\PCRE\include\;%(AdditionalIncludeDirectories);src;.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\SQLite\include\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -82,7 +82,7 @@
       <PrecompiledHeader />
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat />
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\PCRE\include\;.\..\addons\roxlu\addons\SQLite\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ProjectTimeConeLib\src\;%(AdditionalIncludeDirectories);src;.\..\addons\roxlu\lib\include\;.\..\Runtime-VideoEncoder\src\videoencoder\include\;.\..\addons\roxlu\extern\include\;.\..\addons\roxlu\addons\UV\include\;.\..\addons\roxlu\addons\YouTube\include\;.\..\addons\roxlu\addons\SQLite\extern\sqlite\;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\curl\;.\..\addons\roxlu\addons\PCRE\include\;.\..\addons\roxlu\addons\SQLite\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
@@ -140,6 +140,7 @@
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec2.cpp" />
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec3.cpp" />
     <ClCompile Include="..\addons\roxlu\lib\src\roxlu\math\Vec4.cpp" />
+    <ClCompile Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.cpp" />
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoder.cpp" />
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderClientIPC.cpp" />
     <ClCompile Include="..\Runtime-VideoEncoder\src\videoencoder\src\VideoEncoderServerIPC.cpp" />
@@ -149,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.h" />
+    <ClInclude Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.h" />
     <ClInclude Include="src\testApp.h" />
   </ItemGroup>
   <ItemGroup>

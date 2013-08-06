@@ -58,7 +58,7 @@ bool YouTubeService::setup() {
   }
 
   if(!yt.hasAccessToken()) {
-    RX_VERBOSE("Fetching access token");
+    RX_VERBOSE("Exchanging auth code");
     if(!yt.exchangeAuthCode(auth_code)) {
       RX_ERROR("Error while trying to exchagne the auth code for an access token");
       return false;
