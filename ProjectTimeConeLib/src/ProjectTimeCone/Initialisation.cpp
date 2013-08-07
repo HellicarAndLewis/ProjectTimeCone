@@ -5,7 +5,6 @@ using namespace ofxMachineVision;
 namespace ProjectTimeCone {
 	//---------
 	void Initialisation::LoadCameras(std::vector<ofPtr<Grabber::Simple>> & grabbers, std::function<void (int, ofPtr<Grabber::Simple>)> functor,
-		float exposure, float gain, float focus,
 		int width, int height) {
 		
 		//order is a vector where
@@ -39,9 +38,9 @@ namespace ProjectTimeCone {
 
 			grabber->open(deviceIndex);
 			grabber->startCapture();
-			grabber->setExposure(exposure);
-			grabber->setGain(gain);
-			grabber->setFocus(focus);
+			grabber->setExposure(500);
+			grabber->setGain(5);
+			grabber->setFocus(0);
 
 			functor(index, grabber);
 
