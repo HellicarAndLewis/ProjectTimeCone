@@ -25,7 +25,8 @@ extern "C" {
 #include <videoencoder/VideoEncoder.h>
 #include <youtube/YouTube.h>
 #include <roxlu/io/RingBuffer.h>
-#include "YouTubeVideoEncoder.h"
+//#include "YouTubeVideoEncoder.h"
+#include "EncodeAndUpload.h"
 
 #define CAM_WIDTH 1280
 #define CAM_HEIGHT 720
@@ -37,6 +38,8 @@ extern "C" {
 
 #define AUTOMATED_UPLOADS 
 //#define USE_RAW_IPC     /* if you want to use the VideoEncoderClientIPC and YouTube ipc directly instead of the wrapper YouTubeVideoEncoder */
+
+//using namespace ProjectTimeCone::YouTube;
 
 struct PixelData {
   size_t nbytes;
@@ -109,7 +112,8 @@ class testApp : public ofBaseApp{
   RingBuffer pixel_buffer;               /* we preallocate some frames to speed things up */
   EncoderThread encoder_thread;          /* quick 'n dirty threaded image write; blocks when we need to stop and there are still iamges in the queue */
 
-  YouTubeVideoEncoder yt;
+  //  ProjectTimeCone::YouTube::YouTubeVideoEncoder yt;
+  ProjectTimeCone::YouTube::EncodeAndUpload  yt;
 
 #if defined(AUTOMATED_UPLOADS)
   uint64_t automated_timeout;            /* when we should start another grab process */

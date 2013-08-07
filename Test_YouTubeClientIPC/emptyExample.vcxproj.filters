@@ -139,7 +139,10 @@
     <ClCompile Include="..\addons\roxlu\addons\UV\src\uv\ipc\ParserIPC.cpp">
       <Filter>addons\uv\ipc</Filter>
     </ClCompile>
-    <ClCompile Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.cpp">
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeParser.cpp">
+      <Filter>addons\youtube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ProjectTimeConeLib\src\ProjectTimeCone\YouTube\EncodeAndUpload.cpp">
       <Filter>addons\youtubevideoencoder</Filter>
     </ClCompile>
   </ItemGroup>
@@ -191,7 +194,7 @@
     <ClInclude Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.h">
       <Filter>addons\sqlite\extern</Filter>
     </ClInclude>
-    <ClInclude Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.h">
+    <ClInclude Include="..\ProjectTimeConeLib\src\ProjectTimeCone\YouTube\EncodeAndUpload.h">
       <Filter>addons\youtubevideoencoder</Filter>
     </ClInclude>
   </ItemGroup>

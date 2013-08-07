@@ -26,7 +26,7 @@
 
   ````
 
- */
+*/
 
 extern "C" {
 # include <uv.h>
@@ -44,14 +44,14 @@ namespace ProjectTimeCone {
 		void ytv_on_cmd_executed(VideoEncoderEncodeTask task, void* user);                   /* gets called when the encoder has encoded the given task, at this the avconv command has been executed and it's where you want to remove the raw frames */
 		void ytv_on_uploaded(YouTubeVideo video, void* user);                                /* gets called when a video has been upload to youtube, at this point you might remove or move the video to another place */
 
-		class VideoEncoder {
-		 public:
-		  VideoEncoder();
-		  ~VideoEncoder();
+		class EncodeAndUpload {
+    public:
+		  EncodeAndUpload();
+		  ~EncodeAndUpload();
 
 		  bool setup(yt_encode_callback onEncoded,                                        /* setup; onEncoded will be called when we've encoded the video */
-					 youtube_upload_ready_callback onUploaded,
-					 void* user);               
+                 youtube_upload_ready_callback onUploaded,
+                 void* user);               
   
 		  void update();                                                                  /* call this in your update function // event loop */
 
@@ -67,7 +67,7 @@ namespace ProjectTimeCone {
 		  bool removeEncodedVideoFile(YouTubeVideo video);                                 /* remove the encoded video file for the given YouTubeVideo */
 		  bool removeInputFrames(VideoEncoderEncodeTask task);                             /* removes the raw frames */
 
-		 public:
+    public:
 		  VideoEncoderClientIPC enc_client;
 		  YouTubeClientIPC yt_client;
 		  std::string audio_file_path;                                                      /* abs path to the audio file, that is used to create the video */
