@@ -22,7 +22,7 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		void keyPressed( int key );
 		
-		vector<ofPtr<ofxMachineVision::Grabber::Simple>> grabbers;
+		vector<ofPtr<Initialisation::CameraController>> controllers;
 		ofxCvGui::Builder gui;
 
 		vector<vector<ofVec2f>> lines;

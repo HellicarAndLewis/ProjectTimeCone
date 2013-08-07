@@ -8,9 +8,10 @@ void testApp::setup(){
 	gui.init();
 	gui.addInstructions();
 	
-	ProjectTimeCone::Initialisation::LoadCameras(this->grabbers, [this] (int index, ofPtr<Grabber::Simple> grabber) {
+	ProjectTimeCone::Initialisation::Initialiser::LoadCameras(this->controllers, [this] (ofPtr<Initialisation::CameraController> controller) {
+		auto grabber = controller->grabber;
 		auto panel = gui.add(*grabber, string(grabber->getModelName()));
-		panel->onDrawCropped.addListener([this, grabber, index, panel] (const Panels::BaseImage::DrawCroppedArguments & args) {
+		panel->onDrawCropped.addListener([this, grabber, controller, panel] (const Panels::BaseImage::DrawCroppedArguments & args) {
 			ofPushMatrix();
 			ofScale(args.size.x, args.size.y, 1.0f);
 
@@ -66,14 +67,14 @@ void testApp::setup(){
 			ofPopMatrix();
 		}, this);
 
-		panel->onMouse.addListener([this, index, panel] (const MouseArguments & args) {
+		panel->onMouse.addListener([this, controller, panel] (const MouseArguments & args) {
 			if (args.isLocal() && panel->getZoomed() == ofxCvGui::Panels::BaseImage::ZoomFit) {
 				if (args.action == MouseArguments::Pressed) {
 					this->lines.push_back(vector<ofVec2f>());
 					this->lines.back().push_back(ofVec2f(args.localNormalised));
-					this->hitIndex = index;
+					this->hitIndex = controller->index;
 				} else if (args.action == MouseArguments::Dragged) {
-					if (index == this->hitIndex) {
+					if (controller->index == this->hitIndex) {
 						this->lines.back().push_back(ofVec2f(args.localNormalised));
 					}
 				}
@@ -84,8 +85,8 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
-	for(auto grabber : grabbers) {
-		grabber->update();
+	for(auto controller : controllers) {
+		controller->grabber->update();
 	}
 }
 

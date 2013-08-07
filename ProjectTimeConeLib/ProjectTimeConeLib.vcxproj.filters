@@ -55,13 +55,13 @@
     <Filter Include="src\ProjectTimeCone\Profiling">
       <UniqueIdentifier>{49a1dd72-de35-44ce-8e8b-8f18e532c81f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ProjectTimeCone\Initialisation">
+      <UniqueIdentifier>{f88d73b3-5f6c-4068-8c7f-18fd95f3c21d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ProjectTimeCone.h">
       <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ProjectTimeCone\Initialisation.h">
-      <Filter>src\ProjectTimeCone</Filter>
     </ClInclude>
     <ClInclude Include="src\ProjectTimeCone\Interpolation\Base.h">
       <Filter>src\ProjectTimeCone\Interpolation</Filter>
@@ -96,11 +96,11 @@
     <ClInclude Include="src\ProjectTimeCone\YouTube\EncodeAndUpload.h">
       <Filter>src\ProjectTimeCone\YouTube</Filter>
     </ClInclude>
+    <ClInclude Include="src\ProjectTimeCone\Initialisation\Initialiser.h">
+      <Filter>src\ProjectTimeCone\Initialisation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\ProjectTimeCone\Initialisation.cpp">
-      <Filter>src\ProjectTimeCone</Filter>
-    </ClCompile>
     <ClCompile Include="src\ProjectTimeCone\Interpolation\OpticalFlow.cpp">
       <Filter>src\ProjectTimeCone\Interpolation</Filter>
     </ClCompile>
@@ -247,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="src\ProjectTimeCone\YouTube\EncodeAndUpload.cpp">
       <Filter>src\ProjectTimeCone\YouTube</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProjectTimeCone\Initialisation\Initialiser.cpp">
+      <Filter>src\ProjectTimeCone\Initialisation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
