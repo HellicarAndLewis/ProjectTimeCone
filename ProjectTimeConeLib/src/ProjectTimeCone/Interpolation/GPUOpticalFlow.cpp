@@ -15,10 +15,8 @@ namespace ProjectTimeCone {
 			} catch (cv::Exception e) {
 				ofLogError("GPUOpticalFlow") << e.msg;
 			}
-			this->texture.allocate(width, height, GL_LUMINANCE32F_ARB, true); 
 			this->width = width;
 			this->height = height;
-			
 		}
 
 		//---------
@@ -28,7 +26,8 @@ namespace ProjectTimeCone {
 
 		//---------
 		void GPUOpticalFlow::FlowResult::upload() {
-			this->texture.loadData((float*) this->cpuMat.data, this->width, this->height, GL_LUMINANCE32F_ARB);
+			this->image.setFromPixels((float*) this->cpuMat.data, this->width, this->height, OF_IMAGE_GRAYSCALE);
+			this->image.update();
 		}
 
 		//---------
@@ -40,13 +39,26 @@ namespace ProjectTimeCone {
 				this->gpuA = GpuMat(height, width, CV_8UC1);
 				this->gpuB = GpuMat(height, width, CV_8UC1);
 
+				this->AtoBimage.allocate(width, height, OF_IMAGE_GRAYSCALE);
+				this->BtoAimage.allocate(width, height, OF_IMAGE_GRAYSCALE);
+
 				this->reload();
+		}
+		
+		//---------
+		GPUOpticalFlow::~GPUOpticalFlow() {
+			this->flow.releaseMemory();
 		}
 
 		//---------
 		void GPUOpticalFlow::UpdateFlow(ofPixels & A, ofPixels & B) {
-			cvtColor(toCv(A), this->gpuA, CV_RGB2GRAY);
-			cvtColor(toCv(B), this->gpuB, CV_RGB2GRAY);
+			Profiler["Convert colour"].begin();
+			cvtColor(toCv(A), this->A, CV_RGB2GRAY);
+			cvtColor(toCv(B), this->B, CV_RGB2GRAY);
+
+			gpuA.upload(this->A);
+			gpuB.upload(this->B);
+			Profiler["Convert colour"].end();
 			
 			Profiler["Calculate optical flow"].begin();
 			this->flow(this->gpuA, this->gpuB, this->AtoBX.gpuMat, this->AtoBY.gpuMat);
@@ -80,21 +92,22 @@ namespace ProjectTimeCone {
 
 			//A to B points
 			this->left.begin();
-
-			this->displaceXY.setUniformTexture("imageDisplaceX", AtoBX.texture, 0);
-			this->displaceXY.setUniformTexture("imageDisplaceY", AtoBY.texture, 1);
+			ofClear(0,0,0,0);
+			this->displaceXY.setUniformTexture("imageDisplaceX", AtoBX.image.getTextureReference(), 0);
+			this->displaceXY.setUniformTexture("imageDisplaceY", AtoBY.image.getTextureReference(), 1);
 			this->displaceXY.setUniformTexture("texture", A, 2);
 			this->displaceXY.setUniform1f("x", x);
-			this->mesh.drawVertices();
+			this->mesh.drawFaces();
 			this->left.end();
 
 			//B to A points
 			this->right.begin();
-			this->displaceXY.setUniformTexture("imageDisplaceX", BtoAX.texture, 0);
-			this->displaceXY.setUniformTexture("imageDisplaceY", BtoAY.texture, 1);
+			ofClear(0,0,0,0);
+			this->displaceXY.setUniformTexture("imageDisplaceX", BtoAX.image.getTextureReference(), 0);
+			this->displaceXY.setUniformTexture("imageDisplaceY", BtoAY.image.getTextureReference(), 1);
 			this->displaceXY.setUniformTexture("texture", B, 2);
 			this->displaceXY.setUniform1f("x", 1.0f - x);
-			this->mesh.drawVertices();
+			this->mesh.drawFaces();
 			this->right.end();
 
 			ofDisableAlphaBlending();
@@ -108,11 +121,12 @@ namespace ProjectTimeCone {
 			//Crossfade
 			//
 			Profiler["Crossfade and fill"].begin();
-			fbo.begin();
+			result.begin();
 			ofClear(0,0,0,0);
 
 			ofEnableAlphaBlending();
 			morphFill.begin();
+			morphFill.setUniform1i("stepDistance", 2);
 			
 			//left
 			morphFill.setUniformTexture("texture", this->left, 0);
@@ -126,7 +140,7 @@ namespace ProjectTimeCone {
 
 			morphFill.end();
 			ofDisableAlphaBlending();
-			fbo.end();
+			result.end();
 			Profiler["Crossfade and fill"].end();
 			//
 			//--

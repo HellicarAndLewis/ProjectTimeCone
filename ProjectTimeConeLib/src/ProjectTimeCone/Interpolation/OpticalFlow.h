@@ -40,7 +40,7 @@ namespace ProjectTimeCone {
 
 			ofTexture textureA, textureB;
 			ofFbo left, right;
-			ofFbo fbo;
+			ofFbo interim, result;
 			ofShader displace;
 			ofShader morphFill;
 			ofMesh mesh;

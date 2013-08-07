@@ -74,10 +74,14 @@ namespace ProjectTimeCone {
 			int longestName = 0;
 			map<float, string> durations;
 			for (auto & action : this->actions) {
-				durations.insert(pair<float, string>(action.second.getDurationMean(), action.first));
+				float duration = action.second.getDurationMean();
+				durations.insert(pair<float, string>(duration, action.first));
 				int nameLength = action.first.size();
 				if (nameLength > longestName) {
 					longestName = nameLength;
+				}
+				if (duration > maxDuration) {
+					maxDuration = duration;
 				}
 			}
 
@@ -88,12 +92,14 @@ namespace ProjectTimeCone {
 				}
 				result << " : ";
 				
-				result << "(" << ofToString(this->actions.at(it.second).getDurationSum(), 4) << "s)";
-				result << " " << ofToString(it.first, 4) << "s ";
 				int barLength = it.first / maxDuration * 20.0f;
 				for(int i=0; i<20; i++) {
 					result << ((i <= barLength) ? "#" : ".");
 				}
+				
+				result << "(" << ofToString(this->actions.at(it.second).getDurationSum(), 4) << "s) ";
+				result << " " << ofToString(it.first, 4) << "s";
+				
 				result << endl;
 			}
 

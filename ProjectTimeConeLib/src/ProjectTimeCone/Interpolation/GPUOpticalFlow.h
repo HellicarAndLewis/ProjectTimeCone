@@ -15,11 +15,13 @@ namespace ProjectTimeCone {
 
 				cv::gpu::GpuMat gpuMat;
 				cv::Mat cpuMat;
-				ofTexture texture;
+				ofFloatImage image;
 				int width, height;
 			};
 		public:
 			GPUOpticalFlow(int width, int height);
+			~GPUOpticalFlow();
+
 			void UpdateFlow(ofPixels & A, ofPixels & B) override;
 			void UpdateResult(float x, ofTexture & A, ofTexture & B) override;
 			void UpdateParameters();
