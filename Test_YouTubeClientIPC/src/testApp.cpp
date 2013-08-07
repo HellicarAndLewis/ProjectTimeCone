@@ -2,6 +2,9 @@
 
 //--------------------------------------------------------------
 #if !defined(USE_RAW_IPC)
+//namespace ProjectTimeCone {
+//  namespace YouTube {
+
 static void yt_on_video_encoded(VideoEncoderEncodeTask task, void *user) {
   testApp* app = static_cast<testApp*>(user);
   app->yt.removeInputFrames(task);
@@ -11,6 +14,8 @@ static void yt_on_video_uploaded(YouTubeVideo video, void* user) {
   testApp* app = static_cast<testApp*>(user);
   app->yt.removeEncodedVideoFile(video);
 }
+
+//  }} // namespaces
 #endif
 
 //--------------------------------------------------------------
