@@ -6,7 +6,7 @@
 #include "ofxMachineVision.h"
 
 
-#define FRAME_LENGTH (5)
+#define FRAME_LENGTH (25 * 10)
 
 using namespace ofxCvGui;
 using namespace ProjectTimeCone;

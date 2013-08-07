@@ -81,7 +81,9 @@ void testApp::setup(){
 	}
 	this->gridView.end();
 
-	this->interpolator = ofPtr<Interpolation::OpticalFlow>(new Interpolation::OpticalFlow(1280,720));
+	auto flow = new Interpolation::GPUOpticalFlow(1280,720);
+	flow->UpdateParameters();
+	this->interpolator = ofPtr<Interpolation::OpticalFlow>(flow);
 	this->intepolatorCachedA = "";
 	this->intepolatorCachedB = "";
 	this->A.allocate(1280, 720, OF_IMAGE_COLOR);
@@ -112,7 +114,7 @@ void testApp::update(){
 		searchTime -= floor(searchTime / 10.0f) * 10.0f;
 		searchTime /= 10.0f;
 
-		this->buildFrame(this->lengthToFrame(searchTime * totalLength), false);
+		this->buildFrame(this->lengthToFrame(searchTime * totalLength), true);
 	}
 
 	this->youTubeEncoder.update();
@@ -334,6 +336,7 @@ void testApp::keyPressed(int key) {
 
 	if (key == 'b') {
 		Poco::Path outputPath(ofToDataPath("frames_recording/"));
+		Poco::File(outputPath).remove(true);
 		Poco::File(outputPath).createDirectories();
 
 		ofPixels output;
