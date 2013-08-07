@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Profiling/Timer.h"
 #include "Base.h"
 #include "ofxCv.h"
 
@@ -11,9 +12,9 @@ namespace ProjectTimeCone {
 			
 			void Interpolate(float x, ofPixels & A, ofPixels & B, ofPixels & result) override;
 			
-			void UpdateFlow(ofPixels & A, ofPixels & B);
-			void UpdateResult(float x, ofTexture & A, ofTexture & B);
-			void reload();
+			virtual void UpdateFlow(ofPixels & A, ofPixels & B);
+			virtual void UpdateResult(float x, ofTexture & A, ofTexture & B);
+			virtual void reload();
 
 			ofFloatImage & getAtoB();
 			ofFloatImage & getBtoA();
@@ -39,7 +40,7 @@ namespace ProjectTimeCone {
 
 			ofTexture textureA, textureB;
 			ofFbo left, right;
-			ofFbo fbo;
+			ofFbo interim, result;
 			ofShader displace;
 			ofShader morphFill;
 			ofMesh mesh;

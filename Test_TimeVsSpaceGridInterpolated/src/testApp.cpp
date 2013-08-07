@@ -81,7 +81,9 @@ void testApp::setup(){
 	}
 	this->gridView.end();
 
-	this->interpolator = ofPtr<Interpolation::OpticalFlow>(new Interpolation::OpticalFlow(1280,720));
+	auto flow = new Interpolation::GPUOpticalFlow(1280,720);
+	flow->UpdateParameters();
+	this->interpolator = ofPtr<Interpolation::OpticalFlow>(flow);
 	this->intepolatorCachedA = "";
 	this->intepolatorCachedB = "";
 	this->A.allocate(1280, 720, OF_IMAGE_COLOR);
@@ -112,7 +114,7 @@ void testApp::update(){
 		searchTime -= floor(searchTime / 10.0f) * 10.0f;
 		searchTime /= 10.0f;
 
-		this->buildFrame(this->lengthToFrame(searchTime * totalLength), false);
+		this->buildFrame(this->lengthToFrame(searchTime * totalLength), true);
 	}
 
 	this->youTubeEncoder.update();
@@ -206,9 +208,11 @@ testApp::Frame testApp::lengthToFrame(float position) const {
 
 //--------------------------------------------------------------
 void testApp::getFrame(string path, ofPixels & pixels) {
+	Profiler["Load frame from disk"].begin();
 	ifstream file(path, ios::binary | ios::in);
 	file.read((char*) pixels.getPixels(), pixels.size());
 	file.close();
+	Profiler["Load frame from disk"].end();
 }
 
 //--------------------------------------------------------------
@@ -265,13 +269,17 @@ bool testApp::cacheInterpolation(const Frame & frame) {
 	if (filenameA != intepolatorCachedA) {
 		intepolatorCachedA = filenameA;
 		getFrame(filenameA, A.getPixelsRef());
+		Profiler["Load frame to GPU"].begin();
 		A.update();
+		Profiler["Load frame to GPU"].end();
 		needsCache = true;
 	}
 	if (filenameB != intepolatorCachedB) {
 		intepolatorCachedB = filenameB;
 		getFrame(filenameB, B.getPixelsRef());
+		Profiler["Load frame to GPU"].begin();
 		B.update();
+		Profiler["Load frame to GPU"].end();
 		needsCache = true;
 	}
 	
@@ -328,14 +336,22 @@ void testApp::keyPressed(int key) {
 
 	if (key == 'b') {
 		Poco::Path outputPath(ofToDataPath("frames_recording/"));
+		Poco::File(outputPath).remove(true);
 		Poco::File(outputPath).createDirectories();
 
 		ofPixels output;
 		output.allocate(1280, 720, OF_PIXELS_RGB);
+
+		Profiler.clear();
+
+		Profiler["Build frames"].begin();
 		for (int frame=0; frame<FRAME_LENGTH; frame++) {
+			Profiler["Compute frame"].begin();
 			auto x = lengthToFrame(this->totalLength * (float) frame / (float) FRAME_LENGTH);
 			this->buildFrame(x, true);
+			Profiler["Compute frame"].end();
 
+			Profiler["Save frame"].begin();
 			string frameString = ofToString(frame);
 			while(frameString.length() < 4) {
 				frameString = "0" + frameString;
@@ -346,9 +362,15 @@ void testApp::keyPressed(int key) {
 
 			this->result.saveImage(filename);
 			cout << frameString << endl;
+			Profiler["Save frame"].end();
 		}
+		Profiler["Build frames"].end();
 
+		Profiler["Dispatch encoding"].begin();
 		this->youTubeEncoder.encodeFrames("frames_recording", true);
+		Profiler["Dispatch encoding"].end();
+
+		cout << Profiler.getResultsString();
 	}
 }
 

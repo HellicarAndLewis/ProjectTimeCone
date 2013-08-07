@@ -22,7 +22,7 @@ void testApp::setup(){
 	A.update();
 	B.update();
 
-	this->interpolation = ofPtr<Interpolation::OpticalFlow>(new Interpolation::OpticalFlow(this->width, this->height));
+	this->interpolation = ofPtr<Interpolation::OpticalFlow>(new Interpolation::GPUOpticalFlow(this->width, this->height));
 	this->interpolation->UpdateFlow(A, B);
 
 	this->gui.init();
@@ -32,12 +32,21 @@ void testApp::setup(){
 	this->gui.add(interpolation->getBtoA(), "B to A");
 	this->outputPanel = this->gui.add(interpolation->getResultFbo(), "Output");
 
-	this->outputPanel->onKeyboard += [this] (KeyboardArguments &) {
-		this->interpolation->reload();
+	this->outputPanel->onKeyboard += [this] (KeyboardArguments & args) {
+		if (args.key == ' ') {
+			this->interpolation->reload();
+		}
+		if (args.key == 'o') {
+			Profiler.clear();
+			this->interpolation->UpdateFlow(A, B);
+			this->interpolation->UpdateResult(x, this->A.getTextureReference(), this->B.getTextureReference());
+			cout << Profiler.getResultsString();
+		}
 	};
 
 	this->outputPanel->onMouse += [this] (MouseArguments & args) {
-		this->interpolation->UpdateResult(args.localNormalised.x, this->A.getTextureReference(), this->B.getTextureReference());
+		this->x = args.localNormalised.x;
+		this->interpolation->UpdateResult(x, this->A.getTextureReference(), this->B.getTextureReference());
 	};
 }
 
