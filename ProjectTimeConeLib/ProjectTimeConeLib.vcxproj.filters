@@ -87,14 +87,14 @@
     <ClInclude Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.h">
       <Filter>addons\sqlite\extern</Filter>
     </ClInclude>
-    <ClInclude Include="src\ProjectTimeCone\YouTube\VideoEncoder.h">
-      <Filter>src\ProjectTimeCone\YouTube</Filter>
-    </ClInclude>
     <ClInclude Include="src\ProjectTimeCone\Profiling\Timer.h">
       <Filter>src\ProjectTimeCone\Profiling</Filter>
     </ClInclude>
     <ClInclude Include="src\ProjectTimeCone\Interpolation\GPUOpticalFlow.h">
       <Filter>src\ProjectTimeCone\Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProjectTimeCone\YouTube\EncodeAndUpload.h">
+      <Filter>src\ProjectTimeCone\YouTube</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -239,14 +239,14 @@
     <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeUploadStatus.cpp">
       <Filter>addons\youtube</Filter>
     </ClCompile>
-    <ClCompile Include="src\ProjectTimeCone\YouTube\VideoEncoder.cpp">
-      <Filter>src\ProjectTimeCone\YouTube</Filter>
-    </ClCompile>
     <ClCompile Include="src\ProjectTimeCone\Profiling\Timer.cpp">
       <Filter>src\ProjectTimeCone\Profiling</Filter>
     </ClCompile>
     <ClCompile Include="src\ProjectTimeCone\Interpolation\GPUOpticalFlow.cpp">
       <Filter>src\ProjectTimeCone\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProjectTimeCone\YouTube\EncodeAndUpload.cpp">
+      <Filter>src\ProjectTimeCone\YouTube</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

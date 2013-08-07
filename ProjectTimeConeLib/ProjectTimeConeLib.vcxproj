@@ -105,7 +105,7 @@
     <ClInclude Include="src\ProjectTimeCone\Interpolation\GPUOpticalFlow.h" />
     <ClInclude Include="src\ProjectTimeCone\Interpolation\OpticalFlow.h" />
     <ClInclude Include="src\ProjectTimeCone\Profiling\Timer.h" />
-    <ClInclude Include="src\ProjectTimeCone\YouTube\VideoEncoder.h" />
+    <ClInclude Include="src\ProjectTimeCone\YouTube\EncodeAndUpload.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.c">
@@ -159,7 +159,7 @@
     <ClCompile Include="src\ProjectTimeCone\Interpolation\GPUOpticalFlow.cpp" />
     <ClCompile Include="src\ProjectTimeCone\Interpolation\OpticalFlow.cpp" />
     <ClCompile Include="src\ProjectTimeCone\Profiling\Timer.cpp" />
-    <ClCompile Include="src\ProjectTimeCone\YouTube\VideoEncoder.cpp" />
+    <ClCompile Include="src\ProjectTimeCone\YouTube\EncodeAndUpload.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
