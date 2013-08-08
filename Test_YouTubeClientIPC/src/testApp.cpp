@@ -249,7 +249,7 @@ void testApp::setup(){
 #endif
 
 #if defined(AUTOMATED_UPLOADS)
-  automated_delay = 25 * 1000;  // a new video every minute
+  automated_delay = 60 * 1000;  // a new video every minute
   automated_timeout = rx_millis();
 #endif
 }
