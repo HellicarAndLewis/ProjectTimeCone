@@ -6,7 +6,7 @@
 	#include "ProjectTimeCone/YouTube/VideoEncoder.h"
 #endif
 
-#include "ProjectTimeCone/Initialisation.h"
+#include "ProjectTimeCone/Initialisation/Initialiser.h"
 #include "ProjectTimeCone/Interpolation/OpticalFlow.h"
 #include "ProjectTimeCone/Interpolation/GPUOpticalFlow.h"
 #include "ProjectTimeCone/Profiling/Timer.h"
