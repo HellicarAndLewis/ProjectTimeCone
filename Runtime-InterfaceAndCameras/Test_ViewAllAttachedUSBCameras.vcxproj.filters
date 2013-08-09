@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\testApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Screens\Base.cpp">
+      <Filter>src\Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxAssets\src\ofxAssets.cpp">
+      <Filter>addons\ofxAssets</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Screens\Controller.cpp">
+      <Filter>src\Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Screens\Record.cpp">
+      <Filter>src\Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Screens\Render.cpp">
+      <Filter>src\Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Screens\Grid.cpp">
+      <Filter>src\Screens</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Screens">
+      <UniqueIdentifier>{bd240a18-ae7d-4837-81c9-ae2f231935fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{e62e195e-0ad7-42f7-987a-580e98ac71b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxAssets">
+      <UniqueIdentifier>{3f17f0ce-6c0c-454e-81b4-e45f7fddf474}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\testApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Screens\Base.h">
+      <Filter>src\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxAssets\src\ofxAssets.h">
+      <Filter>addons\ofxAssets</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Screens\Controller.h">
+      <Filter>src\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Screens\Record.h">
+      <Filter>src\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Screens\Header.h">
+      <Filter>src\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Screens\Render.h">
+      <Filter>src\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Screens\Grid.h">
+      <Filter>src\Screens</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+</Project>
