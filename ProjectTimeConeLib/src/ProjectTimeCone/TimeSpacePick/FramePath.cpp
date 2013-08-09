@@ -129,15 +129,18 @@ namespace ProjectTimeCone {
 		}
 
 		//----------
-		void FramePath::buildFrames(string path, int length, ofImage& buffer) {
+		FramePath::BuildList FramePath::getBuildList(string path, int length) const {
+			BuildList buildList;
+
 			Poco::Path outputPath(ofToDataPath(path));
 			Poco::File(outputPath).remove(true);
 			Poco::File(outputPath).createDirectories();
 
 			for (int frame=0; frame<length; frame++) {
+				FrameToBuild frameToBuild;
+				
 				auto screen = this->lengthToScreen(this->totalLength * (float) frame / (float) length);
 				auto timeSpace = this->frameSet.screenToTimeSpace(screen);
-				this->frameSet.getInterpolatedFrame(timeSpace, buffer);
 
 				string frameString = ofToString(frame);
 				while(frameString.length() < 4) {
@@ -145,11 +148,28 @@ namespace ProjectTimeCone {
 				}
 
 				frameString = "frame_" + frameString;
-				auto filename = outputPath.toString() + frameString + ".jpg";
 
-				buffer.saveImage(filename);
-				cout << frameString << endl;
+				frameToBuild.filename = outputPath.toString() + frameString + ".jpg";
+				frameToBuild.timeSpace = timeSpace;
+
+				buildList.push_back(frameToBuild);
 			}
+
+			return buildList;
+		}
+
+		//----------
+		void FramePath::buildFrames(string path, int length, ofImage& buffer) const {
+			auto buildList = this->getBuildList(path, length);
+			for(auto frame : buildList) {
+				this->buildFrame(frame, buffer);
+			}
+		}
+
+		//----------
+		void FramePath::buildFrame(FrameToBuild& frame, ofImage& buffer) const {
+			this->frameSet.getInterpolatedFrame(frame.timeSpace, buffer);
+			buffer.saveImage(frame.filename);
 		}
 	}
 }

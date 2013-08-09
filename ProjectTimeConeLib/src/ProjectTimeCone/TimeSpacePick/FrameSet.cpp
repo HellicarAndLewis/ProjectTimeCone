@@ -62,6 +62,18 @@ namespace ProjectTimeCone {
 				}
 			}
 
+			//--
+			//shave maxTimestamp back to common max
+			for(auto camera : cameras) {
+				auto last = camera.end();
+				last--;
+				if (last->first < maxTimestamp) {
+					maxTimestamp = last->first;
+				}
+			}
+			//
+			//--
+
 			this->gridView.allocate(this->screenWidth,this->screenHeight);
 			int gridHeight = 12;
 			int gridWidth = this->screenWidth / ((this->screenHeight/12) * (1280.0f / 720.0f)); //=12 because aspect ratio is same
