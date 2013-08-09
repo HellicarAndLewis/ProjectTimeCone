@@ -22,7 +22,7 @@ class testApp : public ofBaseApp{
 
 		void onControls(ofxUIEventArgs & args);
 
-		vector<ofPtr<Grabber::Simple>> grabbers;
+		vector<ofPtr<ProjectTimeCone::Initialisation::CameraController>> controllers;
 		vector<ofPtr<ofxMachineVision::Stream::DiskStreamer>> streamers;
 		ofxCvGui::Builder gui;
 

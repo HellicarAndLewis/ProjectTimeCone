@@ -19,7 +19,8 @@ void testApp::setup(){
 	}
 	this->outputFolder = Poco::Path(dialogResult.getPath() + "/");
 
-	ProjectTimeCone::Initialisation::LoadCameras(this->grabbers, [this] (int index, ofPtr<Grabber::Simple> grabber) {
+	ProjectTimeCone::Initialisation::Initialiser::LoadCameras(this->controllers, [this] (ofPtr<ProjectTimeCone::Initialisation::CameraController> controller) {
+		auto grabber = controller->grabber;
 		PanelPtr panel = this->gui.add(grabber->getTextureReference(), grabber->getModelName());
 		panel->onDraw.addListener([this, grabber, panel] (DrawArguments & args) {
 			AssetRegister.drawText(ofToString(grabber->getFps()), 20, 60);
@@ -43,7 +44,7 @@ void testApp::setup(){
 		auto streamer = ofPtr<Stream::DiskStreamer>(new Stream::DiskStreamer());
 		streamer->setGrabber(grabber);
 		this->streamers.push_back(streamer);
-	}, this->exposure, this->gain, this->focus, 1280, 720);
+	}, 1280, 720);
 
 	
 	this->controlPanel = PanelPtr(new Panels::Base());
@@ -52,9 +53,6 @@ void testApp::setup(){
 	this->controlPanel->setWidgets(this->controls);
 	this->controls.addFPS();
 	this->controls.addToggle("Record", &this->doRecord);
-	this->controls.addSlider("Exposure", 0, 1000, &this->exposure);
-	this->controls.addSlider("Gain", 0, 1.0f, &this->gain);
-	this->controls.addSlider("Focus", 0, 1.0f, &this->focus);
 	this->controls.addButton("Clear line", &this->clearLine);
 	ofAddListener(this->controls.newGUIEvent, this, &testApp::onControls);
 }
@@ -66,8 +64,8 @@ void testApp::update(){
 		ofSetWindowShape(1080*2, 1920);
 	}
 
-	for (int i=0; i<grabbers.size(); i++) {
-		grabbers[i]->update();
+	for(auto controller : this->controllers) {
+		controller->grabber->update();
 	}
 
 	if (this->clearLine) {
@@ -92,13 +90,7 @@ void testApp::dragEvent(ofDragInfo dragInfo){
 
 //--------------------------------------------------------------
 void testApp::onControls(ofxUIEventArgs & args) {
-	for(auto grabber : grabbers) {
-		if (args.widget->getName() == "Exposure")
-			grabber->setExposure(this->exposure);
-		if (args.widget->getName() == "Gain")
-			grabber->setGain(this->gain);
-		if (args.widget->getName() == "Focus")
-			grabber->setFocus(this->focus);
+	for(auto controller : controllers) {
 		if (args.widget->getName() == "Record") {
 			if (this->doRecord) {
 				auto thisRecordingPath = this->outputFolder;
@@ -107,7 +99,7 @@ void testApp::onControls(ofxUIEventArgs & args) {
 					auto path = thisRecordingPath;
 					path.pushDirectory(ofToString(i));
 
-					auto device = (Device::VideoInputDevice*) this->grabbers[i]->getDevice().get();
+					auto device = (Device::VideoInputDevice*) this->controllers[i]->grabber->getDevice().get();
 					device->resetTimestamp();
 					streamers[i]->setOutputFolder(path.toString());
 					streamers[i]->start();
