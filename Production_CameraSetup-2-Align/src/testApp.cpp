@@ -15,6 +15,19 @@ void testApp::setup(){
 			ofPushMatrix();
 			ofScale(args.size.x, args.size.y, 1.0f);
 
+			//--
+			//verticals
+			//
+			ofPushStyle();
+			ofSetColor(0);
+			ofSetLineWidth(1.0f);
+			for(float x=1.0f / 6.0f; x<=1.0f; x+= 1.0f / 6.0f) {
+				ofLine(x, 0, x, 1.0f);
+			}
+			ofPopStyle();
+			//
+			//--
+
 
 			//--
 			//crosshair
@@ -43,7 +56,7 @@ void testApp::setup(){
 			for(auto & line : this->lines) {
 				ofPushStyle();
 				ofNoFill();
-				
+
 				//black
 				ofSetLineWidth(3.0f);
 				ofSetColor(0);
