@@ -118,8 +118,11 @@
     <ClCompile Include="..\addons\roxlu\addons\SQLite\extern\sqlite\sqlite3.c">
       <Filter>addons\sqlite\extern</Filter>
     </ClCompile>
-    <ClCompile Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.cpp">
-      <Filter>YouTubeVideoEncoder</Filter>
+    <ClCompile Include="..\ProjectTimeConeLib\src\ProjectTimeCone\YouTube\EncodeAndUpload.cpp">
+      <Filter>addons\encodeandupload</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\roxlu\addons\YouTube\src\youtube\YouTubeParser.cpp">
+      <Filter>addons\youtube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,8 +165,8 @@
     <Filter Include="addons\roxlu\include">
       <UniqueIdentifier>{f87aeabb-8e70-4675-8132-165d53a06e32}</UniqueIdentifier>
     </Filter>
-    <Filter Include="YouTubeVideoEncoder">
-      <UniqueIdentifier>{872b06bf-3e61-4d6f-982b-6ab8fe9c482c}</UniqueIdentifier>
+    <Filter Include="addons\encodeandupload">
+      <UniqueIdentifier>{06d1cee3-6cc9-435c-840f-f17d4072a5a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -185,8 +188,8 @@
     <ClInclude Include="..\addons\roxlu\lib\include\roxlu\core\Utils.h">
       <Filter>addons\roxlu\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\ProjectTimeConeLib\src\YouTubeVideoEncoder.h">
-      <Filter>YouTubeVideoEncoder</Filter>
+    <ClInclude Include="..\ProjectTimeConeLib\src\ProjectTimeCone\YouTube\EncodeAndUpload.h">
+      <Filter>addons\encodeandupload</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
