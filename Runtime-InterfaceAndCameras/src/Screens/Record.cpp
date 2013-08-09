@@ -68,8 +68,8 @@ namespace Screens {
 
 	//---------
 	void Record::reset() {
-		this->clear();
-		this->add(this->record);
+		this->record->enable();
+		this->stop->disable();
 	}
 
 	//---------

@@ -25,6 +25,9 @@
     <ClCompile Include="src\Screens\Grid.cpp">
       <Filter>src\Screens</Filter>
     </ClCompile>
+    <ClCompile Include="src\Screens\Upload.cpp">
+      <Filter>src\Screens</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -63,6 +66,9 @@
       <Filter>src\Screens</Filter>
     </ClInclude>
     <ClInclude Include="src\Screens\Grid.h">
+      <Filter>src\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Screens\Upload.h">
       <Filter>src\Screens</Filter>
     </ClInclude>
   </ItemGroup>

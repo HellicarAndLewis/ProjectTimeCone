@@ -8,6 +8,9 @@ void testApp::setup(){
 	this->record = ofPtr<Screens::Record>(new Screens::Record(this->controllers[0]->grabber->getTextureReference()));
 	this->grid= ofPtr<Screens::Grid>(new Screens::Grid());
 	this->render = ofPtr<Screens::Render>(new Screens::Render());
+	this->upload = ofPtr<Screens::Upload>(new Screens::Upload());
+	this->record->reset();
+	this->grid->init();
 
 	this->gui.setRoot(this->record);
 
@@ -20,23 +23,33 @@ void testApp::setup(){
 	this->record->onFinishRecording += [this] (string & path) {
 		this->gui.setRoot(grid);
 		grid->load();
+		grid->clear();
 	};
 
 	this->grid->onRestart += [this] (ofEventArgs&) {
 		this->gui.setRoot(record);
 	};
-	this->grid->onComplete += [this] (ofEventArgs&) {
+	this->grid->onRender += [this] (Screens::Grid::BuildArgs& args) {
 		this->gui.setRoot(render);
+		render->render(args);
 	};
 
 	this->render->onComplete += [this] (ofEventArgs&) {
+		this->gui.setRoot(upload);
+		upload->load("frames_recording");
 	};
 
-	//!!DEBUG
-	this->gui.setRoot(this->grid);
-	this->grid->load();
-	//!!DEBUG
+	this->upload->onReview += [this] (ofEventArgs&) {
+		this->gui.setRoot(this->grid);
+		this->grid->clear();
+	};
 
+	this->upload->onUpload += [this] (ofEventArgs&) {
+		this->gui.setRoot(this->record);
+		this->record->reset();
+	};
+
+	ofSetFullscreen(true);
 }
 
 //--------------------------------------------------------------
@@ -44,6 +57,7 @@ void testApp::update(){
 	if (this->gui.getRoot() == this->record) {
 		this->controllers[0]->grabber->update();
 	}
+	this->upload->updateYouTube();
 }
 
 //--------------------------------------------------------------

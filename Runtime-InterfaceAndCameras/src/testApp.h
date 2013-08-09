@@ -1,5 +1,4 @@
 #pragma once
-#define NO_YOUTUBE
 #include "ProjectTimeCone.h"
 #include "ofMain.h"
 #include "ofxCvGui.h"
@@ -9,6 +8,7 @@
 #include "Screens/Record.h"
 #include "Screens/Grid.h"
 #include "Screens/Render.h"
+#include "Screens/Upload.h"
 
 using namespace ofxCvGui;
 using namespace ofxMachineVision;
@@ -30,6 +30,7 @@ class testApp : public ofBaseApp{
 		ofPtr<Screens::Record> record;
 		ofPtr<Screens::Grid> grid;
 		ofPtr<Screens::Render> render;
+		ofPtr<Screens::Upload> upload;
 
 		Screens::Controller gui;
 };

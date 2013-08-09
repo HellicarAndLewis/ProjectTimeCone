@@ -20,7 +20,7 @@ namespace Screens {
 			image("restart_hit").draw(0,0);
 		};
 		this->restart->onHit += [this] (ofVec2f&) {
-			if (this->framePath.size() == 0) {
+			if (this->framePath.size() <= 1) {
 				ofEventArgs args;
 				this->onRestart(args);
 			} else {
@@ -35,21 +35,33 @@ namespace Screens {
 		this->render->onDrawDown += [] (DrawArguments&) {
 			image("render_hit").draw(0,0);
 		};
+		this->render->onHit += [this] (ofVec2f&) {
+			BuildArgs args;
+			args.framePath = &this->framePath;
+			this->onRender(args);
+		};
 
 		this->onMouse += [this] (MouseArguments& args) {
 			if (args.action == MouseArguments::Pressed || args.action == MouseArguments::Dragged) {
 				this->framePath.add(args.local);
-				if (this->framePath.size() > 50) {
+				if (this->framePath.size() > 20 || this->framePath.getPositionOnPath(1.0f).x > 0.5f) {
 					this->render->enable();
 				}
 			}
 		};
 
-		this->frameSet.init(1920, 1080 - image("bottomBar_background").getHeight());
-
 		this->add(this->restart);
 		this->add(this->render);
 		this->render->disable();
+	}
+	
+	//----------
+	void Grid::init() {
+		float y = 1080 - image("bottomBar_background").getHeight();
+		//!!DEBUG
+		//hard coded, should look up on image
+		this->frameSet.init(1920, 900);
+		//!!DEBUG
 	}
 
 	//----------
@@ -64,5 +76,10 @@ namespace Screens {
 	//----------
 	void Grid::load() {
 		this->frameSet.load("D:\\DISK_STREAM\\");
+	}
+
+	//----------
+	void Grid::clear() {
+		this->framePath.clear();
 	}
 }

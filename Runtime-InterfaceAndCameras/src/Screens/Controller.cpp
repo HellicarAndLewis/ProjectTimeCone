@@ -15,6 +15,7 @@ namespace Screens {
 
 	//----------
 	void Controller::addListeners() {
+		ofAddListener(ofEvents().update, this, &Controller::update);
 		ofAddListener(ofEvents().draw, this, &Controller::draw);
 		ofAddListener(ofEvents().mouseMoved, this, &Controller::mouseMoved);
 		ofAddListener(ofEvents().mousePressed, this, &Controller::mousePressed);
@@ -26,6 +27,7 @@ namespace Screens {
 
 	//----------
 	void Controller::removeListeners() {
+		ofRemoveListener(ofEvents().update, this, &Controller::update);
 		ofRemoveListener(ofEvents().draw, this, &Controller::draw);
 		ofRemoveListener(ofEvents().mouseMoved, this, &Controller::mouseMoved);
 		ofRemoveListener(ofEvents().mousePressed, this, &Controller::mousePressed);

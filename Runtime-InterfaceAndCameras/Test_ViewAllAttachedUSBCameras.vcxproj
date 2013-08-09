@@ -68,7 +68,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>%(AdditionalDependencies);opencv_calib3d245d.lib;opencv_contrib245d.lib;opencv_core245d.lib;opencv_features2d245d.lib;opencv_flann245d.lib;opencv_gpu245d.lib;opencv_haartraining_engined.lib;opencv_highgui245d.lib;opencv_imgproc245d.lib;opencv_legacy245d.lib;opencv_ml245d.lib;opencv_nonfree245d.lib;opencv_objdetect245d.lib;opencv_photo245d.lib;opencv_stitching245d.lib;opencv_superres245d.lib;opencv_ts245d.lib;opencv_video245d.lib;zlibd.lib</AdditionalDependencies>
+      <AdditionalDependencies>.\..\libuv.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcre.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcrecpp.lib;ws2_32.lib;psapi.lib;iphlpapi.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32d\msgpack.lib;%(AdditionalDependencies);</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -88,7 +88,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>%(AdditionalDependencies);opencv_calib3d245.lib;opencv_contrib245.lib;opencv_core245.lib;opencv_features2d245.lib;opencv_flann245.lib;opencv_gpu245.lib;opencv_haartraining_engine.lib;opencv_highgui245.lib;opencv_imgproc245.lib;opencv_legacy245.lib;opencv_ml245.lib;opencv_nonfree245.lib;opencv_objdetect245.lib;opencv_photo245.lib;opencv_stitching245.lib;opencv_superres245.lib;opencv_ts245.lib;opencv_video245.lib;zlib.lib</AdditionalDependencies>
+      <AdditionalDependencies>.\..\libuv.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\libcurl.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\jansson.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcre.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32\pcrecpp.lib;ws2_32.lib;psapi.lib;iphlpapi.lib;.\..\addons\roxlu\extern\lib\win\vs2010\MD\32d\msgpack.lib;%(AdditionalDependencies);</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\addons\ofxOpenCv\libs\opencv\lib\vs</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -100,6 +100,7 @@
     <ClCompile Include="src\Screens\Record.cpp" />
     <ClCompile Include="src\Screens\Render.cpp" />
     <ClCompile Include="src\Screens\Grid.cpp" />
+    <ClCompile Include="src\Screens\Upload.cpp" />
     <ClCompile Include="src\testApp.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +111,7 @@
     <ClInclude Include="src\Screens\Record.h" />
     <ClInclude Include="src\Screens\Render.h" />
     <ClInclude Include="src\Screens\Grid.h" />
+    <ClInclude Include="src\Screens\Upload.h" />
     <ClInclude Include="src\testApp.h" />
   </ItemGroup>
   <ItemGroup>
