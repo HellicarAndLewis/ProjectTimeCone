@@ -12,26 +12,12 @@ using namespace ofxCvGui;
 using namespace ProjectTimeCone;
 
 class testApp : public ofBaseApp{
-
-	struct Frame {
-		float time;
-		float camera;
-	};
-
 public:
+	testApp();
 	void setup();
 	void update();
 	void draw();
 
-	Frame screenToFrame(const ofVec2f &) const;
-	ofVec2f frameToScreen(const Frame &) const;
-	Frame lengthToFrame(float position) const;
-	
-	static void getFrame(string filename, ofPixels &);
-	bool getFrame(int camera, float time, ofPixels & output);
-
-	bool cacheInterpolation(const Frame &); //returns true if we need to interpolate
-	void buildFrame(const Frame &, bool interpolate=false);
 
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
@@ -43,27 +29,16 @@ public:
 
 	Poco::Path inputFolder;
 
-	vector<string> folders;
-	vector<map<float, string>> files;
-	vector<float> timeOffsets;
-	float minTimestamp;
-	float maxTimestamp;
+	ProjectTimeCone::TimeSpacePick::FrameSet frameSet;
+	ProjectTimeCone::TimeSpacePick::FramePath framePath;
 
-	map<float, Frame> positions; // length, frame
-	ofVec2f cursor; // screen
-
-	float totalLength;
 	float beginPlaybackTime;
+	ofVec2f cursor; // screen
 
 	bool editing;
 	float searchTime;
 
-	ofFbo gridView;
-
-	ofPtr<Interpolation::OpticalFlow> interpolator;
-	string intepolatorCachedA, intepolatorCachedB; //filesnames of cached content
-	ofImage A, B;
 	ofImage result;
 
-	ProjectTimeCone::YouTube::VideoEncoder youTubeEncoder;
+	ProjectTimeCone::YouTube::EncodeAndUpload youTubeEncoder;
 };
