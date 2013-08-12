@@ -10,14 +10,18 @@ namespace Screens {
 		this->restart = ofPtr<ofxCvGui::Utils::Button>(new ofxCvGui::Utils::Button());
 		this->render = ofPtr<ofxCvGui::Utils::Button>(new ofxCvGui::Utils::Button());
 
-		this->restart->setBounds(ofRectangle(50, (1080 - 180) + (180 - 100) / 2, 100, 100));
-		this->render->setBounds(ofRectangle(1920 - 150, (1080 - 180) + (180 - 100) / 2, 100, 100));
+		this->restart->setBounds(ofRectangle(50, 1080 + ((190 - 137) / 2) - 190, 137, 137));
+		this->render->setBounds(ofRectangle(1920 - 50 - 137, 1080 + ((190 - 137) / 2) - 190, 137, 137));
 
 		this->restart->onDrawUp += [] (DrawArguments&) {
+			ofEnableAlphaBlending();
 			image("restart_up").draw(0,0);
+			ofDisableAlphaBlending();
 		};
 		this->restart->onDrawDown += [] (DrawArguments&) {
+			ofEnableAlphaBlending();
 			image("restart_hit").draw(0,0);
+			ofDisableAlphaBlending();
 		};
 		this->restart->onHit += [this] (ofVec2f&) {
 			if (this->framePath.size() <= 1) {
@@ -30,10 +34,14 @@ namespace Screens {
 		};
 
 		this->render->onDrawUp += [] (DrawArguments&) {
+			ofEnableAlphaBlending();
 			image("render_up").draw(0,0);
+			ofDisableAlphaBlending();
 		};
 		this->render->onDrawDown += [] (DrawArguments&) {
+			ofEnableAlphaBlending();
 			image("render_hit").draw(0,0);
+			ofDisableAlphaBlending();
 		};
 		this->render->onHit += [this] (ofVec2f&) {
 			BuildArgs args;
@@ -81,5 +89,6 @@ namespace Screens {
 	//----------
 	void Grid::clear() {
 		this->framePath.clear();
+		this->render->disable();
 	}
 }

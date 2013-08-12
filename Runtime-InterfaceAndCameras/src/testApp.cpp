@@ -24,6 +24,7 @@ void testApp::setup(){
 		this->gui.setRoot(grid);
 		grid->load();
 		grid->clear();
+		this->record->reset();
 	};
 
 	this->grid->onRestart += [this] (ofEventArgs&) {

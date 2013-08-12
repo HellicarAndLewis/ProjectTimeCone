@@ -13,14 +13,18 @@ namespace Screens {
 		this->review = ofPtr<ofxCvGui::Utils::Button>(new ofxCvGui::Utils::Button());
 		this->upload = ofPtr<ofxCvGui::Utils::Button>(new ofxCvGui::Utils::Button());
 		
-		this->review->setBounds(ofRectangle(50, (1080 - 180) + (180 - 100) / 2, 100, 100));
-		this->upload->setBounds(ofRectangle(1920 - 150, (1080 - 180) + (180 - 100) / 2, 100, 100));
+		this->review->setBounds(ofRectangle(50, 1080 + ((190 - 137) / 2) - 190, 137, 137));
+		this->upload->setBounds(ofRectangle(1920 - 50 - 137, 1080 + ((190 - 137) / 2) - 190, 137, 137));
 
 		this->review->onDrawUp += [] (DrawArguments & args) {
+			ofEnableAlphaBlending();
 			ofxAssets::image("review_up").draw(0,0);
+			ofDisableAlphaBlending();
 		};
 		this->review->onDrawDown += [] (DrawArguments & args) {
+			ofEnableAlphaBlending();
 			ofxAssets::image("review_hit").draw(0,0);
+			ofDisableAlphaBlending();
 		};
 		this->review->onHit += [this] (ofVec2f&) {
 			ofEventArgs args;
@@ -28,10 +32,14 @@ namespace Screens {
 		};
 
 		this->upload->onDrawUp += [] (DrawArguments & args) {
+			ofEnableAlphaBlending();
 			ofxAssets::image("upload_up").draw(0,0);
+			ofDisableAlphaBlending();
 		};
 		this->upload->onDrawDown += [] (DrawArguments & args) {
+			ofEnableAlphaBlending();
 			ofxAssets::image("upload_hit").draw(0,0);
+			ofDisableAlphaBlending();
 		};
 		this->upload->onHit += [this] (ofVec2f&) {
 			this->youTube.encodeFrames(this->path, true);

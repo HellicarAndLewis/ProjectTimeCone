@@ -7,6 +7,7 @@ namespace Screens {
 	public:
 		typedef ofPtr<ofxMachineVision::Stream::DiskStreamer> Streamer;
 		Record(ofBaseDraws & preview);
+		void update();
 		void draw(ofxCvGui::DrawArguments &) override;
 		void reset();
 		void addStreamer(Streamer);
