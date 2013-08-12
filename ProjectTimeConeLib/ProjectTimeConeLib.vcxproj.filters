@@ -61,6 +61,9 @@
     <Filter Include="src\ProjectTimeCone\TimeSpacePick">
       <UniqueIdentifier>{0287b9d2-fa51-414f-9a4d-e8bc350587a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\ProjectTimeCone\Utils">
+      <UniqueIdentifier>{1274c142-363c-4894-af7e-fa79139532e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ProjectTimeCone.h">
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="src\ProjectTimeCone\TimeSpacePick\FramePath.h">
       <Filter>src\ProjectTimeCone\TimeSpacePick</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProjectTimeCone\Utils\Disk.h">
+      <Filter>src\ProjectTimeCone\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -265,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="src\ProjectTimeCone\TimeSpacePick\FramePath.cpp">
       <Filter>src\ProjectTimeCone\TimeSpacePick</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProjectTimeCone\Utils\Disk.cpp">
+      <Filter>src\ProjectTimeCone\Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -14,6 +14,7 @@ namespace ProjectTimeCone {
 			this->frameB.allocate(WIDTH, HEIGHT, OF_IMAGE_COLOR);
 			this->screenWidth = screenWidth;
 			this->screenHeight = screenHeight;
+			this->gridView.allocate(this->screenWidth,this->screenHeight);
 		}
 
 		//---------
@@ -22,6 +23,9 @@ namespace ProjectTimeCone {
 			this->maxTimestamp = std::numeric_limits<float>::min();
 
 			this->folder = Poco::Path(path);
+			this->cameras.clear();
+			this->cameraFolders.clear();
+			this->timeOffsets.clear();
 
 			ofDirectory listDir;
 			listDir.listDir(this->folder.toString());
@@ -74,7 +78,6 @@ namespace ProjectTimeCone {
 			//
 			//--
 
-			this->gridView.allocate(this->screenWidth,this->screenHeight);
 			int gridHeight = 12;
 			int gridWidth = this->screenWidth / ((this->screenHeight/12) * (1280.0f / 720.0f)); //=12 because aspect ratio is same
 

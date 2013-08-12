@@ -107,6 +107,7 @@
     <ClInclude Include="src\ProjectTimeCone\Profiling\Timer.h" />
     <ClInclude Include="src\ProjectTimeCone\TimeSpacePick\FramePath.h" />
     <ClInclude Include="src\ProjectTimeCone\TimeSpacePick\FrameSet.h" />
+    <ClInclude Include="src\ProjectTimeCone\Utils\Disk.h" />
     <ClInclude Include="src\ProjectTimeCone\YouTube\EncodeAndUpload.h" />
   </ItemGroup>
   <ItemGroup>
@@ -163,6 +164,7 @@
     <ClCompile Include="src\ProjectTimeCone\Profiling\Timer.cpp" />
     <ClCompile Include="src\ProjectTimeCone\TimeSpacePick\FramePath.cpp" />
     <ClCompile Include="src\ProjectTimeCone\TimeSpacePick\FrameSet.cpp" />
+    <ClCompile Include="src\ProjectTimeCone\Utils\Disk.cpp" />
     <ClCompile Include="src\ProjectTimeCone\YouTube\EncodeAndUpload.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

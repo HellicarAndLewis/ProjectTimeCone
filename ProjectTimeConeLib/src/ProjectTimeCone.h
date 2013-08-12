@@ -1,4 +1,7 @@
 #ifndef NO_YOUTUBE
+	#ifdef OF_VERSION_MAJOR
+		//#warning You should include ProjectTimeCone before oF (or <Windows.h>) because symbols clash in uv.h.
+	#endif
 	extern "C" {
 		#include <uv.h>
 	};
@@ -12,4 +15,4 @@
 #include "ProjectTimeCone/Interpolation/OpticalFlow.h"
 #include "ProjectTimeCone/Interpolation/GPUOpticalFlow.h"
 #include "ProjectTimeCone/Profiling/Timer.h"
-
+#include "ProjectTimeCone/Utils/Disk.h"
