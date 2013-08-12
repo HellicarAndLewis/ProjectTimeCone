@@ -15,6 +15,7 @@ namespace ProjectTimeCone {
 		  video.filename = task.video_filename;
 		  video.datapath = false;
 		  video.title = rx_get_date_time_string();
+      video.category = 2;
   
 		  ytv->yt_client.addVideoToUploadQueue(video);
 
