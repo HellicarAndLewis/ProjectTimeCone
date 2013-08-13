@@ -60,6 +60,14 @@ void testApp::update(){
 		this->controllers[0]->grabber->update();
 	}
 	this->upload->updateYouTube();
+
+	for(auto controller : this->controllers) {
+		//hacky last-minute way of forcing back to saved cam settings for first ~10s
+		int frameNum = ofGetFrameNum();
+		if (frameNum < 300 && frameNum % 10 == 0) {
+			controller->load();
+		}
+	}
 }
 
 //--------------------------------------------------------------
