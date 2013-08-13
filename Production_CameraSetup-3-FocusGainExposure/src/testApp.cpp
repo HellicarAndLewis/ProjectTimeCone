@@ -48,20 +48,28 @@ void testApp::setup(){
 		panel->onDraw += [grabber] (const ofxCvGui::DrawArguments&) {
 			ofxCvGui::AssetRegister.drawText(ofToString(grabber->getFps()), 30, 60);
 		};
-	}, 1280, 800);
+	}, 1280, 720);
 
-	this->combined.allocate(20 * this->controllers.size(), 800);
+	this->combined.allocate(100 * this->controllers.size(), 720, OF_IMAGE_COLOR);
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
 	int index = 0;
+	auto output = this->combined.getPixels();
+	int strideIn = 1280 * 3;
+	int strideOut = this->combined.getWidth() * 3;
+
 	for(auto controller : this->controllers) {
 		controller->grabber->update();
-
-		for(int i=0; i<800; i++) {
-			memcpy(this->combined.getPixels() + 20 * 3 * i, controller->grabber->getPixels(), 3 * 20);
+		
+		auto pixels = controller->grabber->getPixelsRef();
+		auto input = pixels.getPixels();
+		for(int j=0; j<720; j++) {
+			memcpy(output + j * strideOut + 3 * 100 * index, input + j * strideIn + ((1280 - 100) * 3 / 2), 3 * 100);
 		}
+
+		index++;
 	}
 	this->combined.update();
 }
