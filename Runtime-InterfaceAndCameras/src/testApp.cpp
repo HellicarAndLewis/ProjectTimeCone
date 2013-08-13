@@ -64,7 +64,7 @@ void testApp::update(){
 	for(auto controller : this->controllers) {
 		//hacky last-minute way of forcing back to saved cam settings for first ~10s
 		int frameNum = ofGetFrameNum();
-		if (frameNum < 300 && frameNum % 10 == 0) {
+		if (frameNum < 100 && frameNum % 10 == 0) {
 			controller->load();
 		}
 	}
