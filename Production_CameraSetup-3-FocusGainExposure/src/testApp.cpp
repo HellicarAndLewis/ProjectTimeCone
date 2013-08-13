@@ -9,7 +9,8 @@ void testApp::setup(){
 
 	gui.init();
 	gui.addInstructions();
-	
+	gui.add(this->combined, "Strip of each");
+
 	ProjectTimeCone::Initialisation::Initialiser::LoadCameras(this->controllers,
 		[this] (ofPtr<Initialisation::CameraController> controller) {
 		auto grabber = controller->grabber;
@@ -48,13 +49,21 @@ void testApp::setup(){
 			ofxCvGui::AssetRegister.drawText(ofToString(grabber->getFps()), 30, 60);
 		};
 	}, 1280, 800);
+
+	this->combined.allocate(20 * this->controllers.size(), 800);
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
+	int index = 0;
 	for(auto controller : this->controllers) {
 		controller->grabber->update();
+
+		for(int i=0; i<800; i++) {
+			memcpy(this->combined.getPixels() + 20 * 3 * i, controller->grabber->getPixels(), 3 * 20);
+		}
 	}
+	this->combined.update();
 }
 
 //--------------------------------------------------------------

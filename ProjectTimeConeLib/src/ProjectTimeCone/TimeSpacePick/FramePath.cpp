@@ -114,8 +114,10 @@ namespace ProjectTimeCone {
 			if (this->positions.size() > 0) {
 				auto last = this->positions.end();
 				last--;
-				if (screen.x <= last->second.x) {
+				if (screen.x <= last->second.x - 100) {
 					return;
+				} else if (screen.x <= last->second.x) {
+					screen.x = last->second.x;
 				}
 
 				//perform check on recomputed length in case we clamped

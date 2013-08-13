@@ -22,6 +22,7 @@ class testApp : public ofBaseApp{
 		
 		vector<ofPtr<Initialisation::CameraController>> controllers;
 		ofxCvGui::Builder gui;
+		ofImage combined;
 
 		int hitIndex;
 };
