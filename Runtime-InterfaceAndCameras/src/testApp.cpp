@@ -51,6 +51,7 @@ void testApp::setup(){
 	};
 
 	ofSetFullscreen(true);
+	ofHideCursor();
 }
 
 //--------------------------------------------------------------
@@ -73,6 +74,9 @@ void testApp::gotMessage(ofMessage msg){
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key) {
+	if (key == 'f') {
+		ofToggleFullscreen();
+	}
 }
 
 //--------------------------------------------------------------
